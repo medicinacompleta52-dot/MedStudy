@@ -49,6 +49,12 @@
 
       <section class="cards-panel" id="cards-view" hidden>
         <div class="section-heading"><div><p class="eyebrow">SEU ACERVO</p><h2>Meus cartões</h2></div><span class="session-count" id="library-count">0 cartões</span></div>
+        <div class="library-tools" role="search">
+          <label class="search-field"><span aria-hidden="true">⌕</span><input id="search-cards" type="search" placeholder="Buscar nos cartões" aria-label="Buscar nos cartões"></label>
+          <select id="filter-topic" aria-label="Filtrar por tema"><option value="">Todos os temas</option></select>
+          <div class="library-actions"><button type="button" class="secondary-button" id="import-button">Importar</button><button type="button" class="secondary-button" id="export-button">Exportar</button><input id="import-file" type="file" accept="application/json,.json" hidden></div>
+        </div>
+        <p class="results-note" id="results-note"></p>
         <div id="card-list" class="card-list"></div>
         <div class="library-empty" id="library-empty"><div class="empty-illustration">▤</div><h3>Seu acervo começa aqui</h3><p>Crie cartões com perguntas e respostas para revisar quando quiser.</p><button class="primary-button" id="new-card-empty">＋ Criar primeiro cartão</button></div>
       </section>
@@ -58,11 +64,11 @@
 
   <dialog id="card-dialog" class="dialog">
     <form id="card-form" method="dialog">
-      <div class="dialog-heading"><div><p class="eyebrow">NOVO FLASHCARD</p><h2>O que você quer estudar?</h2></div><button class="close-button" type="button" id="close-dialog" aria-label="Fechar">×</button></div>
+      <div class="dialog-heading"><div><p class="eyebrow">NOVO FLASHCARD</p><h2 id="dialog-title">O que você quer estudar?</h2></div><button class="close-button" type="button" id="close-dialog" aria-label="Fechar">×</button></div>
       <label for="topic-input">Tema <span>(opcional)</span></label><input id="topic-input" maxlength="40" placeholder="Ex.: Anatomia">
       <label for="front-input">Pergunta <span class="required">*</span></label><textarea id="front-input" required maxlength="300" rows="3" placeholder="Escreva uma pergunta clara"></textarea>
       <label for="back-input">Resposta <span class="required">*</span></label><textarea id="back-input" required maxlength="600" rows="4" placeholder="Anote a resposta que você quer lembrar"></textarea>
-      <div class="dialog-actions"><button type="button" class="secondary-button" id="cancel-dialog">Cancelar</button><button type="submit" class="primary-button">Salvar cartão</button></div>
+      <div class="dialog-actions"><button type="button" class="secondary-button" id="cancel-dialog">Cancelar</button><button type="submit" class="primary-button"><span id="save-label">Salvar cartão</span></button></div>
     </form>
   </dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>

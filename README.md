@@ -1,21 +1,22 @@
 # MedStudy
 
-Uma aplicação simples de flashcards para organizar revisões de estudo.
+Uma aplicação de flashcards para organizar revisões de estudo.
 
-## O que já funciona
+## Recursos
 
-- Criar cartões com tema, pergunta e resposta.
-- Revelar a resposta e avançar pela sessão marcando **Errei**, **Difícil** ou **Acertei**.
-- Consultar e excluir cartões no acervo.
-- Acompanhar cartões criados e revisados.
-- Salvar tudo no armazenamento local do navegador (localStorage), sem conta ou servidor.
+- Criar, editar e excluir cartões com tema, pergunta e resposta.
+- Buscar cartões por texto e filtrar por tema.
+- Estudar revelando a resposta e registrando **Errei**, **Difícil** ou **Acertei**.
+- Acompanhar cartões no acervo e revisões concluídas.
+- Exportar e importar backup JSON dos cartões.
+- Salvar dados localmente no navegador, sem conta ou servidor.
 
-> O conteúdo dos cartões é criado por quem estuda. O MedStudy não fornece orientação médica.
+> Os cartões são criados por quem estuda. O MedStudy não fornece orientação médica. Use **Exportar** para guardar um backup e transferi-lo a outro dispositivo, pois os dados ficam no navegador atual.
 
 ## Executar localmente
 
 Abra `index.html` no navegador. Não há dependências de instalação nem processo de build.
 
-## Publicar como site estático
+## Render
 
-No Render, crie um **Static Site** conectado a este repositório e à branch `main`. Como o projeto é HTML, CSS e JavaScript puros, deixe o comando de build vazio e use `.` como diretório de publicação.
+O Static Site publica automaticamente os commits da branch `main`. O diretório publicado é `.` e não há comando de build.
