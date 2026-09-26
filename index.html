@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7f4">
+  <meta name="description" content="Organize seus estudos com flashcards no MedStudy.">
+  <title>MedStudy — estude no seu ritmo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navegação principal">
+      <a class="brand" href="#" aria-label="MedStudy início"><span class="brand-mark">M</span><span>med<span class="brand-accent">study</span></span></a>
+      <div class="side-label">ESPAÇO DE ESTUDO</div>
+      <button class="nav-item active" data-view="study"><span class="nav-icon">▣</span> Estudar <span class="nav-count" id="nav-total">0</span></button>
+      <button class="nav-item" data-view="cards"><span class="nav-icon">▤</span> Meus cartões</button>
+      <div class="sidebar-bottom"><div class="tip-icon">✦</div><p><strong>Um pouco todo dia.</strong><br>Seu progresso começa com o próximo cartão.</p></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar"><div class="mobile-brand"><span class="brand-mark">M</span> med<span class="brand-accent">study</span></div><div class="top-spacer"></div><div class="profile"><span class="avatar">E</span><span>Meu espaço</span></div></header>
+      <section class="page-heading">
+        <div><p class="eyebrow" id="date-label">SEU ESPAÇO DE ESTUDO</p><h1 id="page-title">Vamos estudar?</h1><p class="subtitle" id="page-subtitle">Revise seus cartões e avance um passo de cada vez.</p></div>
+        <button class="primary-button" id="new-card-top"><span>＋</span> Novo cartão</button>
+      </section>
+
+      <section class="stats-grid" aria-label="Resumo de estudo">
+        <article class="stat-card"><div class="stat-icon mint">▤</div><div><span class="stat-label">Meus cartões</span><strong id="stat-total">0</strong></div><span class="stat-note">no seu acervo</span></article>
+        <article class="stat-card"><div class="stat-icon lilac">↗</div><div><span class="stat-label">Revisados hoje</span><strong id="stat-reviewed">0</strong></div><span class="stat-note">cartões estudados</span></article>
+        <article class="stat-card"><div class="stat-icon peach">◎</div><div><span class="stat-label">Para revisar</span><strong id="stat-due">0</strong></div><span class="stat-note">no seu ritmo</span></article>
+      </section>
+
+      <section class="study-panel" id="study-view">
+        <div class="section-heading"><div><p class="eyebrow">SESSÃO DE ESTUDO</p><h2>Seus flashcards</h2></div><span class="session-count" id="session-count">0 cartões</span></div>
+        <div class="progress-track" aria-label="Progresso da sessão"><span id="progress-fill"></span></div>
+        <div class="flashcard" id="flashcard">
+          <div class="card-meta"><span class="topic-pill" id="card-topic">Comece por aqui</span><span id="card-position">—</span></div>
+          <div class="card-content"><p class="card-kicker" id="card-kicker">PERGUNTA</p><h3 id="card-front">Seu próximo passo é criar o primeiro flashcard.</h3><div id="card-back-wrap" class="answer-wrap" hidden><div class="answer-divider"></div><p class="card-kicker">RESPOSTA</p><p id="card-back"></p></div></div>
+          <button class="reveal-button" id="reveal-button">Mostrar resposta <span>↓</span></button>
+        </div>
+        <div class="rating-row" id="rating-row" hidden><span>Como foi?</span><div><button class="rating-button again" data-rating="again">Errei</button><button class="rating-button hard" data-rating="hard">Difícil</button><button class="rating-button good" data-rating="good">Acertei</button></div></div>
+        <div class="empty-note" id="empty-note"><span>✦</span> Seus cartões ficam salvos neste dispositivo.</div>
+      </section>
+
+      <section class="cards-panel" id="cards-view" hidden>
+        <div class="section-heading"><div><p class="eyebrow">SEU ACERVO</p><h2>Meus cartões</h2></div><span class="session-count" id="library-count">0 cartões</span></div>
+        <div id="card-list" class="card-list"></div>
+        <div class="library-empty" id="library-empty"><div class="empty-illustration">▤</div><h3>Seu acervo começa aqui</h3><p>Crie cartões com perguntas e respostas para revisar quando quiser.</p><button class="primary-button" id="new-card-empty">＋ Criar primeiro cartão</button></div>
+      </section>
+      <footer>Feito para apoiar sua rotina de estudos <span>·</span> Seus dados ficam neste dispositivo</footer>
+    </main>
+  </div>
+
+  <dialog id="card-dialog" class="dialog">
+    <form id="card-form" method="dialog">
+      <div class="dialog-heading"><div><p class="eyebrow">NOVO FLASHCARD</p><h2>O que você quer estudar?</h2></div><button class="close-button" type="button" id="close-dialog" aria-label="Fechar">×</button></div>
+      <label for="topic-input">Tema <span>(opcional)</span></label><input id="topic-input" maxlength="40" placeholder="Ex.: Anatomia">
+      <label for="front-input">Pergunta <span class="required">*</span></label><textarea id="front-input" required maxlength="300" rows="3" placeholder="Escreva uma pergunta clara"></textarea>
+      <label for="back-input">Resposta <span class="required">*</span></label><textarea id="back-input" required maxlength="600" rows="4" placeholder="Anote a resposta que você quer lembrar"></textarea>
+      <div class="dialog-actions"><button type="button" class="secondary-button" id="cancel-dialog">Cancelar</button><button type="submit" class="primary-button">Salvar cartão</button></div>
+    </form>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
