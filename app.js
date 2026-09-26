@@ -138,6 +138,7 @@ function renderLibrary() {
 function openForm(card = null) {
   form.reset();
   editingId = card ? card.id : null;
+  if (!card) $("#topic-input").value = new URLSearchParams(location.search).get("tema") || "";
   $("#dialog-title").textContent = card ? "Editar flashcard" : "O que você quer estudar?";
   $("#save-label").textContent = card ? "Salvar alterações" : "Salvar cartão";
   if (card) {
@@ -158,8 +159,8 @@ function switchView(view) {
   if (!study) renderLibrary();
 }
 document.querySelectorAll(".nav-item").forEach((button) => button.addEventListener("click", () => switchView(button.dataset.view)));
-$("#new-card-top").addEventListener("click", openForm);
-$("#new-card-empty").addEventListener("click", openForm);
+$("#new-card-top").addEventListener("click", () => openForm());
+$("#new-card-empty").addEventListener("click", () => openForm());
 $("#close-dialog").addEventListener("click", () => dialog.close());
 $("#cancel-dialog").addEventListener("click", () => dialog.close());
 dialog.addEventListener("click", (event) => { if (event.target === dialog) dialog.close(); });
@@ -193,7 +194,8 @@ form.addEventListener("submit", (event) => {
 });
 $("#reveal-button").addEventListener("click", () => {
   if (!cards.length) { openForm(); return; }
-  if (queueIndex >= queue.length) { startQueue(); return; }
+  if (queueIndex >= queue.length) { startQueue();
+if (location.hash === "#cards-view") switchView("cards"); return; }
   revealed = true;
   $("#card-back-wrap").hidden = false;
   $("#card-kicker").textContent = "PERGUNTA";

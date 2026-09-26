@@ -1,22 +1,28 @@
 # MedStudy
 
-Uma aplicação de flashcards para organizar revisões de estudo.
+O MedStudy é um espaço de organização para estudos médicos, com catálogo de áreas e flashcards criados pelo próprio estudante.
 
-## Recursos
+## Página inicial
 
-- Criar, editar e excluir cartões com tema, pergunta e resposta.
-- Buscar cartões por texto e filtrar por tema.
-- Estudar revelando a resposta e registrando **Errei**, **Difícil** ou **Acertei**.
-- Acompanhar cartões no acervo e revisões concluídas.
-- Exportar e importar backup JSON dos cartões.
-- Salvar dados localmente no navegador, sem conta ou servidor.
+A página inicial apresenta áreas de estudo, caminhos por ciclo e acesso rápido à ferramenta de flashcards. A busca filtra as áreas disponíveis.
 
-> Os cartões são criados por quem estuda. O MedStudy não fornece orientação médica. Use **Exportar** para guardar um backup e transferi-lo a outro dispositivo, pois os dados ficam no navegador atual.
+## Flashcards
+
+Na página **Meu espaço**, é possível:
+
+- Criar, editar e excluir flashcards por tema.
+- Buscar cartões e filtrar o acervo por tema.
+- Estudar revelando respostas e registrando **Errei**, **Difícil** ou **Acertei**.
+- Importar ou exportar um backup JSON.
+
+Os dados ficam no armazenamento local do navegador. Para transferi-los entre dispositivos, exporte um backup e importe-o no outro navegador.
+
+> O MedStudy é uma ferramenta de organização. O usuário é responsável pelos materiais que adiciona. Não substitui fontes médicas confiáveis nem orientação profissional.
 
 ## Executar localmente
 
-Abra `index.html` no navegador. Não há dependências de instalação nem processo de build.
+Abra `index.html` no navegador. Os arquivos são estáticos, sem dependências de instalação ou comando de build. A página de flashcards está em `estudar.html`.
 
 ## Render
 
-O Static Site publica automaticamente os commits da branch `main`. O diretório publicado é `.` e não há comando de build.
+O site está conectado à branch `main`. O diretório publicado é `.` e o comando de build fica vazio.
