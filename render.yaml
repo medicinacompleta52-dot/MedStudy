@@ -1,8 +1,6 @@
 services:
   - type: web
     name: medstudy-secure
-    domains:
-      - medstudy.com.br
     runtime: node
     plan: free
     buildCommand: npm install
@@ -20,15 +18,9 @@ services:
         sync: false
       - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false
-      - key: STRIPE_SECRET_KEY
+      - key: MP_ACCESS_TOKEN
         sync: false
-      - key: STRIPE_WEBHOOK_SECRET
-        sync: false
-      - key: STRIPE_PRICE_MONTHLY
-        sync: false
-      - key: STRIPE_PRICE_ANNUAL
-        sync: false
-      - key: STRIPE_PRICE_LIFETIME
+      - key: MP_WEBHOOK_SECRET
         sync: false
       - key: PLAN_MONTHLY_DISPLAY
         value: R$ 80/mês
