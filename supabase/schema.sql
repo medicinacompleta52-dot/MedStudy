@@ -1,15 +1,20 @@
 -- Execute no SQL Editor do projeto Supabase antes de ativar o MedStudy.
 create table if not exists public.user_subscriptions (
   user_id uuid primary key references auth.users(id) on delete cascade,
-  stripe_customer_id text unique,
-  stripe_subscription_id text unique,
-  stripe_price_id text,
+  mp_preapproval_id text unique,
+  mp_preference_id text,
+  mp_payment_id text,
+  mp_external_reference text,
   plan_id text not null default 'monthly',
   status text not null,
   current_period_end timestamptz,
   updated_at timestamptz not null default now()
 );
 
+alter table public.user_subscriptions add column if not exists mp_preapproval_id text;
+alter table public.user_subscriptions add column if not exists mp_preference_id text;
+alter table public.user_subscriptions add column if not exists mp_payment_id text;
+alter table public.user_subscriptions add column if not exists mp_external_reference text;
 alter table public.user_subscriptions add column if not exists plan_id text not null default 'monthly';
 alter table public.user_subscriptions alter column current_period_end drop not null;
 alter table public.user_subscriptions enable row level security;
