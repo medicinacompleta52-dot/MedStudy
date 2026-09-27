@@ -1,25 +1,41 @@
-# MedStudy
+# MedStudy — Catálogo de Cursos Médicos no Google Drive
 
-O MedStudy organiza áreas de estudo e flashcards pessoais. A branch `feat/private-library-subscriptions` prepara autenticação, planos pagos e uma biblioteca privada.
+O MedStudy é uma plataforma para organizar e acessar cursos médicos, videoaulas, apostilas e materiais de apoio hospedados no Google Drive, com autenticação Supabase e controle de acesso por assinatura via Mercado Pago.
 
-## Planos preparados
-- Mensal: R$ 80 por mês.
-- Anual: R$ 500 por ano.
-- Vitalício: R$ 750 em pagamento único, com acesso permanente após confirmação do pagamento.
+## Recursos Principais
+- **Catálogo Geral de Cursos**: Interface moderna para explorar cursos divididos por ciclos (Básico, Clínico, Prática/Internato, Residência).
+- **Proteção dos Links do Google Drive**: As URLs diretas das pastas no Google Drive ficam protegidas no backend. Visitantes ou usuários sem plano ativo não visualizam os links; apenas assinantes com conta confirmada e pagamento ativo recebem as URLs para abrir as pastas.
+- **Autenticação com Supabase**: Cadastro e login seguro por e-mail e senha.
+- **Assinaturas via Mercado Pago**:
+  - **Mensal**: R$ 80 / mês
+  - **Anual**: R$ 500 / ano
+  - **Vitalício**: R$ 750 (pagamento único com liberação permanente)
+- **Painel Administrativo**: Possibilidade de cadastrar novas pastas do Google Drive diretamente pela interface (`cursos.html` ou `conta.html`).
 
-## Recursos
-- Cadastro e login via Supabase Auth.
-- Checkout e confirmação de pagamentos via Mercado Pago.
-- Arquivos guardados em bucket privado Supabase Storage.
-- Upload, listagem e links temporários só após validar a conta e o direito de acesso no servidor.
-- Segredos via variáveis de ambiente, sem credenciais no código.
+## Estrutura do Projeto
+- `index.html`: Landing page moderna com apresentação dos ciclos e áreas médicas.
+- `cursos.html`, `cursos.css`, `cursos.js`: Catálogo interativo de cursos do Google Drive com busca, filtros por ciclo e proteção de acesso.
+- `conta.html`, `conta.css`, `conta.js`: Área do assinante (Login/Cadastro Supabase e Checkout Mercado Pago).
+- `courses.json`: Base de dados dos cursos com títulos, categorias, materiais e URLs do Drive.
+- `server.js`: Backend Node.js / Express com rotas de API seguras, verificação de JWT e webhooks.
+- `supabase/schema.sql`: Script de criação das tabelas no banco de dados Supabase (`user_subscriptions` e `courses`).
 
-## Configuração antes de publicar
-1. Crie um projeto Supabase e execute `supabase/schema.sql` no SQL Editor. Confirme que o bucket `medstudy-private` está privado.
-2. Crie uma aplicação em "Suas integrações" no Mercado Pago e configure credenciais de teste antes de entrar em produção.
-3. Configure no Render `MP_ACCESS_TOKEN` como segredo e `APP_URL` com a URL do Web Service.
-4. Configure o webhook do Mercado Pago para `https://SEU-SERVICO.onrender.com/api/mercadopago/webhook`, selecione eventos de pagamentos e assinaturas e salve o segredo gerado como `MP_WEBHOOK_SECRET`.
-5. Crie um Web Service Render a partir desta branch com `render.yaml`. Configure as variáveis Supabase e Mercado Pago conforme `.env.example`.
-6. Faça cadastro e valide login, pagamentos, webhooks, expiração/renovação e biblioteca privada antes de trocar o endereço em produção.
+## Como Rodar Localmente
+1. Instale as dependências:
+   ```bash
+   pnpm install # ou npm install
+   ```
+2. Inicie o servidor:
+   ```bash
+   node server.js
+   ```
+3. Acesse `http://localhost:3000`.
 
-Não publique mídia na pasta do site, no Git ou em bucket público. O site hospedado atualmente é estático; autenticação de servidor e biblioteca protegida exigem o novo Web Service configurado.
+## Configuração no Render / Produção
+Configure as seguintes variáveis de ambiente no Render (conforme `.env.example`):
+- `APP_URL`: URL da sua aplicação no Render (ex: `https://medstudy-secure.onrender.com`)
+- `SUPABASE_URL`: URL do projeto no Supabase
+- `SUPABASE_ANON_KEY`: Chave anônima pública do Supabase
+- `SUPABASE_SERVICE_ROLE_KEY`: Chave secreta de serviço do Supabase
+- `MP_ACCESS_TOKEN`: Token de acesso de produção ou teste do Mercado Pago
+- `MP_WEBHOOK_SECRET`: Segredo do Webhook do Mercado Pago

@@ -5,6 +5,8 @@ import { createClient } from "@supabase/supabase-js";
 import { createHmac, randomUUID, timingSafeEqual } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import fs from "node:fs/promises";
+import { existsSync } from "node:fs";
 
 const app = express();
 const root = path.dirname(fileURLToPath(import.meta.url));
@@ -21,6 +23,24 @@ const plans = {
   lifetime: { name: process.env.PLAN_LIFETIME_NAME || "MedStudy Vitalício", price: 750, display: process.env.PLAN_LIFETIME_DISPLAY || "R$ 750, pagamento único" }
 };
 
+const coursesFilePath = path.join(root, "courses.json");
+
+async function loadCourses() {
+  try {
+    if (existsSync(coursesFilePath)) {
+      const data = await fs.readFile(coursesFilePath, "utf-8");
+      return JSON.parse(data);
+    }
+  } catch (err) {
+    console.error("Failed to read courses.json:", err.message);
+  }
+  return [];
+}
+
+async function saveCourses(courses) {
+  await fs.writeFile(coursesFilePath, JSON.stringify(courses, null, 2), "utf-8");
+}
+
 app.set("trust proxy", 1);
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use("/api", rateLimit({ windowMs: 15 * 60 * 1000, limit: 120, standardHeaders: "draft-8", legacyHeaders: false }));
@@ -34,6 +54,7 @@ function configured(res) {
   }
   return true;
 }
+
 async function mpRequest(endpoint, options = {}) {
   const response = await fetch("https://api.mercadopago.com" + endpoint, {
     ...options,
@@ -46,10 +67,12 @@ async function mpRequest(endpoint, options = {}) {
   }
   return data;
 }
+
 function externalReferenceParts(value) {
   const match = /^medstudy:([0-9a-f-]{36}):(monthly|annual|lifetime):([0-9a-f-]{36})$/i.exec(String(value || ""));
   return match ? { userId: match[1], planId: match[2] } : null;
 }
+
 function nextPeriodEnd(planId, date = new Date()) {
   if (planId === "lifetime") return null;
   const end = new Date(date);
@@ -57,6 +80,7 @@ function nextPeriodEnd(planId, date = new Date()) {
   else if (planId === "annual") end.setFullYear(end.getFullYear() + 1);
   return end.toISOString();
 }
+
 async function findSubscriptionByExternalReference(reference) {
   const parsed = externalReferenceParts(reference);
   if (!parsed) return null;
@@ -64,18 +88,21 @@ async function findSubscriptionByExternalReference(reference) {
   if (error) throw error;
   return data ? { ...data, plan_id: parsed.planId } : null;
 }
+
 async function findByProviderId(column, value) {
   if (!value) return null;
   const { data, error } = await supabaseAdmin.from("user_subscriptions").select("user_id,plan_id").eq(column, value).maybeSingle();
   if (error) throw error;
   return data;
 }
+
 async function updateSubscription(userId, values) {
   const { error } = await supabaseAdmin.from("user_subscriptions").upsert({
     user_id: userId, updated_at: new Date().toISOString(), ...values
   }, { onConflict: "user_id" });
   if (error) throw error;
 }
+
 function validMpSignature(req, dataId) {
   const secret = process.env.MP_WEBHOOK_SECRET || "";
   const signature = String(req.headers["x-signature"] || "");
@@ -140,6 +167,7 @@ async function requireUser(req, res, next) {
     next();
   } catch { res.status(401).json({ error: "Não foi possível validar sua sessão." }); }
 }
+
 async function requireActiveSubscription(req, res, next) {
   try {
     const { data, error } = await supabaseAdmin.from("user_subscriptions").select("status,plan_id,current_period_end").eq("user_id", req.user.id).maybeSingle();
@@ -148,7 +176,7 @@ async function requireActiveSubscription(req, res, next) {
       data.plan_id === "lifetime" ||
       (data.current_period_end && new Date(data.current_period_end) > new Date())
     );
-    if (!active) return res.status(402).json({ error: "Assinatura ativa necessária para acessar o acervo.", code: "subscription_required" });
+    if (!active) return res.status(402).json({ error: "Assinatura ativa necessária para acessar o acervo de cursos.", code: "subscription_required" });
     next();
   } catch (error) {
     console.error("Subscription lookup failed:", error.message);
@@ -165,6 +193,7 @@ app.get("/api/config", (_req, res) => res.json({
     available: Boolean(process.env.MP_ACCESS_TOKEN && process.env.APP_URL)
   }]))
 }));
+
 app.get("/api/me", requireUser, async (req, res) => {
   const { data } = await supabaseAdmin.from("user_subscriptions").select("plan_id,status,current_period_end").eq("user_id", req.user.id).maybeSingle();
   const active = Boolean(data?.status === "active" && (
@@ -172,6 +201,7 @@ app.get("/api/me", requireUser, async (req, res) => {
   ));
   res.json({ user: { id: req.user.id, email: req.user.email }, subscription: data || null, active });
 });
+
 app.post("/api/checkout", requireUser, async (req, res) => {
   const planId = req.body?.plan;
   const plan = plans[planId];
@@ -206,7 +236,7 @@ app.post("/api/checkout", requireUser, async (req, res) => {
         })
       });
     }
-    const checkoutUrl = planId === "lifetime" ? checkout.init_point : checkout.init_point;
+    const checkoutUrl = checkout.init_point;
     if (!checkoutUrl) throw new Error("O Mercado Pago não retornou o link de pagamento.");
     const subscriptionFields = planId === "lifetime"
       ? { mp_preference_id: String(checkout.id) }
@@ -222,50 +252,112 @@ app.post("/api/checkout", requireUser, async (req, res) => {
     res.status(502).json({ error: error.message || "Não foi possível iniciar o checkout." });
   }
 });
-app.post("/api/files/upload-ticket", requireUser, requireActiveSubscription, async (req, res) => {
-  const name = String(req.body?.name || "").normalize("NFKC").replace(/[^\p{L}\p{N}._() -]/gu, "_").trim().slice(0, 160);
-  const contentType = String(req.body?.contentType || "").slice(0, 120);
-  if (!name || name === "." || name === "..") return res.status(400).json({ error: "Nome de arquivo inválido." });
-  if (!(contentType === "application/pdf" || contentType.startsWith("video/") || contentType.startsWith("audio/") || contentType === "application/zip")) return res.status(415).json({ error: "Envie videoaulas, áudio, PDF ou arquivo ZIP." });
-  try {
-    const key = req.user.id + "/" + randomUUID() + "-" + name;
-    const { data, error } = await supabaseAdmin.storage.from(bucket).createSignedUploadUrl(key, { upsert: false });
-    if (error) throw error;
-    res.json({ key, signedUrl: data.signedUrl, token: data.token, contentType });
-  } catch (error) {
-    console.error("Upload ticket failed:", error.message);
-    res.status(500).json({ error: "Não foi possível preparar o envio." });
+
+// ==========================================
+// CATÁLOGO DE CURSOS DO GOOGLE DRIVE
+// ==========================================
+app.get("/api/courses", async (req, res) => {
+  const token = req.headers.authorization?.match(/^Bearer (.+)$/i)?.[1];
+  let userActive = false;
+  let user = null;
+
+  if (token && supabaseAdmin) {
+    try {
+      const { data: userData, error: userError } = await supabaseAdmin.auth.getUser(token);
+      if (!userError && userData?.user) {
+        user = { id: userData.user.id, email: userData.user.email };
+        const { data: subData } = await supabaseAdmin
+          .from("user_subscriptions")
+          .select("status,plan_id,current_period_end")
+          .eq("user_id", userData.user.id)
+          .maybeSingle();
+
+        userActive = Boolean(
+          subData?.status === "active" && (
+            subData.plan_id === "lifetime" ||
+            (subData.current_period_end && new Date(subData.current_period_end) > new Date())
+          )
+        );
+      }
+    } catch (e) {
+      console.error("Error validating auth in /api/courses:", e.message);
+    }
   }
+
+  const allCourses = await loadCourses();
+
+  // Se o usuário tiver assinatura ativa, retorna com driveUrl liberado.
+  // Se não for assinante ativo, remove o driveUrl para proteger os links contra acesso não autorizado.
+  const courses = allCourses.map((course) => {
+    if (userActive) {
+      return { ...course, locked: false };
+    } else {
+      const { driveUrl, ...safeCourse } = course;
+      return { ...safeCourse, driveUrl: null, locked: true };
+    }
+  });
+
+  res.json({
+    courses,
+    userActive,
+    user
+  });
 });
-app.get("/api/files", requireUser, requireActiveSubscription, async (req, res) => {
-  try {
-    const { data, error } = await supabaseAdmin.storage.from(bucket).list(req.user.id, { limit: 1000, sortBy: { column: "name", order: "asc" } });
-    if (error) throw error;
-    res.json({ files: (data || []).filter((item) => item.name).map((item) => ({ name: item.name, key: req.user.id + "/" + item.name, size: item.metadata?.size || null, updatedAt: item.updated_at || null })) });
-  } catch (error) {
-    console.error("File listing failed:", error.message);
-    res.status(500).json({ error: "Não foi possível listar os arquivos." });
+
+app.post("/api/courses", requireUser, async (req, res) => {
+  const { title, category, area, description, driveUrl, modulesCount, materials, icon, color } = req.body || {};
+  if (!title || !driveUrl) {
+    return res.status(400).json({ error: "Título e link do Google Drive são obrigatórios." });
   }
-});
-app.post("/api/files/download-link", requireUser, requireActiveSubscription, async (req, res) => {
-  const key = String(req.body?.key || "");
-  if (!key.startsWith(req.user.id + "/") || key.includes("..")) return res.status(403).json({ error: "Arquivo fora da sua biblioteca." });
-  try {
-    const { data, error } = await supabaseAdmin.storage.from(bucket).createSignedUrl(key, 120);
-    if (error) throw error;
-    res.json({ url: data.signedUrl });
-  } catch (error) {
-    console.error("Signed download failed:", error.message);
-    res.status(404).json({ error: "Não foi possível abrir este arquivo." });
+
+  const allCourses = await loadCourses();
+  const slug = String(title).toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 40) || randomUUID();
+
+  const newCourse = {
+    id: slug,
+    title: String(title).trim().slice(0, 120),
+    category: String(category || "Ciclo Clínico").trim().slice(0, 50),
+    area: String(area || "Medicina Geral").trim().slice(0, 50),
+    description: String(description || "").trim().slice(0, 500),
+    driveUrl: String(driveUrl).trim().slice(0, 500),
+    modulesCount: Number(modulesCount) || 1,
+    materials: String(materials || "Videoaulas + Materiais no Google Drive").trim().slice(0, 120),
+    icon: String(icon || "◈").slice(0, 4),
+    color: String(color || "red").slice(0, 20)
+  };
+
+  const existingIndex = allCourses.findIndex((c) => c.id === slug);
+  if (existingIndex >= 0) {
+    allCourses[existingIndex] = newCourse;
+  } else {
+    allCourses.unshift(newCourse);
   }
+
+  await saveCourses(allCourses);
+  res.json({ ok: true, course: newCourse });
 });
-app.delete("/api/files", requireUser, requireActiveSubscription, async (req, res) => {
-  const key = String(req.body?.key || "");
-  if (!key.startsWith(req.user.id + "/") || key.includes("..")) return res.status(403).json({ error: "Arquivo fora da sua biblioteca." });
-  const { error } = await supabaseAdmin.storage.from(bucket).remove([key]);
-  if (error) return res.status(500).json({ error: "Não foi possível remover o arquivo." });
+
+app.delete("/api/courses/:id", requireUser, async (req, res) => {
+  const courseId = req.params.id;
+  const allCourses = await loadCourses();
+  const filtered = allCourses.filter((c) => c.id !== courseId);
+  if (filtered.length === allCourses.length) {
+    return res.status(404).json({ error: "Curso não encontrado." });
+  }
+  await saveCourses(filtered);
   res.json({ ok: true });
 });
+
+// Redirecionamento de rotas legadas de flashcards
+app.get("/estudar.html", (_req, res) => res.redirect(301, "/cursos.html"));
+
+// Arquivos estáticos
 app.use(express.static(root, { dotfiles: "deny", index: "index.html" }));
 app.get("*path", (_req, res) => res.sendFile(path.join(root, "index.html")));
-app.listen(port, () => console.log("MedStudy listening on " + port));
+
+app.listen(port, () => console.log("MedStudy listening on port " + port));

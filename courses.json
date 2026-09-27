@@ -1,0 +1,122 @@
+[
+  {
+    "id": "cardio-ecg",
+    "title": "Cardiologia Clínica & ECG na Prática",
+    "category": "Ciclo Clínico",
+    "area": "Cardiologia",
+    "description": "Interpretação sistemática de traçados de ECG, arritmias cardíacas, síndrome coronariana aguda (SCA), insuficiência cardíaca e valvopatias com diretrizes atualizadas.",
+    "driveUrl": "https://drive.google.com/drive/folders/1-exemplo-cardiologia-ecg",
+    "modulesCount": 42,
+    "materials": "Videoaulas + Banco de Traçados + Apostilas PDF",
+    "icon": "♡",
+    "color": "red"
+  },
+  {
+    "id": "clinica-medica",
+    "title": "Clínica Médica — Grandes Síndromes",
+    "category": "Ciclo Clínico",
+    "area": "Clínica Médica",
+    "description": "Raciocínio clínico estruturado, investigação sindrômica, conduta diagnóstica e manejo das patologias mais prevalentes da enfermaria e do ambulatório.",
+    "driveUrl": "https://drive.google.com/drive/folders/1-exemplo-clinica-medica",
+    "modulesCount": 68,
+    "materials": "Videoaulas + Casos Clínicos + Resumos Direcionados",
+    "icon": "⌖",
+    "color": "violet"
+  },
+  {
+    "id": "anatomia-humana",
+    "title": "Anatomia Humana Sistêmica & Topográfica",
+    "category": "Ciclo Básico",
+    "area": "Anatomia",
+    "description": "Dissecção guiada em alta resolução, neuroanatomia prática, correlações clínicas e acervo completo dos sistemas musculoesquelético, vascular e visceral.",
+    "driveUrl": "https://drive.google.com/drive/folders/1-exemplo-anatomia-humana",
+    "modulesCount": 54,
+    "materials": "Videoaulas + Atlas 3D Digital + Pranchas Anatômicas",
+    "icon": "◈",
+    "color": "sage"
+  },
+  {
+    "id": "fisiologia-fisiopatologia",
+    "title": "Fisiologia Humana & Fisiopatologia",
+    "category": "Ciclo Básico",
+    "area": "Fisiologia",
+    "description": "Mecanismos essenciais de transporte, fisiologia renal, cardiovascular, respiratória e endócrina integradas à gênese dos estados patológicos.",
+    "driveUrl": "https://drive.google.com/drive/folders/1-exemplo-fisiologia",
+    "modulesCount": 38,
+    "materials": "Videoaulas + Esquemas Fisiológicos + Questões Comentadas",
+    "icon": "⌁",
+    "color": "blue"
+  },
+  {
+    "id": "farmacologia-clinica",
+    "title": "Farmacologia Médica Aplicada",
+    "category": "Ciclo Básico",
+    "area": "Farmacologia",
+    "description": "Classes medicamentosas indispensáveis, farmacocinética, farmacodinâmica, antimicrobianos, anti-hipertensivos, psicofármacos e ajuste de dose na prática médica.",
+    "driveUrl": "https://drive.google.com/drive/folders/1-exemplo-farmacologia",
+    "modulesCount": 35,
+    "materials": "Videoaulas + Tabelas Terapêuticas + Guia de Prescrição",
+    "icon": "✳",
+    "color": "amber"
+  },
+  {
+    "id": "emergencia-trauma",
+    "title": "Medicina de Emergência, Trauma & UTI",
+    "category": "Prática & Internato",
+    "area": "Emergência",
+    "description": "Protocolos ACLS/ATLS, abordagem de PCR, intubação orotraqueal e via aérea difícil, choque, sepse, ventilação mecânica e conduta no plantão de urgência.",
+    "driveUrl": "https://drive.google.com/drive/folders/1-exemplo-emergencia",
+    "modulesCount": 50,
+    "materials": "Videoaulas + Fluxogramas de Plantão + Protocolos de Conduta",
+    "icon": "＋",
+    "color": "orange"
+  },
+  {
+    "id": "pediatria-puericultura",
+    "title": "Pediatria Integral & Puericultura",
+    "category": "Ciclo Clínico",
+    "area": "Pediatria",
+    "description": "Marcos do desenvolvimento e crescimento, calendário vacinal, doenças exantemáticas, infecções respiratórias da infância, desidratação e emergências pediátricas.",
+    "driveUrl": "https://drive.google.com/drive/folders/1-exemplo-pediatria",
+    "modulesCount": 46,
+    "materials": "Videoaulas + Caderno de Doses Pediátricas + Casos Reais",
+    "icon": "✿",
+    "color": "pink"
+  },
+  {
+    "id": "ginecologia-obstetricia",
+    "title": "Ginecologia & Obstetrícia",
+    "category": "Ciclo Clínico",
+    "area": "Ginecologia e Obstetrícia",
+    "description": "Pré-natal sistemático, condução e mecânica do parto, hemorragias do 1º e 3º trimestres, rastreio oncoginecológico, anticoncepção e sangramento uterino anormal.",
+    "driveUrl": "https://drive.google.com/drive/folders/1-exemplo-go",
+    "modulesCount": 44,
+    "materials": "Videoaulas + Guias de Conduta + Diretrizes Febrasgo",
+    "icon": "◉",
+    "color": "teal"
+  },
+  {
+    "id": "cirurgia-geral",
+    "title": "Cirurgia Geral & Técnica Operatória",
+    "category": "Prática & Internato",
+    "area": "Cirurgia",
+    "description": "Abdome agudo cirúrgico, propedêutica, cuidados pré e pós-operatórios, cicatrização, técnica de fios e suturas, cirurgia do trauma e laparoscopia.",
+    "driveUrl": "https://drive.google.com/drive/folders/1-exemplo-cirurgia",
+    "modulesCount": 36,
+    "materials": "Videoaulas + Demonstrações Cirúrgicas + Manuais Práticos",
+    "icon": "⚔",
+    "color": "blue"
+  },
+  {
+    "id": "neurologia-clinica",
+    "title": "Neurologia & Neuroanatomia Clínica",
+    "category": "Ciclo Clínico",
+    "area": "Neurologia",
+    "description": "Exame neurológico detalhado do comatoso e acordado, diagnóstico topográfico, AVC isquêmico/hemorrágico agudo, cefaleias, epilepsia e demências.",
+    "driveUrl": "https://drive.google.com/drive/folders/1-exemplo-neurologia",
+    "modulesCount": 32,
+    "materials": "Videoaulas + Casos Topográficos + Guia Rápido de Exame",
+    "icon": "⚡",
+    "color": "violet"
+  }
+]

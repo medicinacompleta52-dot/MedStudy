@@ -1,35 +1,158 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0b0d0d"><meta name="description" content="Entre no MedStudy para gerenciar seu plano e sua biblioteca privada.">
-  <title>Conta e biblioteca — MedStudy</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0d0d">
+  <meta name="description" content="Entre no MedStudy para gerenciar sua assinatura e acessar todos os cursos médicos no Google Drive.">
+  <title>Área do Assinante — MedStudy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="conta.css"><script src="conta.js" defer></script>
+  <link rel="stylesheet" href="conta.css">
+  <script src="conta.js" defer></script>
 </head>
 <body>
-<header><a class="brand" href="index.html"><b>M</b> med<span>study</span></a><a href="index.html">← Início</a></header>
-<main>
-  <section class="intro"><p class="eyebrow">ÁREA PRIVADA</p><h1>Seu estudo, protegido.</h1><p>Entre para gerenciar sua assinatura e acessar sua biblioteca privada.</p></section>
-  <div class="notice" id="notice" role="status" hidden></div>
-  <section class="panel" id="auth-panel">
-    <div class="tabs"><button class="tab active" data-mode="login">Entrar</button><button class="tab" data-mode="signup">Criar conta</button></div>
-    <form id="auth-form"><label for="email">E-mail</label><input id="email" type="email" autocomplete="email" required maxlength="254">
-      <label for="password">Senha</label><input id="password" type="password" autocomplete="current-password" minlength="8" required>
-      <button class="primary" id="auth-submit">Entrar</button></form>
-    <p class="muted">Use uma senha forte e exclusiva. A confirmação de e-mail pode ser exigida pelo provedor.</p>
-  </section>
-  <section class="panel" id="account-panel" hidden>
-    <div class="account-top"><div><p class="eyebrow">CONTA</p><h2 id="account-email"></h2></div><button class="secondary" id="logout">Sair</button></div>
-    <div class="status" id="subscription-status"></div>
-    <div class="plans"><article><p class="eyebrow">ACESSO MENSAL</p><h3 id="monthly-name">MedStudy Mensal</h3><p id="monthly-price"></p><button class="primary checkout" data-plan="monthly">Assinar mensal</button></article>
-    <article><p class="eyebrow">ACESSO ANUAL</p><h3 id="annual-name">MedStudy Anual</h3><p id="annual-price"></p><button class="primary checkout" data-plan="annual">Assinar anual</button></article>
-    <article><p class="eyebrow">PAGAMENTO ÚNICO</p><h3 id="lifetime-name">MedStudy Vitalício</h3><p id="lifetime-price"></p><button class="primary checkout" data-plan="lifetime">Acesso vitalício</button></article></div>
-    <div class="library-head"><div><p class="eyebrow">ARQUIVOS PRIVADOS</p><h2>Minha biblioteca</h2><p class="muted">Somente sua conta com assinatura ativa pode solicitar links temporários para esses arquivos.</p></div>
-      <label class="upload secondary">Adicionar arquivos<input id="file-input" type="file" multiple accept="video/*,application/pdf,audio/*"></label></div>
-    <div id="library-lock" class="lock">Ative um plano para liberar uploads e acesso à biblioteca.</div>
-    <div id="file-list" class="file-list"></div>
-  </section>
-  <p class="fineprint">Pagamentos processados pelo Mercado Pago. Arquivos ficam em armazenamento privado; links de acesso expiram rapidamente. A configuração dos provedores e valores dos planos é necessária antes de aceitar pagamentos.</p>
-</main>
-</body></html>
+  <header>
+    <a class="brand" href="index.html">
+      <b>M</b> med<span>study</span>
+    </a>
+    <div style="display:flex; gap:16px; align-items:center;">
+      <a href="cursos.html">Catálogo de Cursos</a>
+      <a href="index.html">← Início</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="intro">
+      <p class="eyebrow">ÁREA DO ASSINANTE</p>
+      <h1>Seus cursos, protegidos.</h1>
+      <p>Entre com sua conta Supabase para gerenciar seu plano e desbloquear todos os cursos médicos no Google Drive.</p>
+    </section>
+
+    <div class="notice" id="notice" role="status" hidden></div>
+
+    <!-- PAINEL DE AUTENTICAÇÃO SUPABASE -->
+    <section class="panel" id="auth-panel">
+      <div class="tabs">
+        <button class="tab active" data-mode="login">Entrar</button>
+        <button class="tab" data-mode="signup">Criar conta</button>
+      </div>
+      
+      <form id="auth-form">
+        <label for="email">E-mail</label>
+        <input id="email" type="email" autocomplete="email" required maxlength="254" placeholder="seu@email.com">
+        
+        <label for="password">Senha</label>
+        <input id="password" type="password" autocomplete="current-password" minlength="8" required placeholder="Sua senha secreta">
+        
+        <button class="primary" id="auth-submit">Entrar no MedStudy</button>
+      </form>
+      
+      <p class="muted">Autenticação segura via Supabase. Utilize sua conta cadastrada para acessar seus benefícios de assinante.</p>
+    </section>
+
+    <!-- PAINEL DA CONTA / ASSINATURA MERCADO PAGO -->
+    <section class="panel" id="account-panel" hidden>
+      <div class="account-top">
+        <div>
+          <p class="eyebrow">CONTA CONECTADA</p>
+          <h2 id="account-email"></h2>
+        </div>
+        <button class="secondary" id="logout">Sair da Conta</button>
+      </div>
+
+      <div class="status" id="subscription-status"></div>
+
+      <!-- BOTÃO DE ATALHO DIRETO PARA O CATÁLOGO -->
+      <div class="catalog-shortcut" id="catalog-shortcut">
+        <div>
+          <strong style="display:block; font-size:15px; color:#fff; margin-bottom:4px;">Catálogo de Cursos do Drive</strong>
+          <span style="font-size:12px; color:var(--muted);">Acesse agora todas as pastas, videoaulas e apostilas vinculadas.</span>
+        </div>
+        <a href="cursos.html" class="primary" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+          Abrir Catálogo ↗
+        </a>
+      </div>
+
+      <div class="plans-title" style="margin: 28px 0 14px;">
+        <p class="eyebrow">PLANOS DISPONÍVEIS</p>
+        <h3 style="margin:0; font-size:18px;">Escolha o plano ideal para seus estudos:</h3>
+      </div>
+
+      <div class="plans">
+        <article>
+          <p class="eyebrow">MENSAL</p>
+          <h3 id="monthly-name">MedStudy Mensal</h3>
+          <p id="monthly-price" class="plan-price-tag">R$ 80/mês</p>
+          <p class="plan-desc">Acesso contínuo com renovação mensal automática. Cancele quando quiser.</p>
+          <button class="primary checkout" data-plan="monthly">Assinar Mensal</button>
+        </article>
+
+        <article class="featured-plan">
+          <span class="badge-featured">MAIS POPULAR</span>
+          <p class="eyebrow">ANUAL</p>
+          <h3 id="annual-name">MedStudy Anual</h3>
+          <p id="annual-price" class="plan-price-tag">R$ 500/ano</p>
+          <p class="plan-desc">Economize quase 50% no ano letivo. Acesso irrestrito a todos os ciclos.</p>
+          <button class="primary checkout" data-plan="annual">Assinar Anual</button>
+        </article>
+
+        <article>
+          <p class="eyebrow">VITALÍCIO</p>
+          <h3 id="lifetime-name">MedStudy Vitalício</h3>
+          <p id="lifetime-price" class="plan-price-tag">R$ 750, único</p>
+          <p class="plan-desc">Acesso permanente durante toda a graduação e residência médica.</p>
+          <button class="primary checkout" data-plan="lifetime">Acesso Vitalício</button>
+        </article>
+      </div>
+
+      <!-- SEÇÃO PARA CADASTRAR OU GERENCIAR CURSOS DO DRIVE -->
+      <div class="library-head" style="margin-top:36px;">
+        <div>
+          <p class="eyebrow">GERENCIADOR DE CURSOS DO DRIVE</p>
+          <h2>Subir Novo Curso</h2>
+          <p class="muted">Adicione pastas do Google Drive para que apareçam automaticamente no Catálogo.</p>
+        </div>
+        <a href="cursos.html" class="secondary" style="text-decoration:none; padding:10px 14px; font-weight:700;">
+          Ir ao Catálogo
+        </a>
+      </div>
+
+      <form id="add-course-account-form" style="margin-top:16px; display:grid; gap:12px; background:#161a19; padding:20px; border-radius:10px; border:1px solid #272d2b;">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div>
+            <label for="acc-course-title" style="font-size:11px; font-weight:700; color:#c7d1cc;">Título do Curso</label>
+            <input type="text" id="acc-course-title" placeholder="Ex: Farmacologia Clínica" required style="width:100%; margin-top:4px;">
+          </div>
+          <div>
+            <label for="acc-course-category" style="font-size:11px; font-weight:700; color:#c7d1cc;">Ciclo</label>
+            <select id="acc-course-category" style="width:100%; margin-top:4px; height:42px; background:#0d0f0f; border:1px solid #282f2c; color:#fff; border-radius:8px; padding:0 10px;">
+              <option value="Ciclo Clínico">Ciclo Clínico</option>
+              <option value="Ciclo Básico">Ciclo Básico</option>
+              <option value="Prática & Internato">Prática & Internato</option>
+              <option value="Residência & Revalida">Residência & Revalida</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label for="acc-course-url" style="font-size:11px; font-weight:700; color:#c7d1cc;">Link da Pasta do Google Drive</label>
+          <input type="url" id="acc-course-url" placeholder="https://drive.google.com/drive/folders/..." required style="width:100%; margin-top:4px;">
+        </div>
+
+        <div>
+          <label for="acc-course-desc" style="font-size:11px; font-weight:700; color:#c7d1cc;">Descrição do Curso</label>
+          <input type="text" id="acc-course-desc" placeholder="Resumo das videoaulas e apostilas..." style="width:100%; margin-top:4px;">
+        </div>
+
+        <button type="submit" class="primary" style="margin-top:8px; align-self:start;">Adicionar ao Catálogo</button>
+      </form>
+    </section>
+
+    <p class="fineprint">
+      Pagamentos processados com segurança pelo Mercado Pago. Liberação automática de acesso após confirmação do checkout. Autenticação fornecida pelo Supabase.
+    </p>
+  </main>
+</body>
+</html>
