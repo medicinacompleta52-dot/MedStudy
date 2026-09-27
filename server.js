@@ -84,7 +84,7 @@ app.get("/api/config", (_req, res) => res.json({
 }));
 app.get("/api/me", requireUser, async (req, res) => {
   const { data } = await supabaseAdmin.from("user_subscriptions").select("status,current_period_end").eq("user_id", req.user.id).maybeSingle();
-  const active = Boolean(data && ["active", "trialing"].includes(data.status) && new Date(data.current_period_end) > new Date());
+  const active = Boolean(data && ["active", "trialing"].includes(data.status) && (!data.current_period_end || new Date(data.current_period_end) > new Date()));
   res.json({ user: { id: req.user.id, email: req.user.email }, subscription: data || null, active });
 });
 app.post("/api/checkout", requireUser, async (req, res) => {

@@ -18,7 +18,7 @@ async function refresh() {
     account = await api("/api/me");
     $("#auth-panel").hidden = true; $("#account-panel").hidden = false;
     $("#account-email").textContent = account.user.email;
-    $("#subscription-status").textContent = account.active ? "Assinatura ativa até " + new Date(account.subscription.current_period_end).toLocaleDateString("pt-BR") : "Sem assinatura ativa.";
+    $("#subscription-status").textContent = !account.active ? "Sem assinatura ativa." : account.subscription.plan_id === "lifetime" ? "Acesso vitalício ativo." : "Assinatura ativa até " + new Date(account.subscription.current_period_end).toLocaleDateString("pt-BR");
     $("#library-lock").hidden = account.active;
     document.querySelectorAll(".checkout").forEach((button) => button.hidden = account.active);
     if (account.active) await loadFiles();

@@ -1,19 +1,24 @@
 # MedStudy
 
-O MedStudy organiza áreas de estudo e flashcards pessoais. A branch `feat/private-library-subscriptions` prepara uma versão com backend para autenticação, assinatura e biblioteca privada.
+O MedStudy organiza áreas de estudo e flashcards pessoais. A branch `feat/private-library-subscriptions` prepara autenticação, planos pagos e uma biblioteca privada.
 
-## Recursos preparados
-- Cadastro e login de conta por Supabase Auth.
-- Planos mensal e anual com checkout e sincronização por webhook do Stripe.
-- Biblioteca em bucket privado Supabase Storage.
-- Uploads, listagem e links assinados temporários liberados pelo servidor apenas para a própria conta com assinatura ativa.
-- Segredos configurados por variáveis de ambiente, sem credenciais no código.
+## Planos preparados
+- Mensal: R$ 80 por mês.
+- Anual: R$ 500 por ano.
+- Vitalício: R$ 750 em pagamento único, com acesso permanente após confirmação do pagamento.
 
-## Configuração necessária antes de publicar
+## Recursos
+- Cadastro e login via Supabase Auth.
+- Checkout Stripe e atualização de assinatura/acesso vitalício por webhook.
+- Arquivos guardados em bucket privado Supabase Storage.
+- Upload, listagem e links temporários só após validar a conta e o direito de acesso no servidor.
+- Segredos via variáveis de ambiente, sem credenciais no código.
+
+## Configuração antes de publicar
 1. Crie um projeto Supabase e execute `supabase/schema.sql` no SQL Editor. Confirme que o bucket `medstudy-private` está privado.
-2. No Stripe, configure os preços mensal e anual e copie seus Price IDs.
-3. Crie um endpoint Stripe para `https://SEU-SERVICO.onrender.com/api/stripe/webhook`, assinando `customer.subscription.created`, `customer.subscription.updated` e `customer.subscription.deleted`.
-4. Crie um Web Service Render a partir desta branch usando `render.yaml`. Configure as variáveis de ambiente conforme `.env.example`, incluindo chaves Supabase/Stripe e valores reais de apresentação dos planos.
-5. Abra `/conta.html` no serviço Render e faça um cadastro de teste. Só depois de verificar fluxo de pagamento, webhook e acesso privado faça a troca do endereço em produção.
+2. No Stripe, cadastre três preços em BRL: recorrente mensal R$ 80, recorrente anual R$ 500 e pagamento único R$ 750. Informe cada Price ID ao serviço.
+3. Configure um endpoint Stripe em `https://SEU-SERVICO.onrender.com/api/stripe/webhook`, com os eventos `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted` e `checkout.session.completed`.
+4. Crie um Web Service Render a partir desta branch com `render.yaml`. Configure as variáveis conforme `.env.example`, incluindo as chaves Supabase/Stripe, URL pública e Price IDs.
+5. Faça cadastro e valide login, pagamentos, webhooks, expiração/renovação e biblioteca privada antes de trocar o endereço em produção.
 
-Não publique mídia na pasta do site, em Git, nem em bucket público: arquivos privados devem entrar pela biblioteca autenticada. O navegador antigo do site mantém flashcards em armazenamento local; a nova biblioteca é armazenada no Supabase.
+Não publique mídia na pasta do site, no Git ou em bucket público. O site hospedado atualmente é estático; autenticação de servidor e biblioteca protegida exigem o novo Web Service configurado.

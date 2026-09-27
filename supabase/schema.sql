@@ -4,11 +4,14 @@ create table if not exists public.user_subscriptions (
   stripe_customer_id text unique,
   stripe_subscription_id text unique,
   stripe_price_id text,
+  plan_id text not null default 'monthly',
   status text not null,
-  current_period_end timestamptz not null,
+  current_period_end timestamptz,
   updated_at timestamptz not null default now()
 );
 
+alter table public.user_subscriptions add column if not exists plan_id text not null default 'monthly';
+alter table public.user_subscriptions alter column current_period_end drop not null;
 alter table public.user_subscriptions enable row level security;
 revoke all on public.user_subscriptions from anon, authenticated;
 grant select on public.user_subscriptions to authenticated;

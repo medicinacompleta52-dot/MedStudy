@@ -25,7 +25,11 @@ services:
         sync: false
       - key: STRIPE_PRICE_ANNUAL
         sync: false
+      - key: STRIPE_PRICE_LIFETIME
+        sync: false
       - key: PLAN_MONTHLY_DISPLAY
-        value: Configure no Render
+        value: R$ 80/mês
       - key: PLAN_ANNUAL_DISPLAY
-        value: Configure no Render
+        value: R$ 500/ano
+      - key: PLAN_LIFETIME_DISPLAY
+        value: R$ 750, pagamento único
