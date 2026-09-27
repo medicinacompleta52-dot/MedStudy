@@ -2,6 +2,7 @@ services:
   - type: web
     name: medstudy-secure
     runtime: node
+    plan: free
     buildCommand: npm install
     startCommand: npm start
     healthCheckPath: /api/config
