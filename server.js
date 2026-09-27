@@ -92,7 +92,7 @@ function validMpSignature(req, dataId) {
 
 app.post("/api/mercadopago/webhook", async (req, res) => {
   if (!supabaseAdmin || !process.env.MP_ACCESS_TOKEN || !process.env.MP_WEBHOOK_SECRET) return res.status(503).send("Webhook is not configured.");
-  const topic = String(req.query.type || req.body?.type || "");
+  const topic = String(req.query.type || req.query.topic || req.body?.type || "");
   const dataId = String(req.query["data.id"] || req.body?.data?.id || "");
   if (!validMpSignature(req, dataId)) return res.status(401).send("Invalid signature.");
   try {
@@ -115,7 +115,7 @@ app.post("/api/mercadopago/webhook", async (req, res) => {
       const record = await findSubscriptionByExternalReference(subscription.external_reference)
         || await findByProviderId("mp_preapproval_id", subscription.id);
       if (record) {
-        const status = subscription.status === "cancelled" ? "inactive" : "pending";
+        const status = subscription.status === "cancelled" ? "inactive" : record.status;
         await updateSubscription(record.user_id, {
           status, mp_preapproval_id: String(subscription.id),
           mp_external_reference: subscription.external_reference || undefined
