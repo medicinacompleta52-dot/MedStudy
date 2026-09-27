@@ -77,13 +77,14 @@ $("#file-input").addEventListener("change", async (event) => {
 (async () => {
   try {
     config = await api("/api/config");
-    for (const id of ["monthly", "annual"]) {
+    for (const id of ["monthly", "annual", "lifetime"]) {
       const plan = config.plans[id];
       $("#" + id + "-name").textContent = plan.name; $("#" + id + "-price").textContent = plan.price;
       document.querySelector('[data-plan="' + id + '"]').disabled = !plan.available;
     }
-    if (new URLSearchParams(location.search).get("checkout") === "success") message("Pagamento recebido. A assinatura aparecerá após a confirmação do Stripe.");
-    if (new URLSearchParams(location.search).get("checkout") === "cancel") message("Checkout cancelado.");
+    const checkoutStatus = new URLSearchParams(location.search).get("checkout");
+    if (checkoutStatus === "return") message("Voltando do Mercado Pago. O acesso será liberado após confirmação segura do pagamento.");
+    if (checkoutStatus === "cancel") message("Checkout cancelado.");
     await refresh();
   } catch (err) { message(err.message, true); }
 })();
