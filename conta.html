@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0d0d"><meta name="description" content="Entre no MedStudy para gerenciar seu plano e sua biblioteca privada.">
+  <title>Conta e biblioteca — MedStudy</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="conta.css"><script src="conta.js" defer></script>
+</head>
+<body>
+<header><a class="brand" href="index.html"><b>M</b> med<span>study</span></a><a href="index.html">← Início</a></header>
+<main>
+  <section class="intro"><p class="eyebrow">ÁREA PRIVADA</p><h1>Seu estudo, protegido.</h1><p>Entre para gerenciar sua assinatura e acessar sua biblioteca privada.</p></section>
+  <div class="notice" id="notice" role="status" hidden></div>
+  <section class="panel" id="auth-panel">
+    <div class="tabs"><button class="tab active" data-mode="login">Entrar</button><button class="tab" data-mode="signup">Criar conta</button></div>
+    <form id="auth-form"><label for="email">E-mail</label><input id="email" type="email" autocomplete="email" required maxlength="254">
+      <label for="password">Senha</label><input id="password" type="password" autocomplete="current-password" minlength="8" required>
+      <button class="primary" id="auth-submit">Entrar</button></form>
+    <p class="muted">Use uma senha forte e exclusiva. A confirmação de e-mail pode ser exigida pelo provedor.</p>
+  </section>
+  <section class="panel" id="account-panel" hidden>
+    <div class="account-top"><div><p class="eyebrow">CONTA</p><h2 id="account-email"></h2></div><button class="secondary" id="logout">Sair</button></div>
+    <div class="status" id="subscription-status"></div>
+    <div class="plans"><article><p class="eyebrow">ACESSO MENSAL</p><h3 id="monthly-name">MedStudy Mensal</h3><p id="monthly-price"></p><button class="primary checkout" data-plan="monthly">Assinar mensal</button></article>
+    <article><p class="eyebrow">ACESSO ANUAL</p><h3 id="annual-name">MedStudy Anual</h3><p id="annual-price"></p><button class="primary checkout" data-plan="annual">Assinar anual</button></article></div>
+    <div class="library-head"><div><p class="eyebrow">ARQUIVOS PRIVADOS</p><h2>Minha biblioteca</h2><p class="muted">Somente sua conta com assinatura ativa pode solicitar links temporários para esses arquivos.</p></div>
+      <label class="upload secondary">Adicionar arquivos<input id="file-input" type="file" multiple accept="video/*,application/pdf,audio/*"></label></div>
+    <div id="library-lock" class="lock">Ative um plano para liberar uploads e acesso à biblioteca.</div>
+    <div id="file-list" class="file-list"></div>
+  </section>
+  <p class="fineprint">Pagamentos processados pelo Stripe. Arquivos ficam em armazenamento privado; links de acesso expiram rapidamente. A configuração dos provedores e valores dos planos é necessária antes de aceitar pagamentos.</p>
+</main>
+</body></html>
