@@ -407,7 +407,8 @@ async function deleteCourse(id, title) {
 // ==========================================
 async function loadSiteConfig() {
   try {
-    const config = await adminApi("/api/site-config");
+    const config = await adminApi("/api/admin/site-config");
+    if ($("#cfg-admin-email")) $("#cfg-admin-email").value = config.adminEmail || "admin@medstudy.com";
     if ($("#cfg-whatsapp")) $("#cfg-whatsapp").value = config.whatsappNumber || "5554996318816";
     if ($("#cfg-pix")) $("#cfg-pix").value = config.pixKey || "54996318816";
     if ($("#cfg-mp-token")) $("#cfg-mp-token").value = config.mpAccessToken || "";
@@ -416,6 +417,45 @@ async function loadSiteConfig() {
     if ($("#cfg-mp-link-annual")) $("#cfg-mp-link-annual").value = config.mpLinkAnnual || "";
     if ($("#cfg-mp-link-lifetime")) $("#cfg-mp-link-lifetime").value = config.mpLinkLifetime || "";
   } catch (e) {}
+}
+
+function setupCredentialsForm() {
+  const form = $("#admin-credentials-form");
+  const statusMsg = $("#admin-credentials-status");
+  if (!form) return;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const newEmail = $("#cfg-admin-email")?.value.trim().toLowerCase();
+    const newPassword = $("#cfg-admin-password")?.value.trim();
+    const btn = $("#btn-save-credentials");
+
+    if (!newPassword || newPassword.length < 6) {
+      alert("A nova senha deve ter no mínimo 6 caracteres.");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "Salvando nova senha...";
+
+    try {
+      const res = await adminApi("/api/admin/change-credentials", {
+        method: "POST",
+        body: JSON.stringify({ newEmail, newPassword })
+      });
+      statusMsg.className = "drive-status-msg success";
+      statusMsg.textContent = `✓ ${res.message || "Credenciais salvas com sucesso!"}`;
+      statusMsg.hidden = false;
+      if ($("#admin-user-display")) $("#admin-user-display").textContent = res.email || newEmail;
+      $("#cfg-admin-password").value = "";
+      alert("✓ Seu novo login e senha de administrador foram salvos com sucesso!");
+    } catch (err) {
+      alert("Erro ao alterar credenciais: " + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Salvar Novo Login & Senha";
+    }
+  });
 }
 
 function setupSiteConfigForm() {
@@ -656,6 +696,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupBulkDriveUpdate();
   setupTestingTools();
   setupCourseModal();
+  setupCredentialsForm();
   setupSiteConfigForm();
   setupMpConfigForm();
   setupGrantAccessForm();

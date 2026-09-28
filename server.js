@@ -90,9 +90,14 @@ function isManualSubscriberActive(email, subscribers) {
 }
 
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@medstudy.com";
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "medstudy2026";
 const ADMIN_SECRET = process.env.ADMIN_SECRET || "medstudy-secret-admin-signature-key-2026";
+
+async function getAdminCredentials() {
+  const config = await loadSiteConfig();
+  const email = process.env.ADMIN_EMAIL || config.adminEmail || "admin@medstudy.com";
+  const password = process.env.ADMIN_PASSWORD || config.adminPassword || "medstudy2026";
+  return { email, password };
+}
 
 function createAdminToken() {
   const ts = Date.now();
@@ -572,17 +577,38 @@ app.delete("/api/courses/:id", requireUser, async (req, res) => {
 // ==========================================
 // ROTAS ADMINISTRATIVAS (ADMIN LOGIN & GESTÃO)
 // ==========================================
-app.post("/api/admin/login", (req, res) => {
+app.post("/api/admin/login", async (req, res) => {
   const { email, password } = req.body || {};
-  if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+  const creds = await getAdminCredentials();
+  if (
+    email &&
+    password &&
+    String(email).trim().toLowerCase() === creds.email.toLowerCase() &&
+    String(password).trim() === creds.password
+  ) {
     const token = createAdminToken();
-    return res.json({ ok: true, token, email: ADMIN_EMAIL, role: "admin" });
+    return res.json({ ok: true, token, email: creds.email, role: "admin" });
   }
   return res.status(401).json({ error: "Credenciais de administrador incorretas." });
 });
 
-app.get("/api/admin/verify", requireAdmin, (_req, res) => {
-  res.json({ ok: true, email: ADMIN_EMAIL, role: "admin" });
+app.post("/api/admin/change-credentials", requireAdmin, async (req, res) => {
+  const { newEmail, newPassword } = req.body || {};
+  if (!newPassword || String(newPassword).trim().length < 6) {
+    return res.status(400).json({ error: "A nova senha deve conter no mínimo 6 caracteres." });
+  }
+  const config = await loadSiteConfig();
+  if (newEmail && newEmail.includes("@")) {
+    config.adminEmail = String(newEmail).trim().toLowerCase();
+  }
+  config.adminPassword = String(newPassword).trim();
+  await saveSiteConfig(config);
+  res.json({ ok: true, message: "Login e senha de administrador atualizados com sucesso!", email: config.adminEmail });
+});
+
+app.get("/api/admin/verify", requireAdmin, async (_req, res) => {
+  const creds = await getAdminCredentials();
+  res.json({ ok: true, email: creds.email, role: "admin" });
 });
 
 app.get("/api/admin/stats", requireAdmin, async (_req, res) => {
@@ -711,6 +737,18 @@ app.post("/api/admin/drive-bulk", requireAdmin, async (req, res) => {
 // CONFIGURAÇÃO DO SITE (WHATSAPP & PIX DIRETO)
 // ==========================================
 app.get("/api/site-config", async (_req, res) => {
+  const config = await loadSiteConfig();
+  res.json({
+    whatsappNumber: config.whatsappNumber || "5554996318816",
+    pixKey: config.pixKey || "54996318816",
+    pixName: config.pixName || "MedStudy",
+    mpLinkMonthly: config.mpLinkMonthly || "",
+    mpLinkAnnual: config.mpLinkAnnual || "",
+    mpLinkLifetime: config.mpLinkLifetime || ""
+  });
+});
+
+app.get("/api/admin/site-config", requireAdmin, async (_req, res) => {
   const config = await loadSiteConfig();
   res.json(config);
 });
