@@ -108,7 +108,7 @@ function setupLoginForm() {
 // ==========================================
 async function loadDashboardData() {
   try {
-    await Promise.all([loadStats(), loadCourses()]);
+    await Promise.all([loadStats(), loadCourses(), loadSiteConfig(), loadManualSubscribers()]);
   } catch (err) {
     console.error("Erro ao carregar dados do painel:", err);
   }
@@ -398,6 +398,136 @@ async function deleteCourse(id, title) {
 }
 
 // ==========================================
+// VENDAS WHATSAPP & PIX DIRETO
+// ==========================================
+async function loadSiteConfig() {
+  try {
+    const config = await adminApi("/api/site-config");
+    if ($("#cfg-whatsapp")) $("#cfg-whatsapp").value = config.whatsappNumber || "5511999999999";
+    if ($("#cfg-pix")) $("#cfg-pix").value = config.pixKey || "contato@medstudy.com";
+  } catch (e) {}
+}
+
+function setupSiteConfigForm() {
+  const form = $("#site-config-form");
+  const statusMsg = $("#site-config-status");
+  if (!form) return;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const whatsappNumber = $("#cfg-whatsapp").value.trim();
+    const pixKey = $("#cfg-pix").value.trim();
+    const btn = $("#btn-save-site-config");
+
+    btn.disabled = true;
+    btn.textContent = "Salvando...";
+
+    try {
+      await adminApi("/api/admin/site-config", {
+        method: "POST",
+        body: JSON.stringify({ whatsappNumber, pixKey })
+      });
+      statusMsg.className = "drive-status-msg success";
+      statusMsg.textContent = "✓ Dados de WhatsApp e Chave Pix atualizados com sucesso no site!";
+      statusMsg.hidden = false;
+    } catch (err) {
+      alert("Erro ao salvar: " + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Salvar WhatsApp & Chave Pix";
+    }
+  });
+}
+
+// ==========================================
+// LIBERAÇÃO MANUAL DE ASSINATURAS (PIX)
+// ==========================================
+async function loadManualSubscribers() {
+  const tbody = $("#subscribers-table-body");
+  if (!tbody) return;
+
+  try {
+    const data = await adminApi("/api/admin/manual-subscribers");
+    const list = data.subscribers || [];
+
+    tbody.replaceChildren();
+
+    if (list.length === 0) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td colspan="6" style="text-align:center; padding:20px; color:var(--muted);">Nenhum aluno liberado manualmente ainda.</td>`;
+      tbody.appendChild(tr);
+      return;
+    }
+
+    list.forEach((sub) => {
+      const tr = document.createElement("tr");
+
+      let planLabel = "Anual (365 dias)";
+      if (sub.planId === "monthly") planLabel = "Mensal (30 dias)";
+      else if (sub.planId === "lifetime") planLabel = "Vitalício (Permanente)";
+
+      const expiryText = sub.planId === "lifetime"
+        ? "<strong style='color:#68d391;'>Sem expiração</strong>"
+        : (sub.current_period_end ? new Date(sub.current_period_end).toLocaleDateString("pt-BR") : "Indeterminado");
+
+      const grantedDate = sub.granted_at ? new Date(sub.granted_at).toLocaleDateString("pt-BR") : "Hoje";
+
+      tr.innerHTML = `
+        <td><strong>${sub.email}</strong></td>
+        <td>${planLabel}</td>
+        <td><span class="cycle-badge cycle-basico">● Ativo</span></td>
+        <td>${expiryText}</td>
+        <td>${grantedDate}</td>
+        <td style="text-align:right;">
+          <button class="btn-action-small btn-action-delete btn-revoke" data-email="${encodeURIComponent(sub.email)}">Revogar</button>
+        </td>
+      `;
+
+      tr.querySelector(".btn-revoke").addEventListener("click", async () => {
+        if (confirm(`Tem certeza que deseja revogar o acesso do aluno ${sub.email}?`)) {
+          await adminApi(`/api/admin/manual-subscribers/${encodeURIComponent(sub.email)}`, { method: "DELETE" });
+          await loadManualSubscribers();
+        }
+      });
+
+      tbody.appendChild(tr);
+    });
+  } catch (err) {
+    console.error("Erro ao carregar assinantes manuais:", err);
+  }
+}
+
+function setupGrantAccessForm() {
+  const form = $("#grant-access-form");
+  if (!form) return;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = $("#grant-email").value.trim();
+    const planId = $("#grant-plan").value;
+    const btn = $("#btn-grant-access");
+
+    btn.disabled = true;
+    btn.textContent = "Liberando...";
+
+    try {
+      await adminApi("/api/admin/manual-subscribers", {
+        method: "POST",
+        body: JSON.stringify({ email, planId })
+      });
+      alert(`✓ Acesso liberado com sucesso para o aluno: ${email}!`);
+      form.reset();
+      await loadManualSubscribers();
+    } catch (err) {
+      alert("Erro ao liberar acesso: " + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "✓ Liberar Acesso Agora";
+    }
+  });
+}
+
+// ==========================================
 // INICIALIZAÇÃO
 // ==========================================
 document.addEventListener("DOMContentLoaded", () => {
@@ -406,5 +536,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupBulkDriveUpdate();
   setupTestingTools();
   setupCourseModal();
+  setupSiteConfigForm();
+  setupGrantAccessForm();
   checkAuth();
 });

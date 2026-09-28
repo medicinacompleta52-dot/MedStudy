@@ -24,6 +24,54 @@ const plans = {
 };
 
 const coursesFilePath = path.join(root, "courses.json");
+const manualSubscribersFilePath = path.join(root, "manual-subscribers.json");
+const siteConfigFilePath = path.join(root, "site-config.json");
+
+async function loadManualSubscribers() {
+  try {
+    if (existsSync(manualSubscribersFilePath)) {
+      const data = await fs.readFile(manualSubscribersFilePath, "utf-8");
+      return JSON.parse(data);
+    }
+  } catch (err) {
+    console.error("Failed to read manual-subscribers.json:", err.message);
+  }
+  return [];
+}
+
+async function saveManualSubscribers(list) {
+  await fs.writeFile(manualSubscribersFilePath, JSON.stringify(list, null, 2), "utf-8");
+}
+
+async function loadSiteConfig() {
+  try {
+    if (existsSync(siteConfigFilePath)) {
+      const data = await fs.readFile(siteConfigFilePath, "utf-8");
+      return JSON.parse(data);
+    }
+  } catch (err) {
+    console.error("Failed to read site-config.json:", err.message);
+  }
+  return {
+    whatsappNumber: "5511999999999",
+    pixKey: "contato@medstudy.com",
+    pixName: "MedStudy Cursos Médicos"
+  };
+}
+
+async function saveSiteConfig(config) {
+  await fs.writeFile(siteConfigFilePath, JSON.stringify(config, null, 2), "utf-8");
+}
+
+function isManualSubscriberActive(email, subscribers) {
+  if (!email || !Array.isArray(subscribers)) return false;
+  const found = subscribers.find(s => s.email?.toLowerCase() === email.toLowerCase());
+  if (!found || found.status !== "active") return false;
+  if (found.planId === "lifetime") return true;
+  if (found.current_period_end && new Date(found.current_period_end) > new Date()) return true;
+  return false;
+}
+
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@medstudy.com";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "medstudy2026";
@@ -324,6 +372,12 @@ app.get("/api/courses", async (req, res) => {
     }
   }
 
+  // Verifica se o e-mail foi liberado manualmente pelo Administrador
+  const manualSubs = await loadManualSubscribers();
+  if (user?.email && !userActive) {
+    userActive = isManualSubscriberActive(user.email, manualSubs);
+  }
+
   const allCourses = await loadCourses();
 
   // Se o usuário tiver assinatura ativa ou for admin, retorna com driveUrl liberado.
@@ -371,6 +425,12 @@ app.get("/api/courses/:id", async (req, res) => {
     } catch (e) {
       console.error("Error validating auth in /api/courses/:id:", e.message);
     }
+  }
+
+  // Verifica liberação manual
+  const manualSubs = await loadManualSubscribers();
+  if (user?.email && !userActive) {
+    userActive = isManualSubscriberActive(user.email, manualSubs);
   }
 
   const allCourses = await loadCourses();
@@ -568,6 +628,78 @@ app.post("/api/admin/drive-bulk", requireAdmin, async (req, res) => {
   }));
   await saveCourses(updatedCourses);
   res.json({ ok: true, updatedCount: updatedCourses.length, newDriveUrl: newDriveUrl.trim() });
+});
+
+// ==========================================
+// CONFIGURAÇÃO DO SITE (WHATSAPP & PIX DIRETO)
+// ==========================================
+app.get("/api/site-config", async (_req, res) => {
+  const config = await loadSiteConfig();
+  res.json(config);
+});
+
+app.post("/api/admin/site-config", requireAdmin, async (req, res) => {
+  const { whatsappNumber, pixKey, pixName } = req.body || {};
+  const current = await loadSiteConfig();
+  const updated = {
+    ...current,
+    whatsappNumber: whatsappNumber !== undefined ? String(whatsappNumber).trim() : current.whatsappNumber,
+    pixKey: pixKey !== undefined ? String(pixKey).trim() : current.pixKey,
+    pixName: pixName !== undefined ? String(pixName).trim() : current.pixName
+  };
+  await saveSiteConfig(updated);
+  res.json({ ok: true, config: updated });
+});
+
+// ==========================================
+// LIBERAÇÃO MANUAL DE ALUNOS (PIX & WHATSAPP)
+// ==========================================
+app.get("/api/admin/manual-subscribers", requireAdmin, async (_req, res) => {
+  const list = await loadManualSubscribers();
+  res.json({ subscribers: list });
+});
+
+app.post("/api/admin/manual-subscribers", requireAdmin, async (req, res) => {
+  const { email, planId, durationDays } = req.body || {};
+  if (!email || !email.includes("@")) {
+    return res.status(400).json({ error: "E-mail de aluno inválido." });
+  }
+  const cleanEmail = email.trim().toLowerCase();
+  const plan = planId || "annual";
+  let periodEnd = null;
+  if (plan !== "lifetime") {
+    const days = Number(durationDays) || (plan === "monthly" ? 30 : 365);
+    const d = new Date();
+    d.setDate(d.getDate() + days);
+    periodEnd = d.toISOString();
+  }
+
+  const list = await loadManualSubscribers();
+  const existingIndex = list.findIndex(s => s.email?.toLowerCase() === cleanEmail);
+  const subscriberRecord = {
+    email: cleanEmail,
+    planId: plan,
+    status: "active",
+    current_period_end: periodEnd,
+    granted_at: new Date().toISOString()
+  };
+
+  if (existingIndex >= 0) {
+    list[existingIndex] = subscriberRecord;
+  } else {
+    list.unshift(subscriberRecord);
+  }
+
+  await saveManualSubscribers(list);
+  res.json({ ok: true, subscriber: subscriberRecord });
+});
+
+app.delete("/api/admin/manual-subscribers/:email", requireAdmin, async (req, res) => {
+  const targetEmail = decodeURIComponent(req.params.email).trim().toLowerCase();
+  const list = await loadManualSubscribers();
+  const filtered = list.filter(s => s.email?.toLowerCase() !== targetEmail);
+  await saveManualSubscribers(filtered);
+  res.json({ ok: true });
 });
 
 // Redirecionamento de rotas legadas

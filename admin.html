@@ -181,6 +181,78 @@
         </div>
       </section>
 
+      <!-- SEÇÃO: VENDAS PIX & WHATSAPP DE SUPORTE -->
+      <section class="panel-box">
+        <div class="panel-box-header">
+          <div>
+            <h3>💬 Configuração de Vendas (WhatsApp &amp; Chave Pix)</h3>
+            <p>Defina para qual número os alunos serão direcionados ao clicar em "Comprar via WhatsApp / Pix" na página de planos.</p>
+          </div>
+        </div>
+        <form id="site-config-form" class="bulk-drive-form" style="display:flex; flex-direction:column; gap:14px; align-items:stretch;">
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:12px;">
+            <div>
+              <label style="font-size:12px; font-weight:700; color:var(--muted); margin-bottom:4px; display:block;">Número do WhatsApp (com DDD, somente dígitos)</label>
+              <input type="text" id="cfg-whatsapp" placeholder="Ex: 5511999999999" value="5511999999999" required>
+            </div>
+            <div>
+              <label style="font-size:12px; font-weight:700; color:var(--muted); margin-bottom:4px; display:block;">Chave Pix Oficial para Recebimento</label>
+              <input type="text" id="cfg-pix" placeholder="Ex: seu-pix@email.com ou CPF" value="contato@medstudy.com" required>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:flex-end;">
+            <button type="submit" class="btn-primary" id="btn-save-site-config">Salvar WhatsApp &amp; Chave Pix</button>
+          </div>
+          <div class="drive-status-msg" id="site-config-status" hidden></div>
+        </form>
+      </section>
+
+      <!-- SEÇÃO: LIBERAÇÃO MANUAL DE ALUNOS (PAGAMENTOS PIX / WHATSAPP) -->
+      <section class="panel-box">
+        <div class="panel-box-header">
+          <div>
+            <h3>👥 Liberação Manual de Assinaturas (Alunos Pix)</h3>
+            <p>Quando um aluno te pagar via Pix no WhatsApp, libere o e-mail dele aqui com 1 clique para acesso imediato aos 36 cursos.</p>
+          </div>
+        </div>
+
+        <form id="grant-access-form" style="display:grid; grid-template-columns: 2fr 1fr auto; gap:12px; align-items:end; margin-bottom:20px; background:var(--panel2); padding:16px; border-radius:10px; border:1px solid var(--line);">
+          <div>
+            <label style="font-size:12px; font-weight:700; color:var(--muted); margin-bottom:4px; display:block;">E-mail do Aluno</label>
+            <input type="email" id="grant-email" placeholder="aluno@email.com" required style="width:100%;">
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:700; color:var(--muted); margin-bottom:4px; display:block;">Plano Contratado</label>
+            <select id="grant-plan" style="width:100%; height:44px; background:var(--panel); border:1px solid var(--line); color:#fff; border-radius:8px; padding:0 12px;">
+              <option value="monthly">Mensal (30 dias)</option>
+              <option value="annual" selected>Anual (365 dias)</option>
+              <option value="lifetime">Vitalício (Sem expiração)</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-primary" id="btn-grant-access" style="height:44px;">✓ Liberar Acesso Agora</button>
+        </form>
+
+        <div class="table-wrapper">
+          <table class="courses-table">
+            <thead>
+              <tr>
+                <th>E-mail do Aluno</th>
+                <th>Plano</th>
+                <th>Status</th>
+                <th>Validade / Expiração</th>
+                <th>Liberado em</th>
+                <th style="text-align:right;">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="subscribers-table-body">
+              <tr>
+                <td colspan="6" style="text-align:center; padding:20px; color:var(--muted);">Nenhum aluno liberado manualmente ainda.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       <!-- SEÇÃO: GERENCIADOR COMPLETO DE CURSOS -->
       <section class="panel-box">
         <div class="panel-box-header">

@@ -175,6 +175,21 @@ if (addCourseForm) {
     if (checkoutStatus === "cancel") {
       message("Checkout cancelado.");
     }
+
+    try {
+      const siteConfig = await api("/api/site-config");
+      if (siteConfig) {
+        if ($("#display-pix-key") && siteConfig.pixKey) {
+          $("#display-pix-key").textContent = siteConfig.pixKey;
+        }
+        if ($("#btn-whatsapp-link") && siteConfig.whatsappNumber) {
+          const cleanNum = siteConfig.whatsappNumber.replace(/\D/g, "");
+          const text = encodeURIComponent("Olá! Gostaria de assinar o MedStudy via Pix direto. Poderia me passar as instruções?");
+          $("#btn-whatsapp-link").href = `https://wa.me/${cleanNum}?text=${text}`;
+        }
+      }
+    } catch (e) {}
+
     await refresh();
   } catch (err) {
     message(err.message, true);
