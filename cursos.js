@@ -1,6 +1,8 @@
 const TOKEN_KEY = "medstudy.access-token";
+const ADMIN_TOKEN_KEY = "medstudy.admin_token";
 let allCourses = [];
 let isUserActive = false;
+let isAdmin = false;
 let currentUser = null;
 let currentFilter = "all";
 
@@ -8,7 +10,7 @@ const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => document.querySelectorAll(selector);
 
 function getToken() {
-  return localStorage.getItem(TOKEN_KEY);
+  return localStorage.getItem(TOKEN_KEY) || localStorage.getItem(ADMIN_TOKEN_KEY);
 }
 
 async function api(path, options = {}) {
@@ -33,47 +35,58 @@ function updateHeaderUser(user, active) {
   const badge = $("#user-badge");
   const link = $("#header-account-link");
 
-  if (user) {
+  if (isAdmin) {
+    badge.className = "user-badge active-sub";
+    badge.innerHTML = `<span>👑</span> Administrador (Acesso Total)`;
+    badge.style.display = "inline-flex";
+    link.innerHTML = `<span>Painel Admin</span> <span>↗</span>`;
+    link.href = "admin.html";
+  } else if (user) {
     badge.className = "user-badge " + (active ? "active-sub" : "inactive-sub");
     badge.innerHTML = active
       ? `<span>●</span> Assinante Ativo (${user.email.split("@")[0]})`
       : `<span>○</span> Plano Inativo (${user.email.split("@")[0]})`;
     badge.style.display = "inline-flex";
     link.innerHTML = `<span>Minha Conta</span> <span>↗</span>`;
+    link.href = "conta.html";
   } else {
     badge.style.display = "none";
     link.innerHTML = `<span>Entrar / Assinar</span> <span>↗</span>`;
+    link.href = "conta.html";
   }
 }
 
 function updateStatusBanner(active) {
   const banner = $("#status-banner");
-  if (active) {
+  if (active || isAdmin) {
     banner.className = "status-banner unlocked";
     banner.innerHTML = `
       <div class="status-info">
         <div class="status-icon">✓</div>
         <div class="status-text">
-          <strong>Acesso Total Liberado — Google Drive</strong>
+          <strong>Acesso Total Liberado — Google Drive &amp; Sala de Aula</strong>
           <span>Sua assinatura está ativa. Todos os links diretos para pastas e materiais em alta resolução estão disponíveis abaixo.</span>
         </div>
       </div>
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
         <a href="https://drive.google.com/drive/my-drive" target="_blank" rel="noopener noreferrer" class="status-btn" style="background: #193829; color: #67d69d; border: 1px solid #2e694c; font-weight: 700;">📂 Abrir Drive Completo ↗</a>
-        <a href="conta.html" class="status-btn" style="background: #1c3c2b; color: #8be0b2; border: 1px solid #2f694b;">Gerenciar Plano</a>
+        <a href="sala.html" class="status-btn" style="background: #1c3c2b; color: #8be0b2; border: 1px solid #2f694b;">▶ Acessar Sala de Aula</a>
       </div>
     `;
   } else {
     banner.className = "status-banner locked";
     banner.innerHTML = `
       <div class="status-info">
-        <div class="status-icon">🔒</div>
+        <div class="status-icon">⏱️</div>
         <div class="status-text">
-          <strong>Pastas do Google Drive Protegidas</strong>
-          <span>Assine o MedStudy (Mensal R$ 80, Anual R$ 500 ou Vitalício R$ 750) para desbloquear todos os cursos, videoaulas e materiais.</span>
+          <strong>Degustação Grátis de 30 Minutos Disponível!</strong>
+          <span>Experimente a sala de aula com player de vídeo HD, leitor de PDF e pastas do Drive protegidos contra cópia.</span>
         </div>
       </div>
-      <a href="conta.html" class="status-btn status-btn-primary">Desbloquear Agora ↗</a>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <a href="sala.html" class="status-btn" style="background: #ed414b; color: #fff; font-weight: 700; border: none;">⚡ Iniciar Teste Grátis (30 min) ➔</a>
+        <a href="conta.html" class="status-btn status-btn-primary">Ver Planos de Assinatura ↗</a>
+      </div>
     `;
   }
 }
@@ -86,8 +99,8 @@ function renderCourses() {
   const filtered = allCourses.filter((course) => {
     const matchesFilter =
       currentFilter === "all" ||
-      course.category.toLowerCase() === currentFilter.toLowerCase() ||
-      course.area.toLowerCase() === currentFilter.toLowerCase();
+      (course.category && course.category.toLowerCase().includes(currentFilter.toLowerCase())) ||
+      (course.area && course.area.toLowerCase().includes(currentFilter.toLowerCase()));
 
     const matchesSearch =
       !query ||
@@ -354,6 +367,7 @@ async function loadCoursesData() {
     const data = await api("/api/courses");
     allCourses = data.courses || [];
     isUserActive = Boolean(data.userActive);
+    isAdmin = Boolean(data.isAdmin);
     currentUser = data.user || null;
 
     updateHeaderUser(currentUser, isUserActive);

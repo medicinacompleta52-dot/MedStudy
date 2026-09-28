@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0d0d">
+  <meta name="description" content="Painel de Administração MedStudy — Gerenciamento do Acervo de Cursos Médicos, Pastas do Google Drive e Segurança DRM.">
+  <title>Painel de Administração — MedStudy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+  <script src="admin.js" defer></script>
+</head>
+<body>
+
+  <!-- TELA DE LOGIN DO ADMINISTRADOR -->
+  <div class="login-wrapper" id="login-view">
+    <div class="login-card">
+      <div class="login-header">
+        <a class="brand" href="index.html" aria-label="MedStudy início">
+          <span class="brand-symbol">M</span>
+          <span>med<span>study</span></span>
+        </a>
+        <span class="admin-badge">PAINEL RESTRITO</span>
+        <h1>Acesso Administrativo</h1>
+        <p>Área restrita de gestão de cursos médicos, controle de links do Google Drive e configurações do sistema.</p>
+      </div>
+
+      <div class="login-alert" id="login-alert" hidden></div>
+
+      <form id="admin-login-form" class="admin-form">
+        <div class="form-group">
+          <label for="admin-email">E-mail do Administrador</label>
+          <input type="email" id="admin-email" value="admin@medstudy.com" required placeholder="admin@medstudy.com" autocomplete="username">
+        </div>
+
+        <div class="form-group">
+          <label for="admin-password">Senha de Acesso</label>
+          <input type="password" id="admin-password" value="medstudy2026" required placeholder="••••••••••••" autocomplete="current-password">
+        </div>
+
+        <button type="submit" class="btn-submit" id="btn-login">
+          <span>Entrar no Painel</span> <span>→</span>
+        </button>
+      </form>
+
+      <div class="login-credentials-hint">
+        <strong>Credenciais padrão do sistema:</strong>
+        <code>admin@medstudy.com</code> · <code>medstudy2026</code>
+      </div>
+
+      <div class="login-back">
+        <a href="index.html">← Voltar para a Página Inicial</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- TELA PRINCIPAL DO DASHBOARD (APÓS LOGIN) -->
+  <div class="dashboard-wrapper" id="dashboard-view" hidden>
+    
+    <!-- HEADER DO DASHBOARD -->
+    <header class="admin-header">
+      <div class="header-left">
+        <a class="brand" href="index.html">
+          <span class="brand-symbol">M</span>
+          <span>med<span>study</span></span>
+        </a>
+        <span class="nav-divider">/</span>
+        <span class="admin-title-badge">👑 Painel do Administrador</span>
+      </div>
+
+      <div class="header-right">
+        <span class="admin-user-pill" id="admin-user-display">admin@medstudy.com</span>
+        <a href="sala.html" class="header-link" target="_blank">▶ Abrir Sala de Aula ↗</a>
+        <a href="cursos.html" class="header-link" target="_blank">Catálogo Público ↗</a>
+        <button class="btn-logout" id="btn-logout">Sair do Painel</button>
+      </div>
+    </header>
+
+    <main class="dashboard-main">
+      
+      <!-- TOPO COM MENSAGEM E BOAS-VINDAS -->
+      <section class="welcome-banner">
+        <div>
+          <h2>Visão Geral do Acervo &amp; Segurança</h2>
+          <p>Gerencie o currículo completo dos 36 cursos, pastas sincronizadas do Google Drive e proteção DRM anticópia.</p>
+        </div>
+        <div class="welcome-actions">
+          <button class="btn-primary" id="btn-open-create-modal">＋ Cadastrar Novo Curso</button>
+        </div>
+      </section>
+
+      <!-- CARDS DE MÉTRICAS -->
+      <section class="metrics-grid">
+        <div class="metric-card">
+          <span class="metric-icon">📚</span>
+          <div class="metric-info">
+            <span class="metric-label">Cursos no Catálogo</span>
+            <strong class="metric-value" id="stat-courses">36</strong>
+            <small>Ciclo Básico, Clínico, Prática &amp; Residência</small>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <span class="metric-icon">📑</span>
+          <div class="metric-info">
+            <span class="metric-label">Módulos Estruturados</span>
+            <strong class="metric-value" id="stat-modules">108</strong>
+            <small>Com apostilas e casos clínicos</small>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <span class="metric-icon">📺</span>
+          <div class="metric-info">
+            <span class="metric-label">Aulas Mapeadas</span>
+            <strong class="metric-value" id="stat-lessons">216+</strong>
+            <small>Videoaulas HD com player no site</small>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <span class="metric-icon">🛡️</span>
+          <div class="metric-info">
+            <span class="metric-label">Proteção DRM Ativa</span>
+            <strong class="metric-value" style="color:#68d391;">100%</strong>
+            <small>Anti-download, blackout e marca d'água</small>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <span class="metric-icon">⏱️</span>
+          <div class="metric-info">
+            <span class="metric-label">Degustação Grátis</span>
+            <strong class="metric-value" style="color:#ecc94b;">30 min</strong>
+            <small>Bloqueio automático após o término</small>
+          </div>
+        </div>
+      </section>
+
+      <!-- SEÇÃO: CONFIGURAÇÃO EM MASSA DO GOOGLE DRIVE -->
+      <section class="panel-box">
+        <div class="panel-box-header">
+          <div>
+            <h3>☁️ Link Mestre do Google Drive (Atualização em Massa)</h3>
+            <p>Altere a URL de destino de todos os 36 cursos simultaneamente com um único clique.</p>
+          </div>
+        </div>
+        <div class="bulk-drive-form">
+          <div class="drive-input-wrapper">
+            <span class="input-icon">🔗</span>
+            <input type="url" id="master-drive-url" value="https://drive.google.com/drive/my-drive" placeholder="https://drive.google.com/drive/folders/SEU_ID_AQUI">
+          </div>
+          <button class="btn-primary" id="btn-update-all-drive">Atualizar Todos os Cursos</button>
+        </div>
+        <div class="drive-status-msg" id="drive-bulk-status" hidden></div>
+      </section>
+
+      <!-- SEÇÃO: FERRAMENTAS DE TESTE & BYPASS -->
+      <section class="panel-box tools-box">
+        <div class="panel-box-header">
+          <div>
+            <h3>🛠️ Ferramentas de Teste do Administrador</h3>
+            <p>Controles para simular a experiência de um visitante ou redefinir a degustação de 30 minutos.</p>
+          </div>
+        </div>
+        <div class="tools-actions-row">
+          <button class="tool-btn" id="btn-reset-my-trial">
+            <span>🔄 Resetar Meu Teste Grátis (30 min)</span>
+            <small>Reinicia o contador de 30 minutos no navegador atual para testar o fluxo de bloqueio.</small>
+          </button>
+          <button class="tool-btn" id="btn-force-expire-trial">
+            <span>⏱️ Forçar Expiração do Teste</span>
+            <small>Zera o timer imediatamente para testar o modal de bloqueio e links de assinatura.</small>
+          </button>
+          <button class="tool-btn" id="btn-enable-admin-bypass">
+            <span>👑 Ativar Modo Administrador na Sala</span>
+            <small>Libera acesso total irrestrito e desativa bloqueios de foco na sala de aula.</small>
+          </button>
+        </div>
+      </section>
+
+      <!-- SEÇÃO: GERENCIADOR COMPLETO DE CURSOS -->
+      <section class="panel-box">
+        <div class="panel-box-header">
+          <div>
+            <h3>📚 Catálogo de Cursos Médicos (<span id="courses-counter">36</span> cursos)</h3>
+            <p>Visualize, edite URLs individuais do Drive, altere títulos ou cadastre novos módulos.</p>
+          </div>
+          <div class="table-search-row">
+            <input type="search" id="course-filter-input" placeholder="Filtrar cursos..." aria-label="Filtrar cursos">
+            <div class="cycle-filter-btns" id="cycle-filters">
+              <button class="filter-pill active" data-cycle="all">Todos</button>
+              <button class="filter-pill" data-cycle="Ciclo Básico">Básico</button>
+              <button class="filter-pill" data-cycle="Ciclo Clínico">Clínico</button>
+              <button class="filter-pill" data-cycle="Internato &amp; Prática">Internato</button>
+              <button class="filter-pill" data-cycle="Residência &amp; Revalida">Residência</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="courses-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">Ícone</th>
+                <th>Curso / Especialidade</th>
+                <th>Ciclo</th>
+                <th>Módulos</th>
+                <th>Link do Google Drive</th>
+                <th style="width: 200px; text-align: right;">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="courses-table-body">
+              <!-- Linhas geradas dinamicamente via admin.js -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- MODAL PARA ADICIONAR / EDITAR CURSO -->
+  <div class="admin-modal" id="course-modal" hidden>
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="modal-title">Cadastrar Novo Curso</h2>
+        <button class="btn-close-modal" id="btn-close-modal">×</button>
+      </div>
+
+      <form id="course-form" class="modal-form">
+        <input type="hidden" id="edit-course-id">
+
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label for="course-title">Título do Curso</label>
+            <input type="text" id="course-title" required placeholder="Ex: Cardiologia Clínica Avançada">
+          </div>
+          <div class="form-group flex-1">
+            <label for="course-category">Ciclo Curricular</label>
+            <select id="course-category">
+              <option value="Ciclo Básico">Ciclo Básico</option>
+              <option value="Ciclo Clínico" selected>Ciclo Clínico</option>
+              <option value="Internato &amp; Prática">Internato &amp; Prática</option>
+              <option value="Residência &amp; Revalida">Residência &amp; Revalida</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="course-area">Área / Especialidade</label>
+            <input type="text" id="course-area" required placeholder="Ex: Cardiologia">
+          </div>
+          <div class="form-group flex-1">
+            <label for="course-modules">Qtd. de Módulos</label>
+            <input type="number" id="course-modules" min="1" max="100" value="3">
+          </div>
+          <div class="form-group flex-1">
+            <label for="course-color">Cor do Tema</label>
+            <select id="course-color">
+              <option value="red">Vermelho (Padrão)</option>
+              <option value="blue">Azul</option>
+              <option value="green">Verde</option>
+              <option value="sage">Sálvia</option>
+              <option value="purple">Roxo</option>
+              <option value="amber">Âmbar</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="course-drive-url">URL da Pasta no Google Drive</label>
+          <input type="url" id="course-drive-url" required placeholder="https://drive.google.com/drive/folders/...">
+        </div>
+
+        <div class="form-group">
+          <label for="course-description">Descrição Curricular</label>
+          <textarea id="course-description" rows="3" placeholder="Resumo dos temas abordados, semiologia e diretrizes..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="course-materials">Materiais de Apoio Inclusos</label>
+          <input type="text" id="course-materials" placeholder="Ex: Videoaulas + Apostilas em PDF + Caderno de Condutas">
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" id="btn-cancel-modal">Cancelar</button>
+          <button type="submit" class="btn-primary" id="btn-save-course">Salvar Curso</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>

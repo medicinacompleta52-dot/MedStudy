@@ -43,7 +43,12 @@
     </div>
 
     <div class="header-right">
+      <div class="trial-pill" id="trial-pill" title="Tempo de degustação gratuita restante">
+        <span class="trial-dot"></span>
+        <span id="trial-timer">Degustação: 30:00</span>
+      </div>
       <div id="user-badge" class="user-badge"></div>
+      <a href="admin.html" class="header-btn" title="Painel de Administração">Painel Admin</a>
       <a href="conta.html" class="header-btn">Minha Assinatura</a>
       <a href="cursos.html" class="header-btn header-btn-primary">Ver Todos os Cursos ↗</a>
     </div>
@@ -179,7 +184,7 @@
               <span class="pdf-zoom-text" id="pdf-zoom-level">100%</span>
               <button class="pdf-btn" id="pdf-zoom-out" title="Reduzir zoom">-</button>
               <button class="pdf-btn" id="pdf-zoom-in" title="Aumentar zoom">+</button>
-              <button class="pdf-btn pdf-btn-download" id="pdf-download-btn">⬇ Baixar PDF Completo</button>
+              <span class="drm-download-locked" id="pdf-drm-badge">🔒 Leitura Protegida (Download Bloqueado na Degustação)</span>
             </div>
           </div>
 
@@ -290,8 +295,56 @@
           <p>Tire dúvidas sobre diretrizes e materiais de apoio com os monitores.</p>
         </div>
       </div>
-    </aside>
-
   </main>
+
+  <!-- MARCA D'ÁGUA DINÂMICA FLUTUANTE DRM -->
+  <div class="drm-floating-watermark" id="drm-watermark">
+    MEDSTUDY DRM PROTECTED · <span id="drm-user-stamp">ALUNO VISITANTE</span> · <span id="drm-time-stamp">00:00:00</span>
+  </div>
+
+  <!-- ESCUDO DE BLACKOUT: DETECÇÃO DE GRAVAÇÃO / CAPTURA DE TELA -->
+  <div class="drm-blackout-shield" id="drm-blackout-shield" hidden>
+    <div class="drm-blackout-content">
+      <div class="drm-shield-icon">🛡️</div>
+      <h2>Gravação ou Captura de Tela Detectada</h2>
+      <p>O conteúdo de videoaulas, apostilas e materiais do MedStudy é protegido por direitos autorais e tecnologia DRM.</p>
+      <p class="drm-subnotice">A reprodução foi temporariamente pausada para evitar a captura de imagem. Volte para esta janela e clique no botão abaixo para continuar assistindo.</p>
+      <button class="btn-drm-resume" id="btn-drm-resume">Continuar Assistindo ➔</button>
+    </div>
+  </div>
+
+  <!-- MODAL DE EXPIRAÇÃO DA DEGUSTAÇÃO GRÁTIS (30 MINUTOS) -->
+  <div class="trial-expired-modal" id="trial-expired-modal" hidden>
+    <div class="trial-modal-content">
+      <div class="trial-expired-icon">⏱️</div>
+      <h2>Seu Teste Grátis de 30 Minutos Encerrou</h2>
+      <p>Esperamos que você tenha aproveitado a experiência no MedStudy! Para desbloquear acesso ilimitado a todos os <strong>36 cursos</strong> médicos, apostilas completas e pastas do Google Drive, escolha seu plano:</p>
+      
+      <div class="trial-plans-mini">
+        <div class="plan-mini-card">
+          <strong>Plano Mensal</strong>
+          <span class="plan-mini-price">R$ 80 / mês</span>
+          <a href="conta.html" class="plan-mini-btn">Assinar Mensal</a>
+        </div>
+        <div class="plan-mini-card highlighted">
+          <span class="mini-badge">Mais Escolhido</span>
+          <strong>Plano Anual</strong>
+          <span class="plan-mini-price">R$ 500 / ano</span>
+          <a href="conta.html" class="plan-mini-btn btn-highlight">Assinar Anual</a>
+        </div>
+        <div class="plan-mini-card">
+          <strong>Vitalício</strong>
+          <span class="plan-mini-price">R$ 750 único</span>
+          <a href="conta.html" class="plan-mini-btn">Acesso Vitalício</a>
+        </div>
+      </div>
+
+      <div class="trial-modal-footer">
+        <a href="conta.html" class="btn-modal-login">Já sou assinante / Fazer login ➔</a>
+        <a href="admin.html" class="btn-modal-admin">Acesso Administrativo</a>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

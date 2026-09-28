@@ -1,8 +1,14 @@
 const TOKEN_KEY = "medstudy.access-token";
+const ADMIN_TOKEN_KEY = "medstudy.admin_token";
+const TRIAL_KEY = "medstudy.trial_remaining_seconds";
+const TRIAL_START_KEY = "medstudy.trial_started_at";
+const TOTAL_TRIAL_SECONDS = 1800; // 30 minutos
+
 let allCourses = [];
 let currentCourse = null;
 let currentLesson = null;
 let isUserActive = false;
+let isAdmin = false;
 let currentUser = null;
 let currentTab = "video";
 let isPlaying = false;
@@ -12,12 +18,15 @@ let currentSpeed = 1.0;
 let pdfCurrentPage = 1;
 let pdfTotalPages = 6;
 let pdfZoom = 100;
+let trialSecondsRemaining = 1800;
+let trialInterval = null;
+let watermarkInterval = null;
 
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
 
 function getToken() {
-  return localStorage.getItem(TOKEN_KEY);
+  return localStorage.getItem(TOKEN_KEY) || localStorage.getItem(ADMIN_TOKEN_KEY);
 }
 
 async function api(path, options = {}) {
@@ -153,6 +162,10 @@ function setupVideoPlayer() {
   const markDoneBtn = $("#ctrl-mark-done");
 
   function togglePlay() {
+    if (trialSecondsRemaining <= 0 && !isUserActive && !isAdmin) {
+      lockTrialExpired();
+      return;
+    }
     isPlaying = !isPlaying;
     btnPlayBig.textContent = isPlaying ? "❚❚" : "▶";
     ctrlPlay.textContent = isPlaying ? "❚❚" : "▶";
@@ -661,6 +674,191 @@ function renderSidebar() {
   });
 }
 
+// ==========================================
+// TESTE GRÁTIS DE 30 MINUTOS COM BLOQUEIO
+// ==========================================
+function initFreeTrial() {
+  const pill = $("#trial-pill");
+  const timerText = $("#trial-timer");
+
+  if (isUserActive || isAdmin) {
+    if (pill && timerText) {
+      if (isAdmin) {
+        pill.className = "trial-pill admin";
+        timerText.textContent = "👑 Administrador (Acesso Irrestrito)";
+      } else {
+        pill.className = "trial-pill unlimited";
+        timerText.textContent = "👑 Acesso Ilimitado Ativo";
+      }
+    }
+    return;
+  }
+
+  // Se o usuário já tiver contagem salva no navegador
+  let savedRemaining = localStorage.getItem(TRIAL_KEY);
+  if (savedRemaining === null) {
+    trialSecondsRemaining = TOTAL_TRIAL_SECONDS;
+    localStorage.setItem(TRIAL_KEY, String(trialSecondsRemaining));
+    localStorage.setItem(TRIAL_START_KEY, String(Date.now()));
+  } else {
+    trialSecondsRemaining = parseInt(savedRemaining, 10);
+    if (isNaN(trialSecondsRemaining)) trialSecondsRemaining = TOTAL_TRIAL_SECONDS;
+  }
+
+  updateTrialUI();
+
+  if (trialSecondsRemaining <= 0) {
+    lockTrialExpired();
+    return;
+  }
+
+  if (trialInterval) clearInterval(trialInterval);
+  trialInterval = setInterval(() => {
+    if (isUserActive || isAdmin) {
+      clearInterval(trialInterval);
+      return;
+    }
+
+    trialSecondsRemaining = Math.max(0, trialSecondsRemaining - 1);
+    localStorage.setItem(TRIAL_KEY, String(trialSecondsRemaining));
+    updateTrialUI();
+
+    if (trialSecondsRemaining <= 0) {
+      clearInterval(trialInterval);
+      lockTrialExpired();
+    }
+  }, 1000);
+}
+
+function updateTrialUI() {
+  const timerText = $("#trial-timer");
+  if (!timerText) return;
+  const m = String(Math.floor(trialSecondsRemaining / 60)).padStart(2, "0");
+  const s = String(trialSecondsRemaining % 60).padStart(2, "0");
+  timerText.textContent = `Degustação: ${m}:${s}`;
+}
+
+function lockTrialExpired() {
+  const modal = $("#trial-expired-modal");
+  if (modal) modal.hidden = false;
+
+  // Interrompe qualquer reprodução
+  if (isPlaying) {
+    const btnPlayBig = $("#btn-play-big");
+    const ctrlPlay = $("#ctrl-play-pause");
+    isPlaying = false;
+    if (playbackInterval) clearInterval(playbackInterval);
+    if (btnPlayBig) btnPlayBig.textContent = "▶";
+    if (ctrlPlay) ctrlPlay.textContent = "▶";
+  }
+
+  const timerText = $("#trial-timer");
+  if (timerText) timerText.textContent = "Degustação Expirada (00:00)";
+  const pill = $("#trial-pill");
+  if (pill) {
+    pill.style.background = "rgba(237, 65, 75, 0.15)";
+    pill.style.borderColor = "rgba(237, 65, 75, 0.5)";
+    pill.style.color = "#ed414b";
+  }
+}
+
+// ==========================================
+// PROTEÇÃO DRM: ANTI-DOWNLOAD, ANTI-GRAVAÇÃO E ANTI-CAPTURA
+// ==========================================
+function initDRMProtection() {
+  // Marca d'água Dinâmica Flutuante
+  const watermark = $("#drm-watermark");
+  const userStamp = $("#drm-user-stamp");
+  const timeStamp = $("#drm-time-stamp");
+
+  // Identificador do aluno ou visitante
+  let guestId = localStorage.getItem("medstudy.guest_session_id");
+  if (!guestId) {
+    guestId = "STU-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+    localStorage.setItem("medstudy.guest_session_id", guestId);
+  }
+
+  const identity = currentUser?.email || (isAdmin ? "ADMIN MASTER" : `ALUNO #${guestId}`);
+  if (userStamp) userStamp.textContent = identity;
+
+  function updateWatermarkPosition() {
+    if (!watermark) return;
+    const now = new Date();
+    if (timeStamp) timeStamp.textContent = now.toTimeString().split(" ")[0];
+
+    const randomTop = Math.floor(Math.random() * 75 + 10);
+    const randomLeft = Math.floor(Math.random() * 65 + 10);
+    watermark.style.top = `${randomTop}%`;
+    watermark.style.left = `${randomLeft}%`;
+  }
+
+  updateWatermarkPosition();
+  if (watermarkInterval) clearInterval(watermarkInterval);
+  watermarkInterval = setInterval(updateWatermarkPosition, 3500);
+
+  // Escudo de Blackout (Anti-Captura e Anti-Gravação de Tela)
+  const shield = $("#drm-blackout-shield");
+  const resumeBtn = $("#btn-drm-resume");
+
+  function triggerBlackoutShield(reason) {
+    if (isAdmin) return; // Permite ao admin auditar sem interrupções
+    if (shield && shield.hidden) {
+      shield.hidden = false;
+      if (isPlaying) {
+        $("#btn-play-big")?.click();
+      }
+    }
+  }
+
+  resumeBtn?.addEventListener("click", () => {
+    if (shield) shield.hidden = true;
+  });
+
+  // Eventos de perda de foco ou mudança de aba (captura/gravação em janela externa, OBS, Snipping tool)
+  window.addEventListener("blur", () => {
+    triggerBlackoutShield("blur");
+  });
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") {
+      triggerBlackoutShield("hidden");
+    }
+  });
+
+  // Intercepção de Teclado (PrintScreen, F12, Ctrl+Shift+I/J/C, Ctrl+U, Ctrl+S, Ctrl+P)
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "PrintScreen") {
+      e.preventDefault();
+      triggerBlackoutShield("printscreen");
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText("Conteúdo Protegido MedStudy DRM").catch(() => {});
+      }
+      return;
+    }
+
+    if (
+      e.key === "F12" ||
+      (e.ctrlKey && e.shiftKey && ["I", "i", "J", "j", "C", "c"].includes(e.key)) ||
+      (e.ctrlKey && ["u", "U", "s", "S", "p", "P"].includes(e.key))
+    ) {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    }
+  });
+
+  // Bloqueio de Botão Direito (Context Menu) e Drag
+  document.addEventListener("contextmenu", (e) => {
+    e.preventDefault();
+    return false;
+  });
+
+  document.addEventListener("dragstart", (e) => {
+    e.preventDefault();
+    return false;
+  });
+}
+
 // Carregamento de Cursos e Seleção Inicial
 async function initCourse() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -670,13 +868,27 @@ async function initCourse() {
     const data = await api("/api/courses");
     allCourses = data.courses || [];
     isUserActive = Boolean(data.userActive);
+    isAdmin = Boolean(data.isAdmin);
     currentUser = data.user || null;
 
     // Header badge
     const badge = $("#user-badge");
-    if (badge && currentUser) {
-      badge.textContent = isUserActive ? "● Assinatura Ativa" : "○ Visitante";
+    if (badge) {
+      if (isAdmin) {
+        badge.textContent = "👑 Administrador";
+        badge.style.display = "inline-flex";
+      } else if (currentUser) {
+        badge.textContent = isUserActive ? "● Assinatura Ativa" : "○ Visitante";
+        badge.style.display = "inline-flex";
+      } else {
+        badge.textContent = "○ Degustação Grátis";
+        badge.style.display = "inline-flex";
+      }
     }
+
+    // Inicializa proteções e teste grátis
+    initDRMProtection();
+    initFreeTrial();
 
     // Preenche seletor de cursos no header
     const select = $("#course-select");
@@ -721,3 +933,4 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await initCourse();
 });
+

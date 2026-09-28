@@ -1538,3 +1538,338 @@ body {
     padding: 20px;
   }
 }
+
+/* ==========================================================================
+   DRM, ANTI-CAPTURE, ANTI-PRINT & 30-MIN FREE TRIAL PROTECTIONS
+   ========================================================================== */
+
+/* Bloqueio de impressão física ou em PDF */
+@media print {
+  body {
+    display: none !important;
+  }
+}
+
+/* Proteção contra seleção de texto e cópia */
+.video-container,
+.pdf-viewer-container,
+.drive-explorer,
+.quiz-container {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Badge de Degustação Grátis (30 min) / Acesso Ilimitado */
+.trial-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(236, 201, 75, 0.12);
+  border: 1px solid rgba(236, 201, 75, 0.35);
+  color: #f6e05e;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.trial-pill:hover {
+  background: rgba(236, 201, 75, 0.18);
+  border-color: rgba(236, 201, 75, 0.5);
+}
+
+.trial-pill.unlimited {
+  background: rgba(72, 187, 120, 0.12);
+  border-color: rgba(72, 187, 120, 0.35);
+  color: #68d391;
+}
+
+.trial-pill.admin {
+  background: rgba(159, 122, 234, 0.14);
+  border-color: rgba(159, 122, 234, 0.4);
+  color: #d6bcfa;
+}
+
+.trial-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ecc94b;
+  box-shadow: 0 0 8px rgba(236, 201, 75, 0.8);
+  animation: pulseDot 2s infinite;
+}
+
+.trial-pill.unlimited .trial-dot {
+  background: #48bb78;
+  box-shadow: 0 0 8px rgba(72, 187, 120, 0.8);
+}
+
+.trial-pill.admin .trial-dot {
+  background: #b794f4;
+  box-shadow: 0 0 8px rgba(183, 148, 244, 0.8);
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+/* Marca d'água Dinâmica Flutuante Anti-Gravação */
+.drm-floating-watermark {
+  position: absolute;
+  pointer-events: none;
+  z-index: 25;
+  color: rgba(255, 255, 255, 0.22);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+  transition: all 4s ease-in-out;
+  white-space: nowrap;
+  user-select: none;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+/* Escudo de Blackout (Anti-Captura / Gravação de Tela) */
+.drm-blackout-shield {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.98);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  backdrop-filter: blur(24px);
+}
+
+.drm-blackout-content {
+  max-width: 540px;
+  background: #0f1211;
+  border: 1px solid #363e3a;
+  border-radius: 16px;
+  padding: 36px 28px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.85);
+}
+
+.drm-shield-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.drm-blackout-content h2 {
+  font: 800 22px var(--font-heading);
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+.drm-blackout-content p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.drm-subnotice {
+  font-size: 13px !important;
+  color: #cbd5e0 !important;
+  background: #171d1a;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  margin-bottom: 20px !important;
+}
+
+.btn-drm-resume {
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font: 700 14px var(--font-main);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-drm-resume:hover {
+  background: var(--red-hover);
+}
+
+/* Modal de Expiração de Teste Grátis (30 min) */
+.trial-expired-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 99998;
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(16px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.trial-modal-content {
+  max-width: 640px;
+  width: 100%;
+  background: #111413;
+  border: 1px solid #363e3a;
+  border-radius: 20px;
+  padding: 36px 32px;
+  text-align: center;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.95);
+  animation: modalAppear 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalAppear {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.trial-expired-icon {
+  font-size: 52px;
+  margin-bottom: 16px;
+}
+
+.trial-modal-content h2 {
+  font: 800 24px var(--font-heading);
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+.trial-modal-content p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.trial-plans-mini {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+@media (max-width: 600px) {
+  .trial-plans-mini {
+    grid-template-columns: 1fr;
+  }
+}
+
+.plan-mini-card {
+  background: #171d1a;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.plan-mini-card.highlighted {
+  border-color: var(--red);
+  background: #1c1516;
+}
+
+.mini-badge {
+  position: absolute;
+  top: -10px;
+  right: 10px;
+  background: var(--red);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.plan-mini-card strong {
+  font-size: 13px;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.plan-mini-price {
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+.plan-mini-btn {
+  margin-top: auto;
+  display: block;
+  text-align: center;
+  background: #252e2a;
+  color: #fff;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 6px;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+.plan-mini-btn.btn-highlight {
+  background: var(--red);
+}
+
+.plan-mini-btn:hover {
+  opacity: 0.9;
+}
+
+.trial-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+  flex-wrap: wrap;
+}
+
+.btn-modal-login {
+  color: #68d391;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.btn-modal-login:hover {
+  text-decoration: underline;
+}
+
+.btn-modal-admin {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 12px;
+}
+
+.btn-modal-admin:hover {
+  color: #fff;
+}
+
+/* Badge de Leitura Protegida (DRM) */
+.drm-download-locked {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ecc94b;
+  background: rgba(236, 201, 75, 0.1);
+  border: 1px solid rgba(236, 201, 75, 0.25);
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+

@@ -25,6 +25,45 @@ const plans = {
 
 const coursesFilePath = path.join(root, "courses.json");
 
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@medstudy.com";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "medstudy2026";
+const ADMIN_SECRET = process.env.ADMIN_SECRET || "medstudy-secret-admin-signature-key-2026";
+
+function createAdminToken() {
+  const ts = Date.now();
+  const raw = `admin:${ts}`;
+  const sig = createHmac("sha256", ADMIN_SECRET).update(raw).digest("hex");
+  return `${raw}:${sig}`;
+}
+
+function verifyAdminToken(token) {
+  if (!token || typeof token !== "string") return false;
+  const parts = token.split(":");
+  if (parts.length !== 3 || parts[0] !== "admin") return false;
+  const ts = Number(parts[1]);
+  if (!ts || isNaN(ts)) return false;
+  // Expira em 7 dias
+  if (Date.now() - ts > 7 * 24 * 60 * 60 * 1000) return false;
+  const expectedSig = createHmac("sha256", ADMIN_SECRET).update(`admin:${ts}`).digest("hex");
+  try {
+    const b1 = Buffer.from(parts[2], "hex");
+    const b2 = Buffer.from(expectedSig, "hex");
+    return b1.length === b2.length && timingSafeEqual(b1, b2);
+  } catch {
+    return false;
+  }
+}
+
+function requireAdmin(req, res, next) {
+  const auth = req.headers.authorization;
+  const token = auth?.match(/^Bearer (.+)$/i)?.[1];
+  if (!verifyAdminToken(token)) {
+    return res.status(401).json({ error: "Acesso administrativo negado. Faça login como administrador." });
+  }
+  next();
+}
+
+
 async function loadCourses() {
   try {
     if (existsSync(coursesFilePath)) {
@@ -258,10 +297,11 @@ app.post("/api/checkout", requireUser, async (req, res) => {
 // ==========================================
 app.get("/api/courses", async (req, res) => {
   const token = req.headers.authorization?.match(/^Bearer (.+)$/i)?.[1];
-  let userActive = false;
-  let user = null;
+  const isAdmin = verifyAdminToken(token);
+  let userActive = isAdmin;
+  let user = isAdmin ? { id: "admin-master", email: ADMIN_EMAIL, role: "admin" } : null;
 
-  if (token && supabaseAdmin) {
+  if (!isAdmin && token && supabaseAdmin) {
     try {
       const { data: userData, error: userError } = await supabaseAdmin.auth.getUser(token);
       if (!userError && userData?.user) {
@@ -286,8 +326,7 @@ app.get("/api/courses", async (req, res) => {
 
   const allCourses = await loadCourses();
 
-  // Se o usuário tiver assinatura ativa, retorna com driveUrl liberado.
-  // Se não for assinante ativo, remove o driveUrl para proteger os links contra acesso não autorizado.
+  // Se o usuário tiver assinatura ativa ou for admin, retorna com driveUrl liberado.
   const courses = allCourses.map((course) => {
     if (userActive) {
       return { ...course, locked: false };
@@ -300,17 +339,18 @@ app.get("/api/courses", async (req, res) => {
   res.json({
     courses,
     userActive,
-    user
+    user,
+    isAdmin
   });
 });
 
 app.get("/api/courses/:id", async (req, res) => {
-  let user = null;
-  let userActive = false;
+  const token = req.headers.authorization?.match(/^Bearer (.+)$/i)?.[1];
+  const isAdmin = verifyAdminToken(token);
+  let userActive = isAdmin;
+  let user = isAdmin ? { id: "admin-master", email: ADMIN_EMAIL, role: "admin" } : null;
 
-  const authHeader = req.headers.authorization;
-  if (authHeader && authHeader.startsWith("Bearer ") && supabaseAdmin) {
-    const token = authHeader.slice(7);
+  if (!isAdmin && token && supabaseAdmin) {
     try {
       const { data: userData, error: userError } = await supabaseAdmin.auth.getUser(token);
       if (!userError && userData?.user) {
@@ -340,7 +380,7 @@ app.get("/api/courses/:id", async (req, res) => {
   }
 
   const course = userActive ? { ...found, locked: false } : { ...found, driveUrl: null, locked: true };
-  res.json({ course, userActive, user });
+  res.json({ course, userActive, user, isAdmin });
 });
 
 app.post("/api/courses", requireUser, async (req, res) => {
@@ -392,7 +432,145 @@ app.delete("/api/courses/:id", requireUser, async (req, res) => {
   res.json({ ok: true });
 });
 
-// Redirecionamento de rotas legadas de flashcards
+// ==========================================
+// ROTAS ADMINISTRATIVAS (ADMIN LOGIN & GESTÃO)
+// ==========================================
+app.post("/api/admin/login", (req, res) => {
+  const { email, password } = req.body || {};
+  if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+    const token = createAdminToken();
+    return res.json({ ok: true, token, email: ADMIN_EMAIL, role: "admin" });
+  }
+  return res.status(401).json({ error: "Credenciais de administrador incorretas." });
+});
+
+app.get("/api/admin/verify", requireAdmin, (_req, res) => {
+  res.json({ ok: true, email: ADMIN_EMAIL, role: "admin" });
+});
+
+app.get("/api/admin/stats", requireAdmin, async (_req, res) => {
+  const allCourses = await loadCourses();
+  const totalCourses = allCourses.length;
+  const totalModules = allCourses.reduce((sum, c) => sum + (c.modules?.length || c.modulesCount || 0), 0);
+  const totalLessons = allCourses.reduce((sum, c) => sum + (c.modules ? c.modules.flatMap(m => m.lessons || []).length : (c.modulesCount * 2)), 0);
+  const driveUrlsCount = allCourses.filter(c => Boolean(c.driveUrl)).length;
+  
+  let totalUsers = 0;
+  let activeSubs = 0;
+  if (supabaseAdmin) {
+    try {
+      const { count } = await supabaseAdmin.from("user_subscriptions").select("*", { count: "exact", head: true });
+      totalUsers = count || 0;
+      const { count: activeCount } = await supabaseAdmin.from("user_subscriptions").select("*", { count: "exact", head: true }).eq("status", "active");
+      activeSubs = activeCount || 0;
+    } catch (e) {}
+  }
+
+  res.json({
+    totalCourses,
+    totalModules,
+    totalLessons,
+    totalUsers,
+    activeSubs,
+    driveUrlsCount,
+    masterDriveUrl: "https://drive.google.com/drive/my-drive",
+    uptime: Math.round(process.uptime()),
+    drmProtection: "active",
+    freeTrialDurationMinutes: 30
+  });
+});
+
+app.get("/api/admin/courses", requireAdmin, async (_req, res) => {
+  const allCourses = await loadCourses();
+  res.json({ courses: allCourses });
+});
+
+app.post("/api/admin/courses", requireAdmin, async (req, res) => {
+  const { title, category, area, description, driveUrl, modulesCount, materials, icon, color } = req.body || {};
+  if (!title) return res.status(400).json({ error: "Título do curso é obrigatório." });
+
+  const allCourses = await loadCourses();
+  const slug = String(title).toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 40) || randomUUID();
+
+  const newCourse = {
+    id: slug,
+    title: String(title).trim().slice(0, 120),
+    category: String(category || "Ciclo Clínico").trim().slice(0, 50),
+    area: String(area || "Medicina Geral").trim().slice(0, 50),
+    description: String(description || "").trim().slice(0, 500),
+    driveUrl: String(driveUrl || "https://drive.google.com/drive/my-drive").trim().slice(0, 500),
+    modulesCount: Number(modulesCount) || 1,
+    materials: String(materials || "Videoaulas + Materiais no Google Drive").trim().slice(0, 120),
+    icon: String(icon || "◈").slice(0, 4),
+    color: String(color || "red").slice(0, 20),
+    modules: []
+  };
+
+  allCourses.unshift(newCourse);
+  await saveCourses(allCourses);
+  res.json({ ok: true, course: newCourse });
+});
+
+app.put("/api/admin/courses/:id", requireAdmin, async (req, res) => {
+  const courseId = req.params.id;
+  const allCourses = await loadCourses();
+  const idx = allCourses.findIndex((c) => c.id === courseId);
+  if (idx === -1) {
+    return res.status(404).json({ error: "Curso não encontrado." });
+  }
+
+  const { title, category, area, description, driveUrl, modulesCount, materials, icon, color } = req.body || {};
+  const current = allCourses[idx];
+
+  const updated = {
+    ...current,
+    title: title !== undefined ? String(title).trim().slice(0, 120) : current.title,
+    category: category !== undefined ? String(category).trim().slice(0, 50) : current.category,
+    area: area !== undefined ? String(area).trim().slice(0, 50) : current.area,
+    description: description !== undefined ? String(description).trim().slice(0, 500) : current.description,
+    driveUrl: driveUrl !== undefined ? String(driveUrl).trim().slice(0, 500) : current.driveUrl,
+    modulesCount: modulesCount !== undefined ? Number(modulesCount) || 1 : current.modulesCount,
+    materials: materials !== undefined ? String(materials).trim().slice(0, 120) : current.materials,
+    icon: icon !== undefined ? String(icon).slice(0, 4) : current.icon,
+    color: color !== undefined ? String(color).slice(0, 20) : current.color
+  };
+
+  allCourses[idx] = updated;
+  await saveCourses(allCourses);
+  res.json({ ok: true, course: updated });
+});
+
+app.delete("/api/admin/courses/:id", requireAdmin, async (req, res) => {
+  const courseId = req.params.id;
+  const allCourses = await loadCourses();
+  const filtered = allCourses.filter((c) => c.id !== courseId);
+  if (filtered.length === allCourses.length) {
+    return res.status(404).json({ error: "Curso não encontrado." });
+  }
+  await saveCourses(filtered);
+  res.json({ ok: true });
+});
+
+app.post("/api/admin/drive-bulk", requireAdmin, async (req, res) => {
+  const { newDriveUrl } = req.body || {};
+  if (!newDriveUrl || !newDriveUrl.startsWith("http")) {
+    return res.status(400).json({ error: "Informe uma URL válida do Google Drive (iniciando com http/https)." });
+  }
+  const allCourses = await loadCourses();
+  const updatedCourses = allCourses.map(course => ({
+    ...course,
+    driveUrl: newDriveUrl.trim()
+  }));
+  await saveCourses(updatedCourses);
+  res.json({ ok: true, updatedCount: updatedCourses.length, newDriveUrl: newDriveUrl.trim() });
+});
+
+// Redirecionamento de rotas legadas
 app.get("/estudar.html", (_req, res) => res.redirect(301, "/cursos.html"));
 
 // Arquivos estáticos
@@ -400,3 +578,4 @@ app.use(express.static(root, { dotfiles: "deny", index: "index.html" }));
 app.get("*path", (_req, res) => res.sendFile(path.join(root, "index.html")));
 
 app.listen(port, () => console.log("MedStudy listening on port " + port));
+

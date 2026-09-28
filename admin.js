@@ -1,0 +1,410 @@
+const ADMIN_TOKEN_KEY = "medstudy.admin_token";
+const TRIAL_KEY = "medstudy.trial_remaining_seconds";
+const TRIAL_START_KEY = "medstudy.trial_started_at";
+
+let adminToken = localStorage.getItem(ADMIN_TOKEN_KEY);
+let allCourses = [];
+let currentCycleFilter = "all";
+
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => document.querySelectorAll(sel);
+
+async function adminApi(endpoint, options = {}) {
+  const headers = {
+    "Content-Type": "application/json",
+    ...(adminToken ? { Authorization: "Bearer " + adminToken } : {}),
+    ...(options.headers || {})
+  };
+
+  const res = await fetch(endpoint, { ...options, headers });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const error = new Error(data.error || "Erro na comunicação com o servidor.");
+    error.status = res.status;
+    throw error;
+  }
+  return data;
+}
+
+// ==========================================
+// AUTENTICAÇÃO DO ADMINISTRADOR
+// ==========================================
+async function checkAuth() {
+  if (!adminToken) {
+    showLoginView();
+    return;
+  }
+
+  try {
+    await adminApi("/api/admin/verify");
+    showDashboardView();
+    loadDashboardData();
+  } catch (err) {
+    console.warn("Sessão administrativa expirada:", err.message);
+    localStorage.removeItem(ADMIN_TOKEN_KEY);
+    adminToken = null;
+    showLoginView();
+  }
+}
+
+function showLoginView() {
+  $("#login-view").hidden = false;
+  $("#dashboard-view").hidden = true;
+}
+
+function showDashboardView() {
+  $("#login-view").hidden = true;
+  $("#dashboard-view").hidden = false;
+}
+
+function setupLoginForm() {
+  const form = $("#admin-login-form");
+  const alertEl = $("#login-alert");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    alertEl.hidden = true;
+    const btn = $("#btn-login");
+    btn.disabled = true;
+    btn.innerHTML = `<span>Entrando...</span>`;
+
+    const email = $("#admin-email").value.trim();
+    const password = $("#admin-password").value.trim();
+
+    try {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.ok) {
+        throw new Error(data.error || "Credenciais inválidas.");
+      }
+
+      adminToken = data.token;
+      localStorage.setItem(ADMIN_TOKEN_KEY, adminToken);
+      showDashboardView();
+      loadDashboardData();
+    } catch (err) {
+      alertEl.textContent = err.message;
+      alertEl.hidden = false;
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = `<span>Entrar no Painel</span> <span>→</span>`;
+    }
+  });
+
+  $("#btn-logout")?.addEventListener("click", () => {
+    localStorage.removeItem(ADMIN_TOKEN_KEY);
+    adminToken = null;
+    showLoginView();
+  });
+}
+
+// ==========================================
+// CARREGAMENTO DE DADOS DO DASHBOARD
+// ==========================================
+async function loadDashboardData() {
+  try {
+    await Promise.all([loadStats(), loadCourses()]);
+  } catch (err) {
+    console.error("Erro ao carregar dados do painel:", err);
+  }
+}
+
+async function loadStats() {
+  try {
+    const stats = await adminApi("/api/admin/stats");
+    $("#stat-courses").textContent = stats.totalCourses || 0;
+    $("#stat-modules").textContent = stats.totalModules || 0;
+    $("#stat-lessons").textContent = stats.totalLessons || 0;
+  } catch (err) {
+    console.warn("Não foi possível carregar estatísticas:", err.message);
+  }
+}
+
+async function loadCourses() {
+  try {
+    const data = await adminApi("/api/admin/courses");
+    allCourses = data.courses || [];
+    $("#courses-counter").textContent = allCourses.length;
+    renderCoursesTable();
+  } catch (err) {
+    console.error("Erro ao carregar lista de cursos:", err);
+  }
+}
+
+// ==========================================
+// RENDERIZAÇÃO DA TABELA DE CURSOS
+// ==========================================
+function renderCoursesTable() {
+  const tbody = $("#courses-table-body");
+  const searchInput = $("#course-filter-input");
+  const query = (searchInput?.value || "").trim().toLowerCase();
+
+  const filtered = allCourses.filter((course) => {
+    const matchesCycle =
+      currentCycleFilter === "all" ||
+      (course.category && course.category.toLowerCase().includes(currentCycleFilter.toLowerCase()));
+
+    const matchesSearch =
+      !query ||
+      course.title.toLowerCase().includes(query) ||
+      (course.area && course.area.toLowerCase().includes(query)) ||
+      (course.category && course.category.toLowerCase().includes(query));
+
+    return matchesCycle && matchesSearch;
+  });
+
+  tbody.replaceChildren();
+
+  if (filtered.length === 0) {
+    const emptyRow = document.createElement("tr");
+    emptyRow.innerHTML = `<td colspan="6" style="text-align:center; padding: 28px; color: var(--muted);">Nenhum curso encontrado para este filtro.</td>`;
+    tbody.appendChild(emptyRow);
+    return;
+  }
+
+  filtered.forEach((course) => {
+    const tr = document.createElement("tr");
+
+    let cycleClass = "cycle-basico";
+    if (course.category?.includes("Clínico")) cycleClass = "cycle-clinico";
+    else if (course.category?.includes("Internato") || course.category?.includes("Prática")) cycleClass = "cycle-internato";
+    else if (course.category?.includes("Residência") || course.category?.includes("Revalida")) cycleClass = "cycle-residencia";
+
+    const modulesTotal = (course.modules && course.modules.length) || course.modulesCount || 1;
+    const driveUrl = course.driveUrl || "https://drive.google.com/drive/my-drive";
+
+    tr.innerHTML = `
+      <td>
+        <div class="course-icon-badge">${course.icon || "◈"}</div>
+      </td>
+      <td>
+        <strong>${course.title}</strong>
+        <div style="font-size: 11px; color: var(--muted); margin-top: 2px;">ID: ${course.id} · ${course.area || "Geral"}</div>
+      </td>
+      <td>
+        <span class="cycle-badge ${cycleClass}">${course.category}</span>
+      </td>
+      <td>
+        <strong>${modulesTotal}</strong> módulos
+      </td>
+      <td class="drive-url-cell">
+        <a href="${driveUrl}" target="_blank" rel="noopener noreferrer" title="${driveUrl}">${driveUrl}</a>
+      </td>
+      <td class="actions-cell">
+        <button class="btn-action-small btn-edit" data-id="${course.id}" title="Editar informações do curso">✏️ Editar</button>
+        <a href="sala.html?curso=${course.id}" target="_blank" class="btn-action-small" title="Ver aula no player">▶ Sala</a>
+        <button class="btn-action-small btn-action-delete" data-id="${course.id}" title="Excluir curso">🗑️</button>
+      </td>
+    `;
+
+    // Eventos
+    tr.querySelector(".btn-edit").addEventListener("click", () => {
+      openEditModal(course);
+    });
+
+    tr.querySelector(".btn-action-delete").addEventListener("click", () => {
+      deleteCourse(course.id, course.title);
+    });
+
+    tbody.appendChild(tr);
+  });
+}
+
+function setupFilters() {
+  $("#course-filter-input")?.addEventListener("input", renderCoursesTable);
+
+  $$(".filter-pill").forEach((pill) => {
+    pill.addEventListener("click", () => {
+      $$(".filter-pill").forEach((p) => p.classList.remove("active"));
+      pill.classList.add("active");
+      currentCycleFilter = pill.dataset.cycle;
+      renderCoursesTable();
+    });
+  });
+}
+
+// ==========================================
+// ATUALIZAÇÃO EM MASSA DO GOOGLE DRIVE
+// ==========================================
+function setupBulkDriveUpdate() {
+  const btn = $("#btn-update-all-drive");
+  const input = $("#master-drive-url");
+  const statusMsg = $("#drive-bulk-status");
+
+  btn.addEventListener("click", async () => {
+    const newDriveUrl = input.value.trim();
+    if (!newDriveUrl || !newDriveUrl.startsWith("http")) {
+      alert("Por favor, digite uma URL válida do Google Drive começando com https://");
+      return;
+    }
+
+    if (!confirm(`Tem certeza que deseja atualizar o link do Google Drive de TODOS os ${allCourses.length} cursos para:\n${newDriveUrl}?`)) {
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "Atualizando em massa...";
+    statusMsg.hidden = true;
+
+    try {
+      const res = await adminApi("/api/admin/drive-bulk", {
+        method: "POST",
+        body: JSON.stringify({ newDriveUrl })
+      });
+
+      statusMsg.className = "drive-status-msg success";
+      statusMsg.textContent = `✓ Sucesso! ${res.updatedCount} cursos foram atualizados com o novo link mestre do Google Drive.`;
+      statusMsg.hidden = false;
+
+      // Recarrega lista
+      await loadCourses();
+    } catch (err) {
+      alert("Erro ao atualizar cursos: " + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Atualizar Todos os Cursos";
+    }
+  });
+}
+
+// ==========================================
+// FERRAMENTAS DE TESTE & DEGUSTAÇÃO GRÁTIS (30 MIN)
+// ==========================================
+function setupTestingTools() {
+  $("#btn-reset-my-trial")?.addEventListener("click", () => {
+    localStorage.removeItem(TRIAL_KEY);
+    localStorage.removeItem(TRIAL_START_KEY);
+    alert("✓ Teste grátis resetado com sucesso! Ao abrir a sala de aula, você terá novamente os 30 minutos completos de degustação.");
+  });
+
+  $("#btn-force-expire-trial")?.addEventListener("click", () => {
+    localStorage.setItem(TRIAL_KEY, "0");
+    alert("✓ Teste grátis configurado como EXPIRADO (00:00). Ao abrir a sala de aula como visitante, o modal de bloqueio anticópia será exibido imediatamente.");
+  });
+
+  $("#btn-enable-admin-bypass")?.addEventListener("click", () => {
+    alert("✓ O token de administrador está ativo neste navegador. O teste de 30 minutos e os bloqueios de perda de foco foram desativados para você navegar livremente como Administrador.");
+    window.open("sala.html", "_blank");
+  });
+}
+
+// ==========================================
+// MODAL: CADASTRAR OU EDITAR CURSO
+// ==========================================
+const modal = $("#course-modal");
+const courseForm = $("#course-form");
+
+function openCreateModal() {
+  $("#modal-title").textContent = "Cadastrar Novo Curso";
+  $("#edit-course-id").value = "";
+  $("#course-title").value = "";
+  $("#course-category").value = "Ciclo Clínico";
+  $("#course-area").value = "";
+  $("#course-modules").value = "3";
+  $("#course-color").value = "red";
+  $("#course-drive-url").value = $("#master-drive-url").value || "https://drive.google.com/drive/my-drive";
+  $("#course-description").value = "";
+  $("#course-materials").value = "Videoaulas em HD + Apostilas em PDF + Caderno de Casos Clínicos";
+  modal.hidden = false;
+}
+
+function openEditModal(course) {
+  $("#modal-title").textContent = `Editar Curso: ${course.title}`;
+  $("#edit-course-id").value = course.id;
+  $("#course-title").value = course.title || "";
+  $("#course-category").value = course.category || "Ciclo Clínico";
+  $("#course-area").value = course.area || "";
+  $("#course-modules").value = course.modulesCount || (course.modules ? course.modules.length : 1);
+  $("#course-color").value = course.color || "red";
+  $("#course-drive-url").value = course.driveUrl || "";
+  $("#course-description").value = course.description || "";
+  $("#course-materials").value = course.materials || "";
+  modal.hidden = false;
+}
+
+function closeModal() {
+  modal.hidden = true;
+}
+
+function setupCourseModal() {
+  $("#btn-open-create-modal")?.addEventListener("click", openCreateModal);
+  $("#btn-close-modal")?.addEventListener("click", closeModal);
+  $("#btn-cancel-modal")?.addEventListener("click", closeModal);
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  courseForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const id = $("#edit-course-id").value;
+    const isEdit = Boolean(id);
+
+    const payload = {
+      title: $("#course-title").value.trim(),
+      category: $("#course-category").value,
+      area: $("#course-area").value.trim(),
+      modulesCount: Number($("#course-modules").value) || 1,
+      color: $("#course-color").value,
+      driveUrl: $("#course-drive-url").value.trim(),
+      description: $("#course-description").value.trim(),
+      materials: $("#course-materials").value.trim()
+    };
+
+    const saveBtn = $("#btn-save-course");
+    saveBtn.disabled = true;
+    saveBtn.textContent = "Salvando...";
+
+    try {
+      if (isEdit) {
+        await adminApi(`/api/admin/courses/${id}`, {
+          method: "PUT",
+          body: JSON.stringify(payload)
+        });
+      } else {
+        await adminApi("/api/admin/courses", {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
+      }
+
+      closeModal();
+      await loadDashboardData();
+    } catch (err) {
+      alert("Erro ao salvar curso: " + err.message);
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = "Salvar Curso";
+    }
+  });
+}
+
+async function deleteCourse(id, title) {
+  if (!confirm(`Tem certeza que deseja excluir o curso "${title}" permanentemente do acervo?`)) {
+    return;
+  }
+
+  try {
+    await adminApi(`/api/admin/courses/${id}`, { method: "DELETE" });
+    await loadDashboardData();
+  } catch (err) {
+    alert("Erro ao excluir curso: " + err.message);
+  }
+}
+
+// ==========================================
+// INICIALIZAÇÃO
+// ==========================================
+document.addEventListener("DOMContentLoaded", () => {
+  setupLoginForm();
+  setupFilters();
+  setupBulkDriveUpdate();
+  setupTestingTools();
+  setupCourseModal();
+  checkAuth();
+});
