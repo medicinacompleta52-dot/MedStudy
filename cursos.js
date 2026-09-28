@@ -111,16 +111,28 @@ function renderCourses() {
     const icon = course.icon || "◈";
 
     let actionBtn;
-    if (isUserActive && course.driveUrl) {
+    const foldersCount = (course.folders || []).length || 4;
+    
+    if (isUserActive) {
       actionBtn = `
-        <a href="${course.driveUrl}" target="_blank" rel="noopener noreferrer" class="btn-drive" title="Abrir pasta no Google Drive">
-          <span>Abrir no Google Drive</span> <span>↗</span>
+        <a href="sala.html?curso=${course.id}" class="btn-study-site" title="Assistir aulas e ler apostilas diretamente no site">
+          <span>▶ Estudar no Site</span> <span>➔</span>
         </a>
+        <button class="btn-folder-preview" data-preview-course="${course.id}">
+          📁 Ver Pastas do Drive (${foldersCount})
+        </button>
+        ${course.driveUrl ? `<a href="${course.driveUrl}" target="_blank" rel="noopener noreferrer" class="btn-external-subtle">Abrir pasta no Google Drive externo ↗</a>` : ""}
       `;
     } else {
       actionBtn = `
-        <a href="conta.html" class="btn-lock" title="Faça login ou assine para liberar o link">
-          <span>🔒 Exclusivo para Assinantes</span> <span>→</span>
+        <a href="sala.html?curso=${course.id}" class="btn-study-site" title="Acessar sala de aula do curso">
+          <span>▶ Ver Aulas &amp; Conteúdo no Site</span> <span>➔</span>
+        </a>
+        <button class="btn-folder-preview" data-preview-course="${course.id}">
+          📁 Ver Pastas do Drive (${foldersCount})
+        </button>
+        <a href="conta.html" class="btn-lock" style="margin-top:8px;" title="Assine para liberar todos os materiais">
+          <span>🔒 Desbloquear com Assinatura</span> <span>→</span>
         </a>
       `;
     }
@@ -136,7 +148,7 @@ function renderCourses() {
       <div class="card-meta">
         <div class="meta-row">
           <span class="meta-icon">▶</span>
-          <span>${course.modulesCount || 1} módulos / aulas organizadas</span>
+          <span>${course.modulesCount || 1} módulos / aulas no site</span>
         </div>
         <div class="meta-row">
           <span class="meta-icon">📁</span>
@@ -149,6 +161,15 @@ function renderCourses() {
     `;
 
     grid.appendChild(card);
+  });
+
+  // Event listeners para botões de prévia de pastas
+  $$(".btn-folder-preview").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const cId = btn.dataset.previewCourse;
+      const c = allCourses.find((item) => item.id === cId);
+      if (c) openFolderPreviewModal(c);
+    });
   });
 }
 
@@ -262,6 +283,70 @@ function setupModal() {
       saveBtn.disabled = false;
     }
   });
+}
+
+function openFolderPreviewModal(course) {
+  const modal = $("#folder-preview-modal");
+  const cycleEl = $("#preview-modal-cycle");
+  const titleEl = $("#preview-modal-title");
+  const descEl = $("#preview-modal-desc");
+  const studyBtn = $("#preview-modal-study-btn");
+  const listEl = $("#preview-modal-folders-list");
+  const closeBtn = $("#close-folder-modal-btn");
+  const cancelBtn = $("#cancel-folder-modal-btn");
+
+  cycleEl.textContent = course.category || "Medicina";
+  titleEl.textContent = `📁 Pastas do Drive: ${course.title}`;
+  descEl.textContent = course.description || "Videoaulas e apostilas estruturadas no acervo do Google Drive.";
+  studyBtn.href = `sala.html?curso=${course.id}`;
+
+  listEl.replaceChildren();
+
+  const folders = course.folders || [
+    { name: "01 - Videoaulas em HD (1080p)", files: [{ name: "Aula 01 - Introdução.mp4", size: "350 MB" }] },
+    { name: "02 - Apostilas em PDF", files: [{ name: "Apostila_Teorica.pdf", size: "18 MB" }] }
+  ];
+
+  folders.forEach((f) => {
+    const box = document.createElement("div");
+    box.style.background = "#181d1b";
+    box.style.border = "1px solid #28322e";
+    box.style.borderRadius = "8px";
+    box.style.padding = "14px";
+
+    let filesHtml = "";
+    (f.files || []).forEach((file) => {
+      filesHtml += `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid #222926; font-size:12px;">
+          <span style="color:#d8dedb;">📄 ${file.name}</span>
+          <span style="color:#788680; font-family:monospace; font-size:11px;">${file.size || ""}</span>
+        </div>
+      `;
+    });
+
+    box.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <strong style="color:#72d9a3; font-size:13px;">📁 ${f.name}</strong>
+        <span style="font-size:10px; color:#84908a; background:#121614; padding:2px 8px; border-radius:10px;">${(f.files || []).length} arquivos</span>
+      </div>
+      <div style="display:flex; flex-direction:column;">
+        ${filesHtml}
+      </div>
+    `;
+    listEl.appendChild(box);
+  });
+
+  modal.hidden = false;
+
+  function closeModal() {
+    modal.hidden = true;
+  }
+
+  closeBtn.onclick = closeModal;
+  cancelBtn.onclick = closeModal;
+  modal.onclick = (e) => {
+    if (e.target === modal) closeModal();
+  };
 }
 
 async function loadCoursesData() {

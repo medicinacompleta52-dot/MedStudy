@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0d0d">
+  <meta name="description" content="Ambiente de estudos e sala de aula virtual MedStudy — Videoaulas, apostilas e pastas do Google Drive integradas diretamente no site.">
+  <title>Sala de Aula &amp; Conteúdo — MedStudy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="sala.css">
+  <script src="sala.js" defer></script>
+</head>
+<body>
+  <!-- HEADER DA SALA DE AULA -->
+  <header class="classroom-header">
+    <div class="header-left">
+      <a class="brand" href="index.html" aria-label="MedStudy início">
+        <span class="brand-symbol">M</span>
+        <span>med<span>study</span></span>
+      </a>
+      <span class="nav-divider">/</span>
+      <a href="cursos.html" class="nav-back">Catálogo</a>
+      <span class="nav-divider">/</span>
+      <div class="course-selector-wrapper">
+        <select id="course-select" aria-label="Selecionar curso">
+          <!-- Opções preenchidas via sala.js -->
+        </select>
+      </div>
+    </div>
+
+    <div class="header-center">
+      <div class="progress-box">
+        <div class="progress-text">
+          <span id="progress-summary">Progresso: 0%</span>
+          <small id="progress-details">0 de 0 aulas</small>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div id="user-badge" class="user-badge"></div>
+      <a href="conta.html" class="header-btn">Minha Assinatura</a>
+      <a href="cursos.html" class="header-btn header-btn-primary">Ver Todos os Cursos ↗</a>
+    </div>
+  </header>
+
+  <!-- CONTAINER PRINCIPAL: PLAYER + SIDEBAR -->
+  <main class="classroom-layout">
+    
+    <!-- COLUNA PRINCIPAL: PLAYER, LEITOR DE PDF E PASTAS -->
+    <section class="content-stage">
+      
+      <!-- BARRA DE NAVEGAÇÃO DE CONTEÚDO (TABS) -->
+      <nav class="content-tabs" aria-label="Tipos de conteúdo">
+        <button class="tab-btn active" data-tab="video">
+          <span class="tab-icon">📺</span>
+          <span>Videoaula</span>
+        </button>
+        <button class="tab-btn" data-tab="pdf">
+          <span class="tab-icon">📄</span>
+          <span>Apostila &amp; PDF</span>
+        </button>
+        <button class="tab-btn" data-tab="folders">
+          <span class="tab-icon">📁</span>
+          <span>Pastas do Drive no Site</span>
+        </button>
+        <button class="tab-btn" data-tab="quiz">
+          <span class="tab-icon">📝</span>
+          <span>Casos &amp; Questões</span>
+        </button>
+        <button class="tab-btn" data-tab="drive-embed">
+          <span class="tab-icon">☁️</span>
+          <span>Google Drive Integrado</span>
+        </button>
+      </nav>
+
+      <!-- PAINEL 1: PLAYER DE VÍDEO INTEGRADO -->
+      <div class="tab-panel active" id="panel-video">
+        <div class="video-container" id="video-container">
+          <div class="video-screen" id="video-screen">
+            <!-- Canvas / Visualização simulada da aula médica -->
+            <div class="video-overlay" id="video-overlay">
+              <div class="video-badge-live">HD 1080p</div>
+              <div class="video-watermark">MEDSTUDY · CONTEÚDO EXCLUSIVO</div>
+              
+              <div class="video-center-controls">
+                <button class="btn-play-pause-big" id="btn-play-big" aria-label="Reproduzir">▶</button>
+              </div>
+
+              <div class="video-slide-preview">
+                <div class="slide-tag" id="slide-tag">SLIDE DA AULA</div>
+                <h3 id="video-slide-title">Carregando aula...</h3>
+                <p id="video-slide-subtitle">Aguarde o carregamento do conteúdo programático.</p>
+                <div class="slide-keypoints" id="slide-keypoints"></div>
+              </div>
+            </div>
+
+            <!-- Barra de Controles do Player -->
+            <div class="video-bottom-bar">
+              <div class="scrub-bar" id="scrub-bar">
+                <div class="scrub-progress" id="scrub-progress" style="width: 0%"></div>
+              </div>
+              <div class="controls-row">
+                <div class="controls-left">
+                  <button class="ctrl-btn" id="ctrl-play-pause" title="Play/Pause">▶</button>
+                  <button class="ctrl-btn" id="ctrl-rewind" title="Voltar 10s">↺ 10s</button>
+                  <button class="ctrl-btn" id="ctrl-forward" title="Avançar 10s">10s ↻</button>
+                  <div class="time-display">
+                    <span id="time-current">00:00</span> / <span id="time-total">28:00</span>
+                  </div>
+                </div>
+                <div class="controls-right">
+                  <div class="speed-selector">
+                    <button class="speed-btn" id="speed-btn" title="Velocidade de reprodução">1.0x</button>
+                    <div class="speed-dropdown" id="speed-dropdown" hidden>
+                      <button data-speed="0.75">0.75x</button>
+                      <button data-speed="1.0" class="active">1.0x</button>
+                      <button data-speed="1.25">1.25x</button>
+                      <button data-speed="1.5">1.5x</button>
+                      <button data-speed="1.75">1.75x</button>
+                      <button data-speed="2.0">2.0x</button>
+                    </div>
+                  </div>
+                  <button class="ctrl-btn" id="ctrl-mark-done" title="Marcar aula como concluída">✓ Concluir Aula</button>
+                  <button class="ctrl-btn" id="ctrl-fullscreen" title="Tela Cheia">⛶</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DETALHES DA AULA ATUAL & ANOTAÇÕES DO ALUNO -->
+        <div class="lesson-meta-bar">
+          <div class="meta-left">
+            <span class="badge-cycle" id="lesson-cycle-badge">Ciclo Clínico</span>
+            <h1 class="lesson-title" id="current-lesson-title">Carregando aula...</h1>
+            <p class="lesson-summary" id="current-lesson-summary"></p>
+          </div>
+          <div class="meta-right">
+            <button class="btn-action-outline" id="btn-next-lesson">Próxima Aula ➔</button>
+          </div>
+        </div>
+
+        <!-- BLOCO DE CAPÍTULOS E ANOTAÇÕES -->
+        <div class="study-tools-grid">
+          <div class="study-box chapters-box">
+            <h3>📑 Capítulos &amp; Tópicos Desta Aula</h3>
+            <ul class="chapters-list" id="chapters-list">
+              <!-- Renderizado dinamicamente -->
+            </ul>
+          </div>
+          <div class="study-box notes-box">
+            <div class="notes-header">
+              <h3>📝 Minhas Anotações de Estudo</h3>
+              <span class="save-status" id="notes-save-status">Salvo automaticamente</span>
+            </div>
+            <textarea id="student-notes" placeholder="Digite suas notas sobre esta aula, diagnósticos diferenciais, doses e condutas... As anotações ficam salvas no seu navegador."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAINEL 2: LEITOR DE APOSTILAS & DIRETRIZES EM PDF (NO SITE) -->
+      <div class="tab-panel" id="panel-pdf" hidden>
+        <div class="pdf-viewer-container">
+          <div class="pdf-toolbar">
+            <div class="pdf-title-info">
+              <span class="pdf-icon">📄</span>
+              <strong id="pdf-doc-title">Apostila Completa — Teoria &amp; Casos</strong>
+              <small id="pdf-doc-pages">Página 1 de 18</small>
+            </div>
+            <div class="pdf-actions">
+              <button class="pdf-btn" id="pdf-prev" title="Página anterior">◀ Anterior</button>
+              <button class="pdf-btn" id="pdf-next" title="Próxima página">Próxima ▶</button>
+              <span class="pdf-zoom-text" id="pdf-zoom-level">100%</span>
+              <button class="pdf-btn" id="pdf-zoom-out" title="Reduzir zoom">-</button>
+              <button class="pdf-btn" id="pdf-zoom-in" title="Aumentar zoom">+</button>
+              <button class="pdf-btn pdf-btn-download" id="pdf-download-btn">⬇ Baixar PDF Completo</button>
+            </div>
+          </div>
+
+          <div class="pdf-document-body" id="pdf-document-body">
+            <!-- Página renderizada com formatação médica de alta qualidade -->
+            <article class="pdf-page" id="pdf-page-content">
+              <!-- Conteúdo médico rico gerado via sala.js -->
+            </article>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAINEL 3: EXPLORADOR DE PASTAS E ARQUIVOS DO GOOGLE DRIVE (NO SITE) -->
+      <div class="tab-panel" id="panel-folders" hidden>
+        <div class="drive-explorer">
+          <div class="explorer-header">
+            <div>
+              <p class="eyebrow"><span class="live-dot"></span> ACERVO ESTRUTURADO</p>
+              <h2>Pastas do Curso no Google Drive</h2>
+              <p class="explorer-lead">Todos os arquivos organizados por tipo e módulo. Clique para abrir, reproduzir ou visualizar o documento diretamente aqui.</p>
+            </div>
+            <div class="explorer-stats" id="explorer-stats">
+              <!-- Preenchido via sala.js -->
+            </div>
+          </div>
+
+          <!-- ÁRVORE DE PASTAS -->
+          <div class="folders-tree" id="folders-tree">
+            <!-- Pastas e arquivos renderizados dinamicamente -->
+          </div>
+        </div>
+      </div>
+
+      <!-- PAINEL 4: CASOS CLÍNICOS & QUESTÕES DE FIXAÇÃO -->
+      <div class="tab-panel" id="panel-quiz" hidden>
+        <div class="quiz-container">
+          <div class="quiz-header">
+            <span class="badge-cycle">CASO CLÍNICO COMENTADO</span>
+            <h2 id="quiz-title">Desafio Prático da Aula</h2>
+            <p class="quiz-subtitle">Teste seu raciocínio diagnóstico e terapêutico com base no padrão das bancas de Residência Médica (USP, ENARE, SUS-SP).</p>
+          </div>
+
+          <div class="quiz-card" id="quiz-card">
+            <p class="quiz-question" id="quiz-question">Carregando caso clínico...</p>
+            <div class="quiz-options" id="quiz-options">
+              <!-- Opções A, B, C, D -->
+            </div>
+            <div class="quiz-feedback" id="quiz-feedback" hidden>
+              <h4 id="quiz-feedback-title">Resposta</h4>
+              <p id="quiz-feedback-explanation"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAINEL 5: GOOGLE DRIVE EMBUTIDO (IFRAME) -->
+      <div class="tab-panel" id="panel-drive-embed" hidden>
+        <div class="drive-embed-container">
+          <div class="drive-embed-bar">
+            <div class="embed-info">
+              <span>☁️ Visualizador Oficial do Google Drive Embutido</span>
+              <small>Navegue diretamente nas pastas do seu Drive dentro da janela do MedStudy.</small>
+            </div>
+            <div class="embed-actions">
+              <a href="https://drive.google.com/drive/my-drive" target="_blank" rel="noopener noreferrer" class="btn-drive-ext" id="link-external-drive">Abrir em Nova Aba ↗</a>
+            </div>
+          </div>
+          <div class="embed-frame-wrapper">
+            <iframe id="drive-iframe" src="about:blank" title="Visualizador do Google Drive" allow="fullscreen"></iframe>
+            <div class="embed-fallback-notice" id="embed-fallback-notice">
+              <div class="notice-icon">📂</div>
+              <h3>Navegação de Pastas Integrada Ativa</h3>
+              <p>O Google Drive bloqueia visualização de contas pessoais em iframes por política de segurança de cookies terceiros (X-Frame-Options: SAMEORIGIN). Para navegar no conteúdo diretamente dentro do MedStudy, utilize a aba <strong>Pastas do Drive no Site</strong> acima!</p>
+              <button class="btn-switch-folders" id="btn-switch-to-folders">Ir para Pastas no Site ➔</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- SIDEBAR LATERAL: MÓDULOS, AULAS & PROGRESSO -->
+    <aside class="course-sidebar">
+      <div class="sidebar-header">
+        <div class="course-mini-info">
+          <span class="course-symbol-small" id="course-symbol">◈</span>
+          <div>
+            <h2 id="sidebar-course-title">Nome do Curso</h2>
+            <span class="sidebar-cycle" id="sidebar-course-cycle">Ciclo</span>
+          </div>
+        </div>
+        
+        <div class="sidebar-search">
+          <span>⌕</span>
+          <input type="search" id="lesson-search" placeholder="Filtrar aulas ou temas..." aria-label="Filtrar aulas">
+        </div>
+      </div>
+
+      <!-- LISTA DE MÓDULOS E AULAS (ACCORDION) -->
+      <div class="modules-accordion" id="modules-accordion">
+        <!-- Renderizado dinamicamente via sala.js -->
+      </div>
+
+      <!-- FOOTER DA SIDEBAR COM SUPORTE E MATERIAIS -->
+      <div class="sidebar-footer">
+        <div class="help-box">
+          <strong>Precisa de ajuda com o conteúdo?</strong>
+          <p>Tire dúvidas sobre diretrizes e materiais de apoio com os monitores.</p>
+        </div>
+      </div>
+    </aside>
+
+  </main>
+</body>
+</html>

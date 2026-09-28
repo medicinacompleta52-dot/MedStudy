@@ -304,6 +304,45 @@ app.get("/api/courses", async (req, res) => {
   });
 });
 
+app.get("/api/courses/:id", async (req, res) => {
+  let user = null;
+  let userActive = false;
+
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith("Bearer ") && supabaseAdmin) {
+    const token = authHeader.slice(7);
+    try {
+      const { data: userData, error: userError } = await supabaseAdmin.auth.getUser(token);
+      if (!userError && userData?.user) {
+        user = userData.user;
+        const { data: subData } = await supabaseAdmin
+          .from("user_subscriptions")
+          .select("status,plan_id,current_period_end")
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        userActive = Boolean(
+          subData?.status === "active" && (
+            subData.plan_id === "lifetime" ||
+            (subData.current_period_end && new Date(subData.current_period_end) > new Date())
+          )
+        );
+      }
+    } catch (e) {
+      console.error("Error validating auth in /api/courses/:id:", e.message);
+    }
+  }
+
+  const allCourses = await loadCourses();
+  const found = allCourses.find((c) => c.id === req.params.id);
+  if (!found) {
+    return res.status(404).json({ error: "Curso não encontrado." });
+  }
+
+  const course = userActive ? { ...found, locked: false } : { ...found, driveUrl: null, locked: true };
+  res.json({ course, userActive, user });
+});
+
 app.post("/api/courses", requireUser, async (req, res) => {
   const { title, category, area, description, driveUrl, modulesCount, materials, icon, color } = req.body || {};
   if (!title || !driveUrl) {

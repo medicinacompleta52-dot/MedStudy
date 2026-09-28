@@ -9,7 +9,214 @@
     "modulesCount": 48,
     "materials": "Videoaulas + Banco de Traçados de ECG + Apostilas PDF",
     "icon": "♡",
-    "color": "red"
+    "color": "red",
+    "modules": [
+      {
+        "id": "mod-1",
+        "title": "Módulo 1: Fundamentos da Eletrocardiografia & Vetores",
+        "lessons": [
+          {
+            "id": "aula-1-1",
+            "title": "Aula 01: Gênese do ECG, Eixos Elétricos e Derivações",
+            "duration": "28 min",
+            "type": "video",
+            "summary": "Compreensão física e anatômica das derivações periféricas (D1 a D3, aVR, aVL, aVF) e precordiais (V1 a V6). Cálculo do eixo do QRS em segundos.",
+            "keyPoints": [
+              "Triângulo de Einthoven e plano frontal",
+              "Cálculo rápido do eixo QRS em D1 e aVF",
+              "Despolarização ventricular e repolarização"
+            ],
+            "caseStudy": {
+              "question": "Paciente de 58 anos com eixo elétrico a -45° no plano frontal. Qual a provável alteração?",
+              "options": [
+                "Bloqueio divisional anterossuperior esquerdo (BDAS)",
+                "Sobrecarga de ventrículo direito",
+                "Dextrocardia",
+                "Ritmo juncional"
+              ],
+              "answer": 0,
+              "explanation": "Desvio do eixo elétrico para além de -30° com padrão qR em D1/aVL e rS em D2/D3/aVF é o critério diagnóstico clássico de BDAS."
+            }
+          },
+          {
+            "id": "aula-1-2",
+            "title": "Aula 02: Sobrecargas Atriais e Ventriculares",
+            "duration": "32 min",
+            "type": "video",
+            "summary": "Índice de Sokolow-Lyon, critérios de Cornell, onda P mitral e pulmonar.",
+            "keyPoints": [
+              "Sokolow-Lyon > 35mm para SVE",
+              "Onda P > 2.5mm em D2 (SAD) e fase negativa em V1 de Morris (SAE)"
+            ],
+            "caseStudy": {
+              "question": "Qual critério define sobrecarga ventricular esquerda por Sokolow-Lyon?",
+              "options": [
+                "S em V1 + R em V5/V6 >= 35 mm",
+                "R em D1 > 10 mm",
+                "Onda P > 3 mm",
+                "QRS alargado > 160 ms"
+              ],
+              "answer": 0,
+              "explanation": "O índice de Sokolow-Lyon soma a amplitude da onda S de V1 com a onda R de V5 ou V6; valor >= 35 mm sela SVE."
+            }
+          },
+          {
+            "id": "aula-1-3",
+            "title": "Aula 03: Bloqueios de Ramo (BRD & BRE) e Fasciculares",
+            "duration": "35 min",
+            "type": "video",
+            "summary": "Critérios de BRD (padrão rsR' em V1) e BRE (torre em D1/V6), bloqueios divisionais e repercussões.",
+            "keyPoints": [
+              "QRS >= 120 ms define bloqueio completo",
+              "BRE novo em dor torácica aguda equivale a supra de ST"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-2",
+        "title": "Módulo 2: Síndromes Coronarianas Agudas (SCA)",
+        "lessons": [
+          {
+            "id": "aula-2-1",
+            "title": "Aula 04: SCA com Supradesnivelamento de ST (IAMCSST)",
+            "duration": "42 min",
+            "type": "video",
+            "summary": "Critérios milimétricos de supra por derivação, parede acometida e artéria culpada. Protocolo de trombólise vs angioplastia primária.",
+            "keyPoints": [
+              "Supra >= 1mm em 2 derivações contíguas (ou critérios específicos de V2-V3)",
+              "Paredes: Anterior (DA), Inferior (CD), Lateral (Cx)"
+            ]
+          },
+          {
+            "id": "aula-2-2",
+            "title": "Aula 05: SCA Sem Supra & Angina Instável",
+            "duration": "38 min",
+            "type": "video",
+            "summary": "Inversão de T simétrica, infra de ST dinâmico, troponina ultrassensível e escores TIMI / GRACE.",
+            "keyPoints": [
+              "Infra de ST indica isquemia subendocárdica",
+              "Anticoagulação plena e dupla antiagregação"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-3",
+        "title": "Módulo 3: Arritmias Cardíacas & ACLS na Prática",
+        "lessons": [
+          {
+            "id": "aula-3-1",
+            "title": "Aula 06: Taquiarritmias com QRS Estreito e Largo",
+            "duration": "45 min",
+            "type": "video",
+            "summary": "FA, Flutter, TPSV, TV monomórfica e polimórfica (Torsades). Critérios de estabilidade hemodinâmica e conduta.",
+            "keyPoints": [
+              "Instabilidade = Cardioversão elétrica sincronizada imediata",
+              "Estável com QRS estreito regular: Manobra vagal + Adenosina"
+            ]
+          },
+          {
+            "id": "aula-3-2",
+            "title": "Aula 07: Bradiarritmias e BAVs (1º, 2º e 3º grau)",
+            "duration": "36 min",
+            "type": "video",
+            "summary": "BAV Mobitz I (Wenckebach) vs Mobitz II e BAV Total (dissociação AV). Indicação de atropina e marca-passo transcutâneo.",
+            "keyPoints": [
+              "BAV de alto grau com escape ventricular exige marca-passo",
+              "Atropina 1mg IV até 3mg"
+            ]
+          }
+        ]
+      }
+    ],
+    "folders": [
+      {
+        "name": "01 - Videoaulas em HD (1080p)",
+        "files": [
+          {
+            "name": "Aula 01 - Introdução e Princípios Fundamentais.mp4",
+            "size": "380 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 02 - Fisiopatologia e Mecanismos Etiológicos.mp4",
+            "size": "420 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 03 - Propedêutica e Exame Físico Específico.mp4",
+            "size": "350 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 04 - Terapêutica e Prescrição no Ambulatório.mp4",
+            "size": "490 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 05 - Condutas de Emergência e Descompensações.mp4",
+            "size": "510 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 06 - Casos Clínicos Discutidos & Provas.mp4",
+            "size": "460 MB",
+            "type": "video"
+          }
+        ]
+      },
+      {
+        "name": "02 - Apostilas & Diretrizes Oficiais (PDF)",
+        "files": [
+          {
+            "name": "Apostila Teórica Completa - Cardiologia Clínica & ECG na Prática.pdf",
+            "size": "24.5 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Diretrizes Brasileiras e Internacionais 2026.pdf",
+            "size": "12.8 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Resumo Esquematizado de Alta Fixação.pdf",
+            "size": "6.4 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "03 - Casos Clínicos & Banco de Questões Comentadas",
+        "files": [
+          {
+            "name": "Banco com 100 Questões Comentadas de Residência.pdf",
+            "size": "15.2 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Caderno de Casos Clínicos e Discussão Terapêutica.pdf",
+            "size": "9.8 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "04 - Slides das Aulas & Fluxogramas Práticos",
+        "files": [
+          {
+            "name": "Slides Completos das Videoaulas.pdf",
+            "size": "34.0 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Fluxogramas de Bolso para Plantão e Ambulatório.pdf",
+            "size": "4.1 MB",
+            "type": "pdf"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "clinica-medica-sindromes",
@@ -21,7 +228,207 @@
     "modulesCount": 72,
     "materials": "Videoaulas + Casos Clínicos Discutidos + Resumos Direcionados",
     "icon": "⌖",
-    "color": "violet"
+    "color": "violet",
+    "modules": [
+      {
+        "id": "mod-1",
+        "title": "Módulo 1: Fundamentos, Fisiopatologia & Diagnóstico",
+        "lessons": [
+          {
+            "id": "clinica-medica-sindromes-a1",
+            "title": "Aula 01: Introdução e Diretrizes de Clínica Médica",
+            "duration": "30 min",
+            "type": "video",
+            "summary": "Revisão dos conceitos fundamentais de Clínica Médica — Grandes Síndromes, epidemiologia e critérios diagnósticos segundo consensos mundiais.",
+            "keyPoints": [
+              "Conceitos basilares e definições clínicas",
+              "Indicações de rastreio e investigação laboratorial",
+              "Diagnóstico diferencial"
+            ],
+            "caseStudy": {
+              "question": "Em relação à propedêutica e abordagem inicial em Clínica Médica, qual a conduta prioritária indicada pelas diretrizes?",
+              "options": [
+                "Investigação laboratorial e estratificação de risco individualizada",
+                "Iniciar antibioticoterapia empírica em todos os pacientes",
+                "Encaminhamento cirúrgico imediato sem exames prévios",
+                "Aguardar evolução sintomática por 6 meses"
+              ],
+              "answer": 0,
+              "explanation": "As diretrizes clínicas preconizam estratificação de risco imediata e investigação diagnóstica orientada antes de intervenções invasivas desnecessárias."
+            }
+          },
+          {
+            "id": "clinica-medica-sindromes-a2",
+            "title": "Aula 02: Raciocínio Clínico e Diagnóstico Diferencial",
+            "duration": "35 min",
+            "type": "video",
+            "summary": "Abordagem sindrômica e passos sistemáticos para chegar à etiologia correta em Clínica Médica.",
+            "keyPoints": [
+              "História clínica direcionada",
+              "Exame físico focado",
+              "Exames de imagem e laboratoriais de primeira linha"
+            ]
+          },
+          {
+            "id": "clinica-medica-sindromes-a3",
+            "title": "Aula 03: Propedêutica Armada e Interpretação de Exames",
+            "duration": "28 min",
+            "type": "video",
+            "summary": "Como solicitar e interpretar os exames complementares essenciais em Clínica Médica.",
+            "keyPoints": [
+              "Sensibilidade e especificidade dos testes",
+              "Armadilhas diagnósticas mais frequentes"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-2",
+        "title": "Módulo 2: Terapêutica, Farmacologia & Prescrição Prática",
+        "lessons": [
+          {
+            "id": "clinica-medica-sindromes-a4",
+            "title": "Aula 04: Manejo Clínico e Esquemas Medicamentosos",
+            "duration": "38 min",
+            "type": "video",
+            "summary": "Prescrição passo a passo, doses de ataque e manutenção, efeitos adversos e ajustes em disfunção renal ou hepática.",
+            "keyPoints": [
+              "Drogas de primeira linha e doses usuais",
+              "Interações medicamentosas graves",
+              "Metas de controle clínico"
+            ]
+          },
+          {
+            "id": "clinica-medica-sindromes-a5",
+            "title": "Aula 05: Casos Complexos e Falha Terapêutica",
+            "duration": "32 min",
+            "type": "video",
+            "summary": "Como conduzir pacientes refratários ao tratamento inicial e quando trocar esquemas terapêuticos.",
+            "keyPoints": [
+              "Critérios de falha terapêutica",
+              "Associações medicamentosas seguras",
+              "Critérios de internação"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-3",
+        "title": "Módulo 3: Emergências, Casos Práticos de Plantão & Questões",
+        "lessons": [
+          {
+            "id": "clinica-medica-sindromes-a6",
+            "title": "Aula 06: Condutas em Situações Críticas e Descompensações",
+            "duration": "40 min",
+            "type": "video",
+            "summary": "O que fazer nos primeiros 15 minutos de descompensação aguda de Clínica Médica no pronto-socorro.",
+            "keyPoints": [
+              "Medidas imediatas 'beira do leito'",
+              "Drogas de ação rápida",
+              "Critérios para vaga de UTI"
+            ]
+          },
+          {
+            "id": "clinica-medica-sindromes-a7",
+            "title": "Aula 07: Discussão de Casos Reais & Resolução de Questões de Prova",
+            "duration": "45 min",
+            "type": "video",
+            "summary": "Resolução comentada de questões de concursos de Residência Médica (USP, ENARE, SUS-SP) e Revalida.",
+            "keyPoints": [
+              "Pegadinhas mais comuns de bancas examinadoras",
+              "Memorização rápida de diretrizes"
+            ]
+          }
+        ]
+      }
+    ],
+    "folders": [
+      {
+        "name": "01 - Videoaulas em HD (1080p)",
+        "files": [
+          {
+            "name": "Aula 01 - Introdução e Princípios Fundamentais.mp4",
+            "size": "380 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 02 - Fisiopatologia e Mecanismos Etiológicos.mp4",
+            "size": "420 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 03 - Propedêutica e Exame Físico Específico.mp4",
+            "size": "350 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 04 - Terapêutica e Prescrição no Ambulatório.mp4",
+            "size": "490 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 05 - Condutas de Emergência e Descompensações.mp4",
+            "size": "510 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 06 - Casos Clínicos Discutidos & Provas.mp4",
+            "size": "460 MB",
+            "type": "video"
+          }
+        ]
+      },
+      {
+        "name": "02 - Apostilas & Diretrizes Oficiais (PDF)",
+        "files": [
+          {
+            "name": "Apostila Teórica Completa - Clínica Médica — Grandes Síndromes.pdf",
+            "size": "24.5 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Diretrizes Brasileiras e Internacionais 2026.pdf",
+            "size": "12.8 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Resumo Esquematizado de Alta Fixação.pdf",
+            "size": "6.4 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "03 - Casos Clínicos & Banco de Questões Comentadas",
+        "files": [
+          {
+            "name": "Banco com 100 Questões Comentadas de Residência.pdf",
+            "size": "15.2 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Caderno de Casos Clínicos e Discussão Terapêutica.pdf",
+            "size": "9.8 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "04 - Slides das Aulas & Fluxogramas Práticos",
+        "files": [
+          {
+            "name": "Slides Completos das Videoaulas.pdf",
+            "size": "34.0 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Fluxogramas de Bolso para Plantão e Ambulatório.pdf",
+            "size": "4.1 MB",
+            "type": "pdf"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "emergencia-trauma-acls",
@@ -33,7 +440,182 @@
     "modulesCount": 56,
     "materials": "Videoaulas + Fluxogramas de Plantão + Protocolos Rápidos de Emergência",
     "icon": "＋",
-    "color": "orange"
+    "color": "orange",
+    "modules": [
+      {
+        "id": "mod-1",
+        "title": "Módulo 1: Suporte Avançado de Vida em Cardiologia (ACLS)",
+        "lessons": [
+          {
+            "id": "aula-em-1",
+            "title": "Aula 01: Parada Cardiorrespiratória — Ritmos Chocáveis (FV / TVSP)",
+            "duration": "40 min",
+            "type": "video",
+            "summary": "Cadeia de sobrevivência, compressões torácicas de alta qualidade, desfibrilação precoce (200J bifásico), adrenalina e amiodarona.",
+            "keyPoints": [
+              "Ritmo chocável: Choque imediato + 2 min RCP",
+              "Adrenalina 1mg a cada 3-5 min a partir do 2º choque",
+              "Amiodarona 300mg no 3º choque, 150mg no 5º"
+            ]
+          },
+          {
+            "id": "aula-em-2",
+            "title": "Aula 02: Parada em Ritmos Não-Chocáveis (AESP e Assistolia)",
+            "duration": "35 min",
+            "type": "video",
+            "summary": "Manejo imediato sem choque, busca ativa dos 5Hs e 5Ts (hipóxia, hipovolemia, hidrogênio/acidose, hipo/hipercalemia, hipotermia, tensão pneumotórax, tamponamento, toxinas, trombose coronária, tromboembolismo pulmonar).",
+            "keyPoints": [
+              "AESP/Assistolia não choca",
+              "Adrenalina o mais rápido possível",
+              "Investigar e reverter causa de base"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-2",
+        "title": "Módulo 2: Manejo Avançado de Vias Aéreas e Intubação (IOT)",
+        "lessons": [
+          {
+            "id": "aula-em-3",
+            "title": "Aula 03: Sequência Rápida de Intubação (SRI: os 7 'Ps')",
+            "duration": "44 min",
+            "type": "video",
+            "summary": "Preparação, pré-oxigenação, pré-tratamento, paralisia com indução, posicionamento, passagem do tubo e pós-intubação.",
+            "keyPoints": [
+              "Hipnóticos: Etomidato, Quetamina, Propofol",
+              "Bloqueadores neuromusculares: Succinilcolina e Rocurônio"
+            ]
+          },
+          {
+            "id": "aula-em-4",
+            "title": "Aula 04: Via Aérea Difícil & Dispositivos Supraglóticos",
+            "duration": "30 min",
+            "type": "video",
+            "summary": "Escore LEMON, máscara laríngea, bougie, videolaringoscopia e cricotireoidostomia cirúrgica de resgate.",
+            "keyPoints": [
+              "Cenário 'não intubo, não ventilo' exige crico",
+              "Bougie como primeira escolha na visualização Cormack 2b/3"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-3",
+        "title": "Módulo 3: Choque, Sepse & Atendimento Inicial ao Politraumatizado (ATLS)",
+        "lessons": [
+          {
+            "id": "aula-em-5",
+            "title": "Aula 05: Abordagem Sistematizada do Choque Circulatório",
+            "duration": "38 min",
+            "type": "video",
+            "summary": "Classificação em hipovolêmico, cardiogênico, obstrutivo e distributivo. Monitorização hemodinâmica, reposição volêmica e drogas vasoativas (noradrenalina, vasopressina, dobutamina).",
+            "keyPoints": [
+              "Lactato e delta-pCO2 como guias de perfusão",
+              "Noradrenalina precoce no choque séptico"
+            ]
+          },
+          {
+            "id": "aula-em-6",
+            "title": "Aula 06: ATLS 10ª Edição — Avaliação Primária (ABCDE) e Ressuscitação",
+            "duration": "50 min",
+            "type": "video",
+            "summary": "X-ABCDE: Hemorragia exanguinante, vias aéreas com coluna cervical, respiração/tórax, circulação e choque, déficit neurológico (Glasgow) e exposição com controle de hipotermia.",
+            "keyPoints": [
+              "Protocolo de transfusão maciça 1:1:1",
+              "Ácido tranexâmico (TXA) na primeira hora pós-trauma"
+            ]
+          }
+        ]
+      }
+    ],
+    "folders": [
+      {
+        "name": "01 - Videoaulas em HD (1080p)",
+        "files": [
+          {
+            "name": "Aula 01 - Introdução e Princípios Fundamentais.mp4",
+            "size": "380 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 02 - Fisiopatologia e Mecanismos Etiológicos.mp4",
+            "size": "420 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 03 - Propedêutica e Exame Físico Específico.mp4",
+            "size": "350 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 04 - Terapêutica e Prescrição no Ambulatório.mp4",
+            "size": "490 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 05 - Condutas de Emergência e Descompensações.mp4",
+            "size": "510 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 06 - Casos Clínicos Discutidos & Provas.mp4",
+            "size": "460 MB",
+            "type": "video"
+          }
+        ]
+      },
+      {
+        "name": "02 - Apostilas & Diretrizes Oficiais (PDF)",
+        "files": [
+          {
+            "name": "Apostila Teórica Completa - Medicina de Emergência, Trauma & Suporte Avançado (ACLS/ATLS).pdf",
+            "size": "24.5 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Diretrizes Brasileiras e Internacionais 2026.pdf",
+            "size": "12.8 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Resumo Esquematizado de Alta Fixação.pdf",
+            "size": "6.4 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "03 - Casos Clínicos & Banco de Questões Comentadas",
+        "files": [
+          {
+            "name": "Banco com 100 Questões Comentadas de Residência.pdf",
+            "size": "15.2 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Caderno de Casos Clínicos e Discussão Terapêutica.pdf",
+            "size": "9.8 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "04 - Slides das Aulas & Fluxogramas Práticos",
+        "files": [
+          {
+            "name": "Slides Completos das Videoaulas.pdf",
+            "size": "34.0 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Fluxogramas de Bolso para Plantão e Ambulatório.pdf",
+            "size": "4.1 MB",
+            "type": "pdf"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "cirurgia-geral-tecnica",
@@ -45,7 +627,207 @@
     "modulesCount": 44,
     "materials": "Videoaulas + Vídeos de Demonstração Cirúrgica + Guias de Bolso",
     "icon": "⚔",
-    "color": "blue"
+    "color": "blue",
+    "modules": [
+      {
+        "id": "mod-1",
+        "title": "Módulo 1: Fundamentos, Fisiopatologia & Diagnóstico",
+        "lessons": [
+          {
+            "id": "cirurgia-geral-tecnica-a1",
+            "title": "Aula 01: Introdução e Diretrizes de Cirurgia",
+            "duration": "30 min",
+            "type": "video",
+            "summary": "Revisão dos conceitos fundamentais de Cirurgia Geral, Abdome Agudo & Técnica Operatória, epidemiologia e critérios diagnósticos segundo consensos mundiais.",
+            "keyPoints": [
+              "Conceitos basilares e definições clínicas",
+              "Indicações de rastreio e investigação laboratorial",
+              "Diagnóstico diferencial"
+            ],
+            "caseStudy": {
+              "question": "Em relação à propedêutica e abordagem inicial em Cirurgia, qual a conduta prioritária indicada pelas diretrizes?",
+              "options": [
+                "Investigação laboratorial e estratificação de risco individualizada",
+                "Iniciar antibioticoterapia empírica em todos os pacientes",
+                "Encaminhamento cirúrgico imediato sem exames prévios",
+                "Aguardar evolução sintomática por 6 meses"
+              ],
+              "answer": 0,
+              "explanation": "As diretrizes clínicas preconizam estratificação de risco imediata e investigação diagnóstica orientada antes de intervenções invasivas desnecessárias."
+            }
+          },
+          {
+            "id": "cirurgia-geral-tecnica-a2",
+            "title": "Aula 02: Raciocínio Clínico e Diagnóstico Diferencial",
+            "duration": "35 min",
+            "type": "video",
+            "summary": "Abordagem sindrômica e passos sistemáticos para chegar à etiologia correta em Cirurgia.",
+            "keyPoints": [
+              "História clínica direcionada",
+              "Exame físico focado",
+              "Exames de imagem e laboratoriais de primeira linha"
+            ]
+          },
+          {
+            "id": "cirurgia-geral-tecnica-a3",
+            "title": "Aula 03: Propedêutica Armada e Interpretação de Exames",
+            "duration": "28 min",
+            "type": "video",
+            "summary": "Como solicitar e interpretar os exames complementares essenciais em Cirurgia.",
+            "keyPoints": [
+              "Sensibilidade e especificidade dos testes",
+              "Armadilhas diagnósticas mais frequentes"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-2",
+        "title": "Módulo 2: Terapêutica, Farmacologia & Prescrição Prática",
+        "lessons": [
+          {
+            "id": "cirurgia-geral-tecnica-a4",
+            "title": "Aula 04: Manejo Clínico e Esquemas Medicamentosos",
+            "duration": "38 min",
+            "type": "video",
+            "summary": "Prescrição passo a passo, doses de ataque e manutenção, efeitos adversos e ajustes em disfunção renal ou hepática.",
+            "keyPoints": [
+              "Drogas de primeira linha e doses usuais",
+              "Interações medicamentosas graves",
+              "Metas de controle clínico"
+            ]
+          },
+          {
+            "id": "cirurgia-geral-tecnica-a5",
+            "title": "Aula 05: Casos Complexos e Falha Terapêutica",
+            "duration": "32 min",
+            "type": "video",
+            "summary": "Como conduzir pacientes refratários ao tratamento inicial e quando trocar esquemas terapêuticos.",
+            "keyPoints": [
+              "Critérios de falha terapêutica",
+              "Associações medicamentosas seguras",
+              "Critérios de internação"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-3",
+        "title": "Módulo 3: Emergências, Casos Práticos de Plantão & Questões",
+        "lessons": [
+          {
+            "id": "cirurgia-geral-tecnica-a6",
+            "title": "Aula 06: Condutas em Situações Críticas e Descompensações",
+            "duration": "40 min",
+            "type": "video",
+            "summary": "O que fazer nos primeiros 15 minutos de descompensação aguda de Cirurgia no pronto-socorro.",
+            "keyPoints": [
+              "Medidas imediatas 'beira do leito'",
+              "Drogas de ação rápida",
+              "Critérios para vaga de UTI"
+            ]
+          },
+          {
+            "id": "cirurgia-geral-tecnica-a7",
+            "title": "Aula 07: Discussão de Casos Reais & Resolução de Questões de Prova",
+            "duration": "45 min",
+            "type": "video",
+            "summary": "Resolução comentada de questões de concursos de Residência Médica (USP, ENARE, SUS-SP) e Revalida.",
+            "keyPoints": [
+              "Pegadinhas mais comuns de bancas examinadoras",
+              "Memorização rápida de diretrizes"
+            ]
+          }
+        ]
+      }
+    ],
+    "folders": [
+      {
+        "name": "01 - Videoaulas em HD (1080p)",
+        "files": [
+          {
+            "name": "Aula 01 - Introdução e Princípios Fundamentais.mp4",
+            "size": "380 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 02 - Fisiopatologia e Mecanismos Etiológicos.mp4",
+            "size": "420 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 03 - Propedêutica e Exame Físico Específico.mp4",
+            "size": "350 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 04 - Terapêutica e Prescrição no Ambulatório.mp4",
+            "size": "490 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 05 - Condutas de Emergência e Descompensações.mp4",
+            "size": "510 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 06 - Casos Clínicos Discutidos & Provas.mp4",
+            "size": "460 MB",
+            "type": "video"
+          }
+        ]
+      },
+      {
+        "name": "02 - Apostilas & Diretrizes Oficiais (PDF)",
+        "files": [
+          {
+            "name": "Apostila Teórica Completa - Cirurgia Geral, Abdome Agudo & Técnica Operatória.pdf",
+            "size": "24.5 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Diretrizes Brasileiras e Internacionais 2026.pdf",
+            "size": "12.8 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Resumo Esquematizado de Alta Fixação.pdf",
+            "size": "6.4 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "03 - Casos Clínicos & Banco de Questões Comentadas",
+        "files": [
+          {
+            "name": "Banco com 100 Questões Comentadas de Residência.pdf",
+            "size": "15.2 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Caderno de Casos Clínicos e Discussão Terapêutica.pdf",
+            "size": "9.8 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "04 - Slides das Aulas & Fluxogramas Práticos",
+        "files": [
+          {
+            "name": "Slides Completos das Videoaulas.pdf",
+            "size": "34.0 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Fluxogramas de Bolso para Plantão e Ambulatório.pdf",
+            "size": "4.1 MB",
+            "type": "pdf"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "pediatria-puericultura",
@@ -57,7 +839,207 @@
     "modulesCount": 50,
     "materials": "Videoaulas + Caderno de Doses Pediátricas + Casos Reais",
     "icon": "✿",
-    "color": "pink"
+    "color": "pink",
+    "modules": [
+      {
+        "id": "mod-1",
+        "title": "Módulo 1: Fundamentos, Fisiopatologia & Diagnóstico",
+        "lessons": [
+          {
+            "id": "pediatria-puericultura-a1",
+            "title": "Aula 01: Introdução e Diretrizes de Pediatria",
+            "duration": "30 min",
+            "type": "video",
+            "summary": "Revisão dos conceitos fundamentais de Pediatria Integral & Puericultura, epidemiologia e critérios diagnósticos segundo consensos mundiais.",
+            "keyPoints": [
+              "Conceitos basilares e definições clínicas",
+              "Indicações de rastreio e investigação laboratorial",
+              "Diagnóstico diferencial"
+            ],
+            "caseStudy": {
+              "question": "Em relação à propedêutica e abordagem inicial em Pediatria, qual a conduta prioritária indicada pelas diretrizes?",
+              "options": [
+                "Investigação laboratorial e estratificação de risco individualizada",
+                "Iniciar antibioticoterapia empírica em todos os pacientes",
+                "Encaminhamento cirúrgico imediato sem exames prévios",
+                "Aguardar evolução sintomática por 6 meses"
+              ],
+              "answer": 0,
+              "explanation": "As diretrizes clínicas preconizam estratificação de risco imediata e investigação diagnóstica orientada antes de intervenções invasivas desnecessárias."
+            }
+          },
+          {
+            "id": "pediatria-puericultura-a2",
+            "title": "Aula 02: Raciocínio Clínico e Diagnóstico Diferencial",
+            "duration": "35 min",
+            "type": "video",
+            "summary": "Abordagem sindrômica e passos sistemáticos para chegar à etiologia correta em Pediatria.",
+            "keyPoints": [
+              "História clínica direcionada",
+              "Exame físico focado",
+              "Exames de imagem e laboratoriais de primeira linha"
+            ]
+          },
+          {
+            "id": "pediatria-puericultura-a3",
+            "title": "Aula 03: Propedêutica Armada e Interpretação de Exames",
+            "duration": "28 min",
+            "type": "video",
+            "summary": "Como solicitar e interpretar os exames complementares essenciais em Pediatria.",
+            "keyPoints": [
+              "Sensibilidade e especificidade dos testes",
+              "Armadilhas diagnósticas mais frequentes"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-2",
+        "title": "Módulo 2: Terapêutica, Farmacologia & Prescrição Prática",
+        "lessons": [
+          {
+            "id": "pediatria-puericultura-a4",
+            "title": "Aula 04: Manejo Clínico e Esquemas Medicamentosos",
+            "duration": "38 min",
+            "type": "video",
+            "summary": "Prescrição passo a passo, doses de ataque e manutenção, efeitos adversos e ajustes em disfunção renal ou hepática.",
+            "keyPoints": [
+              "Drogas de primeira linha e doses usuais",
+              "Interações medicamentosas graves",
+              "Metas de controle clínico"
+            ]
+          },
+          {
+            "id": "pediatria-puericultura-a5",
+            "title": "Aula 05: Casos Complexos e Falha Terapêutica",
+            "duration": "32 min",
+            "type": "video",
+            "summary": "Como conduzir pacientes refratários ao tratamento inicial e quando trocar esquemas terapêuticos.",
+            "keyPoints": [
+              "Critérios de falha terapêutica",
+              "Associações medicamentosas seguras",
+              "Critérios de internação"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-3",
+        "title": "Módulo 3: Emergências, Casos Práticos de Plantão & Questões",
+        "lessons": [
+          {
+            "id": "pediatria-puericultura-a6",
+            "title": "Aula 06: Condutas em Situações Críticas e Descompensações",
+            "duration": "40 min",
+            "type": "video",
+            "summary": "O que fazer nos primeiros 15 minutos de descompensação aguda de Pediatria no pronto-socorro.",
+            "keyPoints": [
+              "Medidas imediatas 'beira do leito'",
+              "Drogas de ação rápida",
+              "Critérios para vaga de UTI"
+            ]
+          },
+          {
+            "id": "pediatria-puericultura-a7",
+            "title": "Aula 07: Discussão de Casos Reais & Resolução de Questões de Prova",
+            "duration": "45 min",
+            "type": "video",
+            "summary": "Resolução comentada de questões de concursos de Residência Médica (USP, ENARE, SUS-SP) e Revalida.",
+            "keyPoints": [
+              "Pegadinhas mais comuns de bancas examinadoras",
+              "Memorização rápida de diretrizes"
+            ]
+          }
+        ]
+      }
+    ],
+    "folders": [
+      {
+        "name": "01 - Videoaulas em HD (1080p)",
+        "files": [
+          {
+            "name": "Aula 01 - Introdução e Princípios Fundamentais.mp4",
+            "size": "380 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 02 - Fisiopatologia e Mecanismos Etiológicos.mp4",
+            "size": "420 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 03 - Propedêutica e Exame Físico Específico.mp4",
+            "size": "350 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 04 - Terapêutica e Prescrição no Ambulatório.mp4",
+            "size": "490 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 05 - Condutas de Emergência e Descompensações.mp4",
+            "size": "510 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 06 - Casos Clínicos Discutidos & Provas.mp4",
+            "size": "460 MB",
+            "type": "video"
+          }
+        ]
+      },
+      {
+        "name": "02 - Apostilas & Diretrizes Oficiais (PDF)",
+        "files": [
+          {
+            "name": "Apostila Teórica Completa - Pediatria Integral & Puericultura.pdf",
+            "size": "24.5 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Diretrizes Brasileiras e Internacionais 2026.pdf",
+            "size": "12.8 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Resumo Esquematizado de Alta Fixação.pdf",
+            "size": "6.4 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "03 - Casos Clínicos & Banco de Questões Comentadas",
+        "files": [
+          {
+            "name": "Banco com 100 Questões Comentadas de Residência.pdf",
+            "size": "15.2 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Caderno de Casos Clínicos e Discussão Terapêutica.pdf",
+            "size": "9.8 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "04 - Slides das Aulas & Fluxogramas Práticos",
+        "files": [
+          {
+            "name": "Slides Completos das Videoaulas.pdf",
+            "size": "34.0 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Fluxogramas de Bolso para Plantão e Ambulatório.pdf",
+            "size": "4.1 MB",
+            "type": "pdf"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "ginecologia-obstetricia",
@@ -69,7 +1051,207 @@
     "modulesCount": 52,
     "materials": "Videoaulas + Manuais Febrasgo + Protocolos de Maternidade",
     "icon": "◉",
-    "color": "teal"
+    "color": "teal",
+    "modules": [
+      {
+        "id": "mod-1",
+        "title": "Módulo 1: Fundamentos, Fisiopatologia & Diagnóstico",
+        "lessons": [
+          {
+            "id": "ginecologia-obstetricia-a1",
+            "title": "Aula 01: Introdução e Diretrizes de Ginecologia e Obstetrícia",
+            "duration": "30 min",
+            "type": "video",
+            "summary": "Revisão dos conceitos fundamentais de Ginecologia & Obstetrícia Essencial, epidemiologia e critérios diagnósticos segundo consensos mundiais.",
+            "keyPoints": [
+              "Conceitos basilares e definições clínicas",
+              "Indicações de rastreio e investigação laboratorial",
+              "Diagnóstico diferencial"
+            ],
+            "caseStudy": {
+              "question": "Em relação à propedêutica e abordagem inicial em Ginecologia e Obstetrícia, qual a conduta prioritária indicada pelas diretrizes?",
+              "options": [
+                "Investigação laboratorial e estratificação de risco individualizada",
+                "Iniciar antibioticoterapia empírica em todos os pacientes",
+                "Encaminhamento cirúrgico imediato sem exames prévios",
+                "Aguardar evolução sintomática por 6 meses"
+              ],
+              "answer": 0,
+              "explanation": "As diretrizes clínicas preconizam estratificação de risco imediata e investigação diagnóstica orientada antes de intervenções invasivas desnecessárias."
+            }
+          },
+          {
+            "id": "ginecologia-obstetricia-a2",
+            "title": "Aula 02: Raciocínio Clínico e Diagnóstico Diferencial",
+            "duration": "35 min",
+            "type": "video",
+            "summary": "Abordagem sindrômica e passos sistemáticos para chegar à etiologia correta em Ginecologia e Obstetrícia.",
+            "keyPoints": [
+              "História clínica direcionada",
+              "Exame físico focado",
+              "Exames de imagem e laboratoriais de primeira linha"
+            ]
+          },
+          {
+            "id": "ginecologia-obstetricia-a3",
+            "title": "Aula 03: Propedêutica Armada e Interpretação de Exames",
+            "duration": "28 min",
+            "type": "video",
+            "summary": "Como solicitar e interpretar os exames complementares essenciais em Ginecologia e Obstetrícia.",
+            "keyPoints": [
+              "Sensibilidade e especificidade dos testes",
+              "Armadilhas diagnósticas mais frequentes"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-2",
+        "title": "Módulo 2: Terapêutica, Farmacologia & Prescrição Prática",
+        "lessons": [
+          {
+            "id": "ginecologia-obstetricia-a4",
+            "title": "Aula 04: Manejo Clínico e Esquemas Medicamentosos",
+            "duration": "38 min",
+            "type": "video",
+            "summary": "Prescrição passo a passo, doses de ataque e manutenção, efeitos adversos e ajustes em disfunção renal ou hepática.",
+            "keyPoints": [
+              "Drogas de primeira linha e doses usuais",
+              "Interações medicamentosas graves",
+              "Metas de controle clínico"
+            ]
+          },
+          {
+            "id": "ginecologia-obstetricia-a5",
+            "title": "Aula 05: Casos Complexos e Falha Terapêutica",
+            "duration": "32 min",
+            "type": "video",
+            "summary": "Como conduzir pacientes refratários ao tratamento inicial e quando trocar esquemas terapêuticos.",
+            "keyPoints": [
+              "Critérios de falha terapêutica",
+              "Associações medicamentosas seguras",
+              "Critérios de internação"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-3",
+        "title": "Módulo 3: Emergências, Casos Práticos de Plantão & Questões",
+        "lessons": [
+          {
+            "id": "ginecologia-obstetricia-a6",
+            "title": "Aula 06: Condutas em Situações Críticas e Descompensações",
+            "duration": "40 min",
+            "type": "video",
+            "summary": "O que fazer nos primeiros 15 minutos de descompensação aguda de Ginecologia e Obstetrícia no pronto-socorro.",
+            "keyPoints": [
+              "Medidas imediatas 'beira do leito'",
+              "Drogas de ação rápida",
+              "Critérios para vaga de UTI"
+            ]
+          },
+          {
+            "id": "ginecologia-obstetricia-a7",
+            "title": "Aula 07: Discussão de Casos Reais & Resolução de Questões de Prova",
+            "duration": "45 min",
+            "type": "video",
+            "summary": "Resolução comentada de questões de concursos de Residência Médica (USP, ENARE, SUS-SP) e Revalida.",
+            "keyPoints": [
+              "Pegadinhas mais comuns de bancas examinadoras",
+              "Memorização rápida de diretrizes"
+            ]
+          }
+        ]
+      }
+    ],
+    "folders": [
+      {
+        "name": "01 - Videoaulas em HD (1080p)",
+        "files": [
+          {
+            "name": "Aula 01 - Introdução e Princípios Fundamentais.mp4",
+            "size": "380 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 02 - Fisiopatologia e Mecanismos Etiológicos.mp4",
+            "size": "420 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 03 - Propedêutica e Exame Físico Específico.mp4",
+            "size": "350 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 04 - Terapêutica e Prescrição no Ambulatório.mp4",
+            "size": "490 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 05 - Condutas de Emergência e Descompensações.mp4",
+            "size": "510 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 06 - Casos Clínicos Discutidos & Provas.mp4",
+            "size": "460 MB",
+            "type": "video"
+          }
+        ]
+      },
+      {
+        "name": "02 - Apostilas & Diretrizes Oficiais (PDF)",
+        "files": [
+          {
+            "name": "Apostila Teórica Completa - Ginecologia & Obstetrícia Essencial.pdf",
+            "size": "24.5 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Diretrizes Brasileiras e Internacionais 2026.pdf",
+            "size": "12.8 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Resumo Esquematizado de Alta Fixação.pdf",
+            "size": "6.4 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "03 - Casos Clínicos & Banco de Questões Comentadas",
+        "files": [
+          {
+            "name": "Banco com 100 Questões Comentadas de Residência.pdf",
+            "size": "15.2 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Caderno de Casos Clínicos e Discussão Terapêutica.pdf",
+            "size": "9.8 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "04 - Slides das Aulas & Fluxogramas Práticos",
+        "files": [
+          {
+            "name": "Slides Completos das Videoaulas.pdf",
+            "size": "34.0 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Fluxogramas de Bolso para Plantão e Ambulatório.pdf",
+            "size": "4.1 MB",
+            "type": "pdf"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "anatomia-humana",
@@ -81,7 +1263,207 @@
     "modulesCount": 60,
     "materials": "Videoaulas + Atlas 3D Digital + Pranchas Anatômicas em PDF",
     "icon": "◈",
-    "color": "sage"
+    "color": "sage",
+    "modules": [
+      {
+        "id": "mod-1",
+        "title": "Módulo 1: Fundamentos, Fisiopatologia & Diagnóstico",
+        "lessons": [
+          {
+            "id": "anatomia-humana-a1",
+            "title": "Aula 01: Introdução e Diretrizes de Anatomia",
+            "duration": "30 min",
+            "type": "video",
+            "summary": "Revisão dos conceitos fundamentais de Anatomia Humana Sistêmica & Topográfica, epidemiologia e critérios diagnósticos segundo consensos mundiais.",
+            "keyPoints": [
+              "Conceitos basilares e definições clínicas",
+              "Indicações de rastreio e investigação laboratorial",
+              "Diagnóstico diferencial"
+            ],
+            "caseStudy": {
+              "question": "Em relação à propedêutica e abordagem inicial em Anatomia, qual a conduta prioritária indicada pelas diretrizes?",
+              "options": [
+                "Investigação laboratorial e estratificação de risco individualizada",
+                "Iniciar antibioticoterapia empírica em todos os pacientes",
+                "Encaminhamento cirúrgico imediato sem exames prévios",
+                "Aguardar evolução sintomática por 6 meses"
+              ],
+              "answer": 0,
+              "explanation": "As diretrizes clínicas preconizam estratificação de risco imediata e investigação diagnóstica orientada antes de intervenções invasivas desnecessárias."
+            }
+          },
+          {
+            "id": "anatomia-humana-a2",
+            "title": "Aula 02: Raciocínio Clínico e Diagnóstico Diferencial",
+            "duration": "35 min",
+            "type": "video",
+            "summary": "Abordagem sindrômica e passos sistemáticos para chegar à etiologia correta em Anatomia.",
+            "keyPoints": [
+              "História clínica direcionada",
+              "Exame físico focado",
+              "Exames de imagem e laboratoriais de primeira linha"
+            ]
+          },
+          {
+            "id": "anatomia-humana-a3",
+            "title": "Aula 03: Propedêutica Armada e Interpretação de Exames",
+            "duration": "28 min",
+            "type": "video",
+            "summary": "Como solicitar e interpretar os exames complementares essenciais em Anatomia.",
+            "keyPoints": [
+              "Sensibilidade e especificidade dos testes",
+              "Armadilhas diagnósticas mais frequentes"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-2",
+        "title": "Módulo 2: Terapêutica, Farmacologia & Prescrição Prática",
+        "lessons": [
+          {
+            "id": "anatomia-humana-a4",
+            "title": "Aula 04: Manejo Clínico e Esquemas Medicamentosos",
+            "duration": "38 min",
+            "type": "video",
+            "summary": "Prescrição passo a passo, doses de ataque e manutenção, efeitos adversos e ajustes em disfunção renal ou hepática.",
+            "keyPoints": [
+              "Drogas de primeira linha e doses usuais",
+              "Interações medicamentosas graves",
+              "Metas de controle clínico"
+            ]
+          },
+          {
+            "id": "anatomia-humana-a5",
+            "title": "Aula 05: Casos Complexos e Falha Terapêutica",
+            "duration": "32 min",
+            "type": "video",
+            "summary": "Como conduzir pacientes refratários ao tratamento inicial e quando trocar esquemas terapêuticos.",
+            "keyPoints": [
+              "Critérios de falha terapêutica",
+              "Associações medicamentosas seguras",
+              "Critérios de internação"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-3",
+        "title": "Módulo 3: Emergências, Casos Práticos de Plantão & Questões",
+        "lessons": [
+          {
+            "id": "anatomia-humana-a6",
+            "title": "Aula 06: Condutas em Situações Críticas e Descompensações",
+            "duration": "40 min",
+            "type": "video",
+            "summary": "O que fazer nos primeiros 15 minutos de descompensação aguda de Anatomia no pronto-socorro.",
+            "keyPoints": [
+              "Medidas imediatas 'beira do leito'",
+              "Drogas de ação rápida",
+              "Critérios para vaga de UTI"
+            ]
+          },
+          {
+            "id": "anatomia-humana-a7",
+            "title": "Aula 07: Discussão de Casos Reais & Resolução de Questões de Prova",
+            "duration": "45 min",
+            "type": "video",
+            "summary": "Resolução comentada de questões de concursos de Residência Médica (USP, ENARE, SUS-SP) e Revalida.",
+            "keyPoints": [
+              "Pegadinhas mais comuns de bancas examinadoras",
+              "Memorização rápida de diretrizes"
+            ]
+          }
+        ]
+      }
+    ],
+    "folders": [
+      {
+        "name": "01 - Videoaulas em HD (1080p)",
+        "files": [
+          {
+            "name": "Aula 01 - Introdução e Princípios Fundamentais.mp4",
+            "size": "380 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 02 - Fisiopatologia e Mecanismos Etiológicos.mp4",
+            "size": "420 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 03 - Propedêutica e Exame Físico Específico.mp4",
+            "size": "350 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 04 - Terapêutica e Prescrição no Ambulatório.mp4",
+            "size": "490 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 05 - Condutas de Emergência e Descompensações.mp4",
+            "size": "510 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 06 - Casos Clínicos Discutidos & Provas.mp4",
+            "size": "460 MB",
+            "type": "video"
+          }
+        ]
+      },
+      {
+        "name": "02 - Apostilas & Diretrizes Oficiais (PDF)",
+        "files": [
+          {
+            "name": "Apostila Teórica Completa - Anatomia Humana Sistêmica & Topográfica.pdf",
+            "size": "24.5 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Diretrizes Brasileiras e Internacionais 2026.pdf",
+            "size": "12.8 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Resumo Esquematizado de Alta Fixação.pdf",
+            "size": "6.4 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "03 - Casos Clínicos & Banco de Questões Comentadas",
+        "files": [
+          {
+            "name": "Banco com 100 Questões Comentadas de Residência.pdf",
+            "size": "15.2 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Caderno de Casos Clínicos e Discussão Terapêutica.pdf",
+            "size": "9.8 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "04 - Slides das Aulas & Fluxogramas Práticos",
+        "files": [
+          {
+            "name": "Slides Completos das Videoaulas.pdf",
+            "size": "34.0 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Fluxogramas de Bolso para Plantão e Ambulatório.pdf",
+            "size": "4.1 MB",
+            "type": "pdf"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "fisiologia-fisiopatologia",
@@ -93,7 +1475,207 @@
     "modulesCount": 45,
     "materials": "Videoaulas + Esquemas Fisiológicos + Resumos Ilustrados",
     "icon": "⌁",
-    "color": "blue"
+    "color": "blue",
+    "modules": [
+      {
+        "id": "mod-1",
+        "title": "Módulo 1: Fundamentos, Fisiopatologia & Diagnóstico",
+        "lessons": [
+          {
+            "id": "fisiologia-fisiopatologia-a1",
+            "title": "Aula 01: Introdução e Diretrizes de Fisiologia",
+            "duration": "30 min",
+            "type": "video",
+            "summary": "Revisão dos conceitos fundamentais de Fisiologia Humana & Fisiopatologia Integrada, epidemiologia e critérios diagnósticos segundo consensos mundiais.",
+            "keyPoints": [
+              "Conceitos basilares e definições clínicas",
+              "Indicações de rastreio e investigação laboratorial",
+              "Diagnóstico diferencial"
+            ],
+            "caseStudy": {
+              "question": "Em relação à propedêutica e abordagem inicial em Fisiologia, qual a conduta prioritária indicada pelas diretrizes?",
+              "options": [
+                "Investigação laboratorial e estratificação de risco individualizada",
+                "Iniciar antibioticoterapia empírica em todos os pacientes",
+                "Encaminhamento cirúrgico imediato sem exames prévios",
+                "Aguardar evolução sintomática por 6 meses"
+              ],
+              "answer": 0,
+              "explanation": "As diretrizes clínicas preconizam estratificação de risco imediata e investigação diagnóstica orientada antes de intervenções invasivas desnecessárias."
+            }
+          },
+          {
+            "id": "fisiologia-fisiopatologia-a2",
+            "title": "Aula 02: Raciocínio Clínico e Diagnóstico Diferencial",
+            "duration": "35 min",
+            "type": "video",
+            "summary": "Abordagem sindrômica e passos sistemáticos para chegar à etiologia correta em Fisiologia.",
+            "keyPoints": [
+              "História clínica direcionada",
+              "Exame físico focado",
+              "Exames de imagem e laboratoriais de primeira linha"
+            ]
+          },
+          {
+            "id": "fisiologia-fisiopatologia-a3",
+            "title": "Aula 03: Propedêutica Armada e Interpretação de Exames",
+            "duration": "28 min",
+            "type": "video",
+            "summary": "Como solicitar e interpretar os exames complementares essenciais em Fisiologia.",
+            "keyPoints": [
+              "Sensibilidade e especificidade dos testes",
+              "Armadilhas diagnósticas mais frequentes"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-2",
+        "title": "Módulo 2: Terapêutica, Farmacologia & Prescrição Prática",
+        "lessons": [
+          {
+            "id": "fisiologia-fisiopatologia-a4",
+            "title": "Aula 04: Manejo Clínico e Esquemas Medicamentosos",
+            "duration": "38 min",
+            "type": "video",
+            "summary": "Prescrição passo a passo, doses de ataque e manutenção, efeitos adversos e ajustes em disfunção renal ou hepática.",
+            "keyPoints": [
+              "Drogas de primeira linha e doses usuais",
+              "Interações medicamentosas graves",
+              "Metas de controle clínico"
+            ]
+          },
+          {
+            "id": "fisiologia-fisiopatologia-a5",
+            "title": "Aula 05: Casos Complexos e Falha Terapêutica",
+            "duration": "32 min",
+            "type": "video",
+            "summary": "Como conduzir pacientes refratários ao tratamento inicial e quando trocar esquemas terapêuticos.",
+            "keyPoints": [
+              "Critérios de falha terapêutica",
+              "Associações medicamentosas seguras",
+              "Critérios de internação"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-3",
+        "title": "Módulo 3: Emergências, Casos Práticos de Plantão & Questões",
+        "lessons": [
+          {
+            "id": "fisiologia-fisiopatologia-a6",
+            "title": "Aula 06: Condutas em Situações Críticas e Descompensações",
+            "duration": "40 min",
+            "type": "video",
+            "summary": "O que fazer nos primeiros 15 minutos de descompensação aguda de Fisiologia no pronto-socorro.",
+            "keyPoints": [
+              "Medidas imediatas 'beira do leito'",
+              "Drogas de ação rápida",
+              "Critérios para vaga de UTI"
+            ]
+          },
+          {
+            "id": "fisiologia-fisiopatologia-a7",
+            "title": "Aula 07: Discussão de Casos Reais & Resolução de Questões de Prova",
+            "duration": "45 min",
+            "type": "video",
+            "summary": "Resolução comentada de questões de concursos de Residência Médica (USP, ENARE, SUS-SP) e Revalida.",
+            "keyPoints": [
+              "Pegadinhas mais comuns de bancas examinadoras",
+              "Memorização rápida de diretrizes"
+            ]
+          }
+        ]
+      }
+    ],
+    "folders": [
+      {
+        "name": "01 - Videoaulas em HD (1080p)",
+        "files": [
+          {
+            "name": "Aula 01 - Introdução e Princípios Fundamentais.mp4",
+            "size": "380 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 02 - Fisiopatologia e Mecanismos Etiológicos.mp4",
+            "size": "420 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 03 - Propedêutica e Exame Físico Específico.mp4",
+            "size": "350 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 04 - Terapêutica e Prescrição no Ambulatório.mp4",
+            "size": "490 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 05 - Condutas de Emergência e Descompensações.mp4",
+            "size": "510 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 06 - Casos Clínicos Discutidos & Provas.mp4",
+            "size": "460 MB",
+            "type": "video"
+          }
+        ]
+      },
+      {
+        "name": "02 - Apostilas & Diretrizes Oficiais (PDF)",
+        "files": [
+          {
+            "name": "Apostila Teórica Completa - Fisiologia Humana & Fisiopatologia Integrada.pdf",
+            "size": "24.5 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Diretrizes Brasileiras e Internacionais 2026.pdf",
+            "size": "12.8 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Resumo Esquematizado de Alta Fixação.pdf",
+            "size": "6.4 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "03 - Casos Clínicos & Banco de Questões Comentadas",
+        "files": [
+          {
+            "name": "Banco com 100 Questões Comentadas de Residência.pdf",
+            "size": "15.2 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Caderno de Casos Clínicos e Discussão Terapêutica.pdf",
+            "size": "9.8 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "04 - Slides das Aulas & Fluxogramas Práticos",
+        "files": [
+          {
+            "name": "Slides Completos das Videoaulas.pdf",
+            "size": "34.0 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Fluxogramas de Bolso para Plantão e Ambulatório.pdf",
+            "size": "4.1 MB",
+            "type": "pdf"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "farmacologia-medica",
@@ -105,7 +1687,207 @@
     "modulesCount": 40,
     "materials": "Videoaulas + Tabelas Comparativas de Fármacos + Guia de Prescrição",
     "icon": "✳",
-    "color": "amber"
+    "color": "amber",
+    "modules": [
+      {
+        "id": "mod-1",
+        "title": "Módulo 1: Fundamentos, Fisiopatologia & Diagnóstico",
+        "lessons": [
+          {
+            "id": "farmacologia-medica-a1",
+            "title": "Aula 01: Introdução e Diretrizes de Farmacologia",
+            "duration": "30 min",
+            "type": "video",
+            "summary": "Revisão dos conceitos fundamentais de Farmacologia Médica & Terapêutica Aplicada, epidemiologia e critérios diagnósticos segundo consensos mundiais.",
+            "keyPoints": [
+              "Conceitos basilares e definições clínicas",
+              "Indicações de rastreio e investigação laboratorial",
+              "Diagnóstico diferencial"
+            ],
+            "caseStudy": {
+              "question": "Em relação à propedêutica e abordagem inicial em Farmacologia, qual a conduta prioritária indicada pelas diretrizes?",
+              "options": [
+                "Investigação laboratorial e estratificação de risco individualizada",
+                "Iniciar antibioticoterapia empírica em todos os pacientes",
+                "Encaminhamento cirúrgico imediato sem exames prévios",
+                "Aguardar evolução sintomática por 6 meses"
+              ],
+              "answer": 0,
+              "explanation": "As diretrizes clínicas preconizam estratificação de risco imediata e investigação diagnóstica orientada antes de intervenções invasivas desnecessárias."
+            }
+          },
+          {
+            "id": "farmacologia-medica-a2",
+            "title": "Aula 02: Raciocínio Clínico e Diagnóstico Diferencial",
+            "duration": "35 min",
+            "type": "video",
+            "summary": "Abordagem sindrômica e passos sistemáticos para chegar à etiologia correta em Farmacologia.",
+            "keyPoints": [
+              "História clínica direcionada",
+              "Exame físico focado",
+              "Exames de imagem e laboratoriais de primeira linha"
+            ]
+          },
+          {
+            "id": "farmacologia-medica-a3",
+            "title": "Aula 03: Propedêutica Armada e Interpretação de Exames",
+            "duration": "28 min",
+            "type": "video",
+            "summary": "Como solicitar e interpretar os exames complementares essenciais em Farmacologia.",
+            "keyPoints": [
+              "Sensibilidade e especificidade dos testes",
+              "Armadilhas diagnósticas mais frequentes"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-2",
+        "title": "Módulo 2: Terapêutica, Farmacologia & Prescrição Prática",
+        "lessons": [
+          {
+            "id": "farmacologia-medica-a4",
+            "title": "Aula 04: Manejo Clínico e Esquemas Medicamentosos",
+            "duration": "38 min",
+            "type": "video",
+            "summary": "Prescrição passo a passo, doses de ataque e manutenção, efeitos adversos e ajustes em disfunção renal ou hepática.",
+            "keyPoints": [
+              "Drogas de primeira linha e doses usuais",
+              "Interações medicamentosas graves",
+              "Metas de controle clínico"
+            ]
+          },
+          {
+            "id": "farmacologia-medica-a5",
+            "title": "Aula 05: Casos Complexos e Falha Terapêutica",
+            "duration": "32 min",
+            "type": "video",
+            "summary": "Como conduzir pacientes refratários ao tratamento inicial e quando trocar esquemas terapêuticos.",
+            "keyPoints": [
+              "Critérios de falha terapêutica",
+              "Associações medicamentosas seguras",
+              "Critérios de internação"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-3",
+        "title": "Módulo 3: Emergências, Casos Práticos de Plantão & Questões",
+        "lessons": [
+          {
+            "id": "farmacologia-medica-a6",
+            "title": "Aula 06: Condutas em Situações Críticas e Descompensações",
+            "duration": "40 min",
+            "type": "video",
+            "summary": "O que fazer nos primeiros 15 minutos de descompensação aguda de Farmacologia no pronto-socorro.",
+            "keyPoints": [
+              "Medidas imediatas 'beira do leito'",
+              "Drogas de ação rápida",
+              "Critérios para vaga de UTI"
+            ]
+          },
+          {
+            "id": "farmacologia-medica-a7",
+            "title": "Aula 07: Discussão de Casos Reais & Resolução de Questões de Prova",
+            "duration": "45 min",
+            "type": "video",
+            "summary": "Resolução comentada de questões de concursos de Residência Médica (USP, ENARE, SUS-SP) e Revalida.",
+            "keyPoints": [
+              "Pegadinhas mais comuns de bancas examinadoras",
+              "Memorização rápida de diretrizes"
+            ]
+          }
+        ]
+      }
+    ],
+    "folders": [
+      {
+        "name": "01 - Videoaulas em HD (1080p)",
+        "files": [
+          {
+            "name": "Aula 01 - Introdução e Princípios Fundamentais.mp4",
+            "size": "380 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 02 - Fisiopatologia e Mecanismos Etiológicos.mp4",
+            "size": "420 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 03 - Propedêutica e Exame Físico Específico.mp4",
+            "size": "350 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 04 - Terapêutica e Prescrição no Ambulatório.mp4",
+            "size": "490 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 05 - Condutas de Emergência e Descompensações.mp4",
+            "size": "510 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 06 - Casos Clínicos Discutidos & Provas.mp4",
+            "size": "460 MB",
+            "type": "video"
+          }
+        ]
+      },
+      {
+        "name": "02 - Apostilas & Diretrizes Oficiais (PDF)",
+        "files": [
+          {
+            "name": "Apostila Teórica Completa - Farmacologia Médica & Terapêutica Aplicada.pdf",
+            "size": "24.5 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Diretrizes Brasileiras e Internacionais 2026.pdf",
+            "size": "12.8 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Resumo Esquematizado de Alta Fixação.pdf",
+            "size": "6.4 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "03 - Casos Clínicos & Banco de Questões Comentadas",
+        "files": [
+          {
+            "name": "Banco com 100 Questões Comentadas de Residência.pdf",
+            "size": "15.2 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Caderno de Casos Clínicos e Discussão Terapêutica.pdf",
+            "size": "9.8 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "04 - Slides das Aulas & Fluxogramas Práticos",
+        "files": [
+          {
+            "name": "Slides Completos das Videoaulas.pdf",
+            "size": "34.0 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Fluxogramas de Bolso para Plantão e Ambulatório.pdf",
+            "size": "4.1 MB",
+            "type": "pdf"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "semiologia-propedutica",
@@ -117,7 +1899,207 @@
     "modulesCount": 38,
     "materials": "Videoaulas de Exame Físico Prático + Roteiros de Anamnese em PDF",
     "icon": "🔍",
-    "color": "teal"
+    "color": "teal",
+    "modules": [
+      {
+        "id": "mod-1",
+        "title": "Módulo 1: Fundamentos, Fisiopatologia & Diagnóstico",
+        "lessons": [
+          {
+            "id": "semiologia-propedutica-a1",
+            "title": "Aula 01: Introdução e Diretrizes de Semiologia",
+            "duration": "30 min",
+            "type": "video",
+            "summary": "Revisão dos conceitos fundamentais de Semiologia & Propedêutica Médica, epidemiologia e critérios diagnósticos segundo consensos mundiais.",
+            "keyPoints": [
+              "Conceitos basilares e definições clínicas",
+              "Indicações de rastreio e investigação laboratorial",
+              "Diagnóstico diferencial"
+            ],
+            "caseStudy": {
+              "question": "Em relação à propedêutica e abordagem inicial em Semiologia, qual a conduta prioritária indicada pelas diretrizes?",
+              "options": [
+                "Investigação laboratorial e estratificação de risco individualizada",
+                "Iniciar antibioticoterapia empírica em todos os pacientes",
+                "Encaminhamento cirúrgico imediato sem exames prévios",
+                "Aguardar evolução sintomática por 6 meses"
+              ],
+              "answer": 0,
+              "explanation": "As diretrizes clínicas preconizam estratificação de risco imediata e investigação diagnóstica orientada antes de intervenções invasivas desnecessárias."
+            }
+          },
+          {
+            "id": "semiologia-propedutica-a2",
+            "title": "Aula 02: Raciocínio Clínico e Diagnóstico Diferencial",
+            "duration": "35 min",
+            "type": "video",
+            "summary": "Abordagem sindrômica e passos sistemáticos para chegar à etiologia correta em Semiologia.",
+            "keyPoints": [
+              "História clínica direcionada",
+              "Exame físico focado",
+              "Exames de imagem e laboratoriais de primeira linha"
+            ]
+          },
+          {
+            "id": "semiologia-propedutica-a3",
+            "title": "Aula 03: Propedêutica Armada e Interpretação de Exames",
+            "duration": "28 min",
+            "type": "video",
+            "summary": "Como solicitar e interpretar os exames complementares essenciais em Semiologia.",
+            "keyPoints": [
+              "Sensibilidade e especificidade dos testes",
+              "Armadilhas diagnósticas mais frequentes"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-2",
+        "title": "Módulo 2: Terapêutica, Farmacologia & Prescrição Prática",
+        "lessons": [
+          {
+            "id": "semiologia-propedutica-a4",
+            "title": "Aula 04: Manejo Clínico e Esquemas Medicamentosos",
+            "duration": "38 min",
+            "type": "video",
+            "summary": "Prescrição passo a passo, doses de ataque e manutenção, efeitos adversos e ajustes em disfunção renal ou hepática.",
+            "keyPoints": [
+              "Drogas de primeira linha e doses usuais",
+              "Interações medicamentosas graves",
+              "Metas de controle clínico"
+            ]
+          },
+          {
+            "id": "semiologia-propedutica-a5",
+            "title": "Aula 05: Casos Complexos e Falha Terapêutica",
+            "duration": "32 min",
+            "type": "video",
+            "summary": "Como conduzir pacientes refratários ao tratamento inicial e quando trocar esquemas terapêuticos.",
+            "keyPoints": [
+              "Critérios de falha terapêutica",
+              "Associações medicamentosas seguras",
+              "Critérios de internação"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-3",
+        "title": "Módulo 3: Emergências, Casos Práticos de Plantão & Questões",
+        "lessons": [
+          {
+            "id": "semiologia-propedutica-a6",
+            "title": "Aula 06: Condutas em Situações Críticas e Descompensações",
+            "duration": "40 min",
+            "type": "video",
+            "summary": "O que fazer nos primeiros 15 minutos de descompensação aguda de Semiologia no pronto-socorro.",
+            "keyPoints": [
+              "Medidas imediatas 'beira do leito'",
+              "Drogas de ação rápida",
+              "Critérios para vaga de UTI"
+            ]
+          },
+          {
+            "id": "semiologia-propedutica-a7",
+            "title": "Aula 07: Discussão de Casos Reais & Resolução de Questões de Prova",
+            "duration": "45 min",
+            "type": "video",
+            "summary": "Resolução comentada de questões de concursos de Residência Médica (USP, ENARE, SUS-SP) e Revalida.",
+            "keyPoints": [
+              "Pegadinhas mais comuns de bancas examinadoras",
+              "Memorização rápida de diretrizes"
+            ]
+          }
+        ]
+      }
+    ],
+    "folders": [
+      {
+        "name": "01 - Videoaulas em HD (1080p)",
+        "files": [
+          {
+            "name": "Aula 01 - Introdução e Princípios Fundamentais.mp4",
+            "size": "380 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 02 - Fisiopatologia e Mecanismos Etiológicos.mp4",
+            "size": "420 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 03 - Propedêutica e Exame Físico Específico.mp4",
+            "size": "350 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 04 - Terapêutica e Prescrição no Ambulatório.mp4",
+            "size": "490 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 05 - Condutas de Emergência e Descompensações.mp4",
+            "size": "510 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 06 - Casos Clínicos Discutidos & Provas.mp4",
+            "size": "460 MB",
+            "type": "video"
+          }
+        ]
+      },
+      {
+        "name": "02 - Apostilas & Diretrizes Oficiais (PDF)",
+        "files": [
+          {
+            "name": "Apostila Teórica Completa - Semiologia & Propedêutica Médica.pdf",
+            "size": "24.5 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Diretrizes Brasileiras e Internacionais 2026.pdf",
+            "size": "12.8 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Resumo Esquematizado de Alta Fixação.pdf",
+            "size": "6.4 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "03 - Casos Clínicos & Banco de Questões Comentadas",
+        "files": [
+          {
+            "name": "Banco com 100 Questões Comentadas de Residência.pdf",
+            "size": "15.2 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Caderno de Casos Clínicos e Discussão Terapêutica.pdf",
+            "size": "9.8 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "04 - Slides das Aulas & Fluxogramas Práticos",
+        "files": [
+          {
+            "name": "Slides Completos das Videoaulas.pdf",
+            "size": "34.0 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Fluxogramas de Bolso para Plantão e Ambulatório.pdf",
+            "size": "4.1 MB",
+            "type": "pdf"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "neurologia-clinica",
@@ -129,7 +2111,207 @@
     "modulesCount": 36,
     "materials": "Videoaulas + Algoritmos de Diagnóstico Topográfico + Guias de Neuroimagem",
     "icon": "⚡",
-    "color": "violet"
+    "color": "violet",
+    "modules": [
+      {
+        "id": "mod-1",
+        "title": "Módulo 1: Fundamentos, Fisiopatologia & Diagnóstico",
+        "lessons": [
+          {
+            "id": "neurologia-clinica-a1",
+            "title": "Aula 01: Introdução e Diretrizes de Neurologia",
+            "duration": "30 min",
+            "type": "video",
+            "summary": "Revisão dos conceitos fundamentais de Neurologia & Neuroanatomia Clínica, epidemiologia e critérios diagnósticos segundo consensos mundiais.",
+            "keyPoints": [
+              "Conceitos basilares e definições clínicas",
+              "Indicações de rastreio e investigação laboratorial",
+              "Diagnóstico diferencial"
+            ],
+            "caseStudy": {
+              "question": "Em relação à propedêutica e abordagem inicial em Neurologia, qual a conduta prioritária indicada pelas diretrizes?",
+              "options": [
+                "Investigação laboratorial e estratificação de risco individualizada",
+                "Iniciar antibioticoterapia empírica em todos os pacientes",
+                "Encaminhamento cirúrgico imediato sem exames prévios",
+                "Aguardar evolução sintomática por 6 meses"
+              ],
+              "answer": 0,
+              "explanation": "As diretrizes clínicas preconizam estratificação de risco imediata e investigação diagnóstica orientada antes de intervenções invasivas desnecessárias."
+            }
+          },
+          {
+            "id": "neurologia-clinica-a2",
+            "title": "Aula 02: Raciocínio Clínico e Diagnóstico Diferencial",
+            "duration": "35 min",
+            "type": "video",
+            "summary": "Abordagem sindrômica e passos sistemáticos para chegar à etiologia correta em Neurologia.",
+            "keyPoints": [
+              "História clínica direcionada",
+              "Exame físico focado",
+              "Exames de imagem e laboratoriais de primeira linha"
+            ]
+          },
+          {
+            "id": "neurologia-clinica-a3",
+            "title": "Aula 03: Propedêutica Armada e Interpretação de Exames",
+            "duration": "28 min",
+            "type": "video",
+            "summary": "Como solicitar e interpretar os exames complementares essenciais em Neurologia.",
+            "keyPoints": [
+              "Sensibilidade e especificidade dos testes",
+              "Armadilhas diagnósticas mais frequentes"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-2",
+        "title": "Módulo 2: Terapêutica, Farmacologia & Prescrição Prática",
+        "lessons": [
+          {
+            "id": "neurologia-clinica-a4",
+            "title": "Aula 04: Manejo Clínico e Esquemas Medicamentosos",
+            "duration": "38 min",
+            "type": "video",
+            "summary": "Prescrição passo a passo, doses de ataque e manutenção, efeitos adversos e ajustes em disfunção renal ou hepática.",
+            "keyPoints": [
+              "Drogas de primeira linha e doses usuais",
+              "Interações medicamentosas graves",
+              "Metas de controle clínico"
+            ]
+          },
+          {
+            "id": "neurologia-clinica-a5",
+            "title": "Aula 05: Casos Complexos e Falha Terapêutica",
+            "duration": "32 min",
+            "type": "video",
+            "summary": "Como conduzir pacientes refratários ao tratamento inicial e quando trocar esquemas terapêuticos.",
+            "keyPoints": [
+              "Critérios de falha terapêutica",
+              "Associações medicamentosas seguras",
+              "Critérios de internação"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-3",
+        "title": "Módulo 3: Emergências, Casos Práticos de Plantão & Questões",
+        "lessons": [
+          {
+            "id": "neurologia-clinica-a6",
+            "title": "Aula 06: Condutas em Situações Críticas e Descompensações",
+            "duration": "40 min",
+            "type": "video",
+            "summary": "O que fazer nos primeiros 15 minutos de descompensação aguda de Neurologia no pronto-socorro.",
+            "keyPoints": [
+              "Medidas imediatas 'beira do leito'",
+              "Drogas de ação rápida",
+              "Critérios para vaga de UTI"
+            ]
+          },
+          {
+            "id": "neurologia-clinica-a7",
+            "title": "Aula 07: Discussão de Casos Reais & Resolução de Questões de Prova",
+            "duration": "45 min",
+            "type": "video",
+            "summary": "Resolução comentada de questões de concursos de Residência Médica (USP, ENARE, SUS-SP) e Revalida.",
+            "keyPoints": [
+              "Pegadinhas mais comuns de bancas examinadoras",
+              "Memorização rápida de diretrizes"
+            ]
+          }
+        ]
+      }
+    ],
+    "folders": [
+      {
+        "name": "01 - Videoaulas em HD (1080p)",
+        "files": [
+          {
+            "name": "Aula 01 - Introdução e Princípios Fundamentais.mp4",
+            "size": "380 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 02 - Fisiopatologia e Mecanismos Etiológicos.mp4",
+            "size": "420 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 03 - Propedêutica e Exame Físico Específico.mp4",
+            "size": "350 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 04 - Terapêutica e Prescrição no Ambulatório.mp4",
+            "size": "490 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 05 - Condutas de Emergência e Descompensações.mp4",
+            "size": "510 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 06 - Casos Clínicos Discutidos & Provas.mp4",
+            "size": "460 MB",
+            "type": "video"
+          }
+        ]
+      },
+      {
+        "name": "02 - Apostilas & Diretrizes Oficiais (PDF)",
+        "files": [
+          {
+            "name": "Apostila Teórica Completa - Neurologia & Neuroanatomia Clínica.pdf",
+            "size": "24.5 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Diretrizes Brasileiras e Internacionais 2026.pdf",
+            "size": "12.8 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Resumo Esquematizado de Alta Fixação.pdf",
+            "size": "6.4 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "03 - Casos Clínicos & Banco de Questões Comentadas",
+        "files": [
+          {
+            "name": "Banco com 100 Questões Comentadas de Residência.pdf",
+            "size": "15.2 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Caderno de Casos Clínicos e Discussão Terapêutica.pdf",
+            "size": "9.8 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "04 - Slides das Aulas & Fluxogramas Práticos",
+        "files": [
+          {
+            "name": "Slides Completos das Videoaulas.pdf",
+            "size": "34.0 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Fluxogramas de Bolso para Plantão e Ambulatório.pdf",
+            "size": "4.1 MB",
+            "type": "pdf"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "gastroenterologia-hepatologia",
@@ -141,7 +2323,207 @@
     "modulesCount": 34,
     "materials": "Videoaulas + Diretrizes Clínicas + Apostilas em PDF",
     "icon": "🧬",
-    "color": "amber"
+    "color": "amber",
+    "modules": [
+      {
+        "id": "mod-1",
+        "title": "Módulo 1: Fundamentos, Fisiopatologia & Diagnóstico",
+        "lessons": [
+          {
+            "id": "gastroenterologia-hepatologia-a1",
+            "title": "Aula 01: Introdução e Diretrizes de Gastroenterologia",
+            "duration": "30 min",
+            "type": "video",
+            "summary": "Revisão dos conceitos fundamentais de Gastroenterologia & Hepatologia, epidemiologia e critérios diagnósticos segundo consensos mundiais.",
+            "keyPoints": [
+              "Conceitos basilares e definições clínicas",
+              "Indicações de rastreio e investigação laboratorial",
+              "Diagnóstico diferencial"
+            ],
+            "caseStudy": {
+              "question": "Em relação à propedêutica e abordagem inicial em Gastroenterologia, qual a conduta prioritária indicada pelas diretrizes?",
+              "options": [
+                "Investigação laboratorial e estratificação de risco individualizada",
+                "Iniciar antibioticoterapia empírica em todos os pacientes",
+                "Encaminhamento cirúrgico imediato sem exames prévios",
+                "Aguardar evolução sintomática por 6 meses"
+              ],
+              "answer": 0,
+              "explanation": "As diretrizes clínicas preconizam estratificação de risco imediata e investigação diagnóstica orientada antes de intervenções invasivas desnecessárias."
+            }
+          },
+          {
+            "id": "gastroenterologia-hepatologia-a2",
+            "title": "Aula 02: Raciocínio Clínico e Diagnóstico Diferencial",
+            "duration": "35 min",
+            "type": "video",
+            "summary": "Abordagem sindrômica e passos sistemáticos para chegar à etiologia correta em Gastroenterologia.",
+            "keyPoints": [
+              "História clínica direcionada",
+              "Exame físico focado",
+              "Exames de imagem e laboratoriais de primeira linha"
+            ]
+          },
+          {
+            "id": "gastroenterologia-hepatologia-a3",
+            "title": "Aula 03: Propedêutica Armada e Interpretação de Exames",
+            "duration": "28 min",
+            "type": "video",
+            "summary": "Como solicitar e interpretar os exames complementares essenciais em Gastroenterologia.",
+            "keyPoints": [
+              "Sensibilidade e especificidade dos testes",
+              "Armadilhas diagnósticas mais frequentes"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-2",
+        "title": "Módulo 2: Terapêutica, Farmacologia & Prescrição Prática",
+        "lessons": [
+          {
+            "id": "gastroenterologia-hepatologia-a4",
+            "title": "Aula 04: Manejo Clínico e Esquemas Medicamentosos",
+            "duration": "38 min",
+            "type": "video",
+            "summary": "Prescrição passo a passo, doses de ataque e manutenção, efeitos adversos e ajustes em disfunção renal ou hepática.",
+            "keyPoints": [
+              "Drogas de primeira linha e doses usuais",
+              "Interações medicamentosas graves",
+              "Metas de controle clínico"
+            ]
+          },
+          {
+            "id": "gastroenterologia-hepatologia-a5",
+            "title": "Aula 05: Casos Complexos e Falha Terapêutica",
+            "duration": "32 min",
+            "type": "video",
+            "summary": "Como conduzir pacientes refratários ao tratamento inicial e quando trocar esquemas terapêuticos.",
+            "keyPoints": [
+              "Critérios de falha terapêutica",
+              "Associações medicamentosas seguras",
+              "Critérios de internação"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-3",
+        "title": "Módulo 3: Emergências, Casos Práticos de Plantão & Questões",
+        "lessons": [
+          {
+            "id": "gastroenterologia-hepatologia-a6",
+            "title": "Aula 06: Condutas em Situações Críticas e Descompensações",
+            "duration": "40 min",
+            "type": "video",
+            "summary": "O que fazer nos primeiros 15 minutos de descompensação aguda de Gastroenterologia no pronto-socorro.",
+            "keyPoints": [
+              "Medidas imediatas 'beira do leito'",
+              "Drogas de ação rápida",
+              "Critérios para vaga de UTI"
+            ]
+          },
+          {
+            "id": "gastroenterologia-hepatologia-a7",
+            "title": "Aula 07: Discussão de Casos Reais & Resolução de Questões de Prova",
+            "duration": "45 min",
+            "type": "video",
+            "summary": "Resolução comentada de questões de concursos de Residência Médica (USP, ENARE, SUS-SP) e Revalida.",
+            "keyPoints": [
+              "Pegadinhas mais comuns de bancas examinadoras",
+              "Memorização rápida de diretrizes"
+            ]
+          }
+        ]
+      }
+    ],
+    "folders": [
+      {
+        "name": "01 - Videoaulas em HD (1080p)",
+        "files": [
+          {
+            "name": "Aula 01 - Introdução e Princípios Fundamentais.mp4",
+            "size": "380 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 02 - Fisiopatologia e Mecanismos Etiológicos.mp4",
+            "size": "420 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 03 - Propedêutica e Exame Físico Específico.mp4",
+            "size": "350 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 04 - Terapêutica e Prescrição no Ambulatório.mp4",
+            "size": "490 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 05 - Condutas de Emergência e Descompensações.mp4",
+            "size": "510 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 06 - Casos Clínicos Discutidos & Provas.mp4",
+            "size": "460 MB",
+            "type": "video"
+          }
+        ]
+      },
+      {
+        "name": "02 - Apostilas & Diretrizes Oficiais (PDF)",
+        "files": [
+          {
+            "name": "Apostila Teórica Completa - Gastroenterologia & Hepatologia.pdf",
+            "size": "24.5 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Diretrizes Brasileiras e Internacionais 2026.pdf",
+            "size": "12.8 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Resumo Esquematizado de Alta Fixação.pdf",
+            "size": "6.4 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "03 - Casos Clínicos & Banco de Questões Comentadas",
+        "files": [
+          {
+            "name": "Banco com 100 Questões Comentadas de Residência.pdf",
+            "size": "15.2 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Caderno de Casos Clínicos e Discussão Terapêutica.pdf",
+            "size": "9.8 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "04 - Slides das Aulas & Fluxogramas Práticos",
+        "files": [
+          {
+            "name": "Slides Completos das Videoaulas.pdf",
+            "size": "34.0 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Fluxogramas de Bolso para Plantão e Ambulatório.pdf",
+            "size": "4.1 MB",
+            "type": "pdf"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "pneumologia-espirometria",
@@ -153,7 +2535,207 @@
     "modulesCount": 32,
     "materials": "Videoaulas + Casos Radiológicos + Roteiro de Leitura de Espirometria",
     "icon": "🫁",
-    "color": "blue"
+    "color": "blue",
+    "modules": [
+      {
+        "id": "mod-1",
+        "title": "Módulo 1: Fundamentos, Fisiopatologia & Diagnóstico",
+        "lessons": [
+          {
+            "id": "pneumologia-espirometria-a1",
+            "title": "Aula 01: Introdução e Diretrizes de Pneumologia",
+            "duration": "30 min",
+            "type": "video",
+            "summary": "Revisão dos conceitos fundamentais de Pneumologia Clínica & Interpretação de Espirometria, epidemiologia e critérios diagnósticos segundo consensos mundiais.",
+            "keyPoints": [
+              "Conceitos basilares e definições clínicas",
+              "Indicações de rastreio e investigação laboratorial",
+              "Diagnóstico diferencial"
+            ],
+            "caseStudy": {
+              "question": "Em relação à propedêutica e abordagem inicial em Pneumologia, qual a conduta prioritária indicada pelas diretrizes?",
+              "options": [
+                "Investigação laboratorial e estratificação de risco individualizada",
+                "Iniciar antibioticoterapia empírica em todos os pacientes",
+                "Encaminhamento cirúrgico imediato sem exames prévios",
+                "Aguardar evolução sintomática por 6 meses"
+              ],
+              "answer": 0,
+              "explanation": "As diretrizes clínicas preconizam estratificação de risco imediata e investigação diagnóstica orientada antes de intervenções invasivas desnecessárias."
+            }
+          },
+          {
+            "id": "pneumologia-espirometria-a2",
+            "title": "Aula 02: Raciocínio Clínico e Diagnóstico Diferencial",
+            "duration": "35 min",
+            "type": "video",
+            "summary": "Abordagem sindrômica e passos sistemáticos para chegar à etiologia correta em Pneumologia.",
+            "keyPoints": [
+              "História clínica direcionada",
+              "Exame físico focado",
+              "Exames de imagem e laboratoriais de primeira linha"
+            ]
+          },
+          {
+            "id": "pneumologia-espirometria-a3",
+            "title": "Aula 03: Propedêutica Armada e Interpretação de Exames",
+            "duration": "28 min",
+            "type": "video",
+            "summary": "Como solicitar e interpretar os exames complementares essenciais em Pneumologia.",
+            "keyPoints": [
+              "Sensibilidade e especificidade dos testes",
+              "Armadilhas diagnósticas mais frequentes"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-2",
+        "title": "Módulo 2: Terapêutica, Farmacologia & Prescrição Prática",
+        "lessons": [
+          {
+            "id": "pneumologia-espirometria-a4",
+            "title": "Aula 04: Manejo Clínico e Esquemas Medicamentosos",
+            "duration": "38 min",
+            "type": "video",
+            "summary": "Prescrição passo a passo, doses de ataque e manutenção, efeitos adversos e ajustes em disfunção renal ou hepática.",
+            "keyPoints": [
+              "Drogas de primeira linha e doses usuais",
+              "Interações medicamentosas graves",
+              "Metas de controle clínico"
+            ]
+          },
+          {
+            "id": "pneumologia-espirometria-a5",
+            "title": "Aula 05: Casos Complexos e Falha Terapêutica",
+            "duration": "32 min",
+            "type": "video",
+            "summary": "Como conduzir pacientes refratários ao tratamento inicial e quando trocar esquemas terapêuticos.",
+            "keyPoints": [
+              "Critérios de falha terapêutica",
+              "Associações medicamentosas seguras",
+              "Critérios de internação"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-3",
+        "title": "Módulo 3: Emergências, Casos Práticos de Plantão & Questões",
+        "lessons": [
+          {
+            "id": "pneumologia-espirometria-a6",
+            "title": "Aula 06: Condutas em Situações Críticas e Descompensações",
+            "duration": "40 min",
+            "type": "video",
+            "summary": "O que fazer nos primeiros 15 minutos de descompensação aguda de Pneumologia no pronto-socorro.",
+            "keyPoints": [
+              "Medidas imediatas 'beira do leito'",
+              "Drogas de ação rápida",
+              "Critérios para vaga de UTI"
+            ]
+          },
+          {
+            "id": "pneumologia-espirometria-a7",
+            "title": "Aula 07: Discussão de Casos Reais & Resolução de Questões de Prova",
+            "duration": "45 min",
+            "type": "video",
+            "summary": "Resolução comentada de questões de concursos de Residência Médica (USP, ENARE, SUS-SP) e Revalida.",
+            "keyPoints": [
+              "Pegadinhas mais comuns de bancas examinadoras",
+              "Memorização rápida de diretrizes"
+            ]
+          }
+        ]
+      }
+    ],
+    "folders": [
+      {
+        "name": "01 - Videoaulas em HD (1080p)",
+        "files": [
+          {
+            "name": "Aula 01 - Introdução e Princípios Fundamentais.mp4",
+            "size": "380 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 02 - Fisiopatologia e Mecanismos Etiológicos.mp4",
+            "size": "420 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 03 - Propedêutica e Exame Físico Específico.mp4",
+            "size": "350 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 04 - Terapêutica e Prescrição no Ambulatório.mp4",
+            "size": "490 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 05 - Condutas de Emergência e Descompensações.mp4",
+            "size": "510 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 06 - Casos Clínicos Discutidos & Provas.mp4",
+            "size": "460 MB",
+            "type": "video"
+          }
+        ]
+      },
+      {
+        "name": "02 - Apostilas & Diretrizes Oficiais (PDF)",
+        "files": [
+          {
+            "name": "Apostila Teórica Completa - Pneumologia Clínica & Interpretação de Espirometria.pdf",
+            "size": "24.5 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Diretrizes Brasileiras e Internacionais 2026.pdf",
+            "size": "12.8 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Resumo Esquematizado de Alta Fixação.pdf",
+            "size": "6.4 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "03 - Casos Clínicos & Banco de Questões Comentadas",
+        "files": [
+          {
+            "name": "Banco com 100 Questões Comentadas de Residência.pdf",
+            "size": "15.2 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Caderno de Casos Clínicos e Discussão Terapêutica.pdf",
+            "size": "9.8 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "04 - Slides das Aulas & Fluxogramas Práticos",
+        "files": [
+          {
+            "name": "Slides Completos das Videoaulas.pdf",
+            "size": "34.0 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Fluxogramas de Bolso para Plantão e Ambulatório.pdf",
+            "size": "4.1 MB",
+            "type": "pdf"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "nefrologia-hidroeletrolitico",
@@ -165,7 +2747,207 @@
     "modulesCount": 30,
     "materials": "Videoaulas + Calculadoras & Fórmulas Renais + Resumos em PDF",
     "icon": "💧",
-    "color": "teal"
+    "color": "teal",
+    "modules": [
+      {
+        "id": "mod-1",
+        "title": "Módulo 1: Fundamentos, Fisiopatologia & Diagnóstico",
+        "lessons": [
+          {
+            "id": "nefrologia-hidroeletrolitico-a1",
+            "title": "Aula 01: Introdução e Diretrizes de Nefrologia",
+            "duration": "30 min",
+            "type": "video",
+            "summary": "Revisão dos conceitos fundamentais de Nefrologia & Distúrbios Hidroeletrolíticos, epidemiologia e critérios diagnósticos segundo consensos mundiais.",
+            "keyPoints": [
+              "Conceitos basilares e definições clínicas",
+              "Indicações de rastreio e investigação laboratorial",
+              "Diagnóstico diferencial"
+            ],
+            "caseStudy": {
+              "question": "Em relação à propedêutica e abordagem inicial em Nefrologia, qual a conduta prioritária indicada pelas diretrizes?",
+              "options": [
+                "Investigação laboratorial e estratificação de risco individualizada",
+                "Iniciar antibioticoterapia empírica em todos os pacientes",
+                "Encaminhamento cirúrgico imediato sem exames prévios",
+                "Aguardar evolução sintomática por 6 meses"
+              ],
+              "answer": 0,
+              "explanation": "As diretrizes clínicas preconizam estratificação de risco imediata e investigação diagnóstica orientada antes de intervenções invasivas desnecessárias."
+            }
+          },
+          {
+            "id": "nefrologia-hidroeletrolitico-a2",
+            "title": "Aula 02: Raciocínio Clínico e Diagnóstico Diferencial",
+            "duration": "35 min",
+            "type": "video",
+            "summary": "Abordagem sindrômica e passos sistemáticos para chegar à etiologia correta em Nefrologia.",
+            "keyPoints": [
+              "História clínica direcionada",
+              "Exame físico focado",
+              "Exames de imagem e laboratoriais de primeira linha"
+            ]
+          },
+          {
+            "id": "nefrologia-hidroeletrolitico-a3",
+            "title": "Aula 03: Propedêutica Armada e Interpretação de Exames",
+            "duration": "28 min",
+            "type": "video",
+            "summary": "Como solicitar e interpretar os exames complementares essenciais em Nefrologia.",
+            "keyPoints": [
+              "Sensibilidade e especificidade dos testes",
+              "Armadilhas diagnósticas mais frequentes"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-2",
+        "title": "Módulo 2: Terapêutica, Farmacologia & Prescrição Prática",
+        "lessons": [
+          {
+            "id": "nefrologia-hidroeletrolitico-a4",
+            "title": "Aula 04: Manejo Clínico e Esquemas Medicamentosos",
+            "duration": "38 min",
+            "type": "video",
+            "summary": "Prescrição passo a passo, doses de ataque e manutenção, efeitos adversos e ajustes em disfunção renal ou hepática.",
+            "keyPoints": [
+              "Drogas de primeira linha e doses usuais",
+              "Interações medicamentosas graves",
+              "Metas de controle clínico"
+            ]
+          },
+          {
+            "id": "nefrologia-hidroeletrolitico-a5",
+            "title": "Aula 05: Casos Complexos e Falha Terapêutica",
+            "duration": "32 min",
+            "type": "video",
+            "summary": "Como conduzir pacientes refratários ao tratamento inicial e quando trocar esquemas terapêuticos.",
+            "keyPoints": [
+              "Critérios de falha terapêutica",
+              "Associações medicamentosas seguras",
+              "Critérios de internação"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-3",
+        "title": "Módulo 3: Emergências, Casos Práticos de Plantão & Questões",
+        "lessons": [
+          {
+            "id": "nefrologia-hidroeletrolitico-a6",
+            "title": "Aula 06: Condutas em Situações Críticas e Descompensações",
+            "duration": "40 min",
+            "type": "video",
+            "summary": "O que fazer nos primeiros 15 minutos de descompensação aguda de Nefrologia no pronto-socorro.",
+            "keyPoints": [
+              "Medidas imediatas 'beira do leito'",
+              "Drogas de ação rápida",
+              "Critérios para vaga de UTI"
+            ]
+          },
+          {
+            "id": "nefrologia-hidroeletrolitico-a7",
+            "title": "Aula 07: Discussão de Casos Reais & Resolução de Questões de Prova",
+            "duration": "45 min",
+            "type": "video",
+            "summary": "Resolução comentada de questões de concursos de Residência Médica (USP, ENARE, SUS-SP) e Revalida.",
+            "keyPoints": [
+              "Pegadinhas mais comuns de bancas examinadoras",
+              "Memorização rápida de diretrizes"
+            ]
+          }
+        ]
+      }
+    ],
+    "folders": [
+      {
+        "name": "01 - Videoaulas em HD (1080p)",
+        "files": [
+          {
+            "name": "Aula 01 - Introdução e Princípios Fundamentais.mp4",
+            "size": "380 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 02 - Fisiopatologia e Mecanismos Etiológicos.mp4",
+            "size": "420 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 03 - Propedêutica e Exame Físico Específico.mp4",
+            "size": "350 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 04 - Terapêutica e Prescrição no Ambulatório.mp4",
+            "size": "490 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 05 - Condutas de Emergência e Descompensações.mp4",
+            "size": "510 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 06 - Casos Clínicos Discutidos & Provas.mp4",
+            "size": "460 MB",
+            "type": "video"
+          }
+        ]
+      },
+      {
+        "name": "02 - Apostilas & Diretrizes Oficiais (PDF)",
+        "files": [
+          {
+            "name": "Apostila Teórica Completa - Nefrologia & Distúrbios Hidroeletrolíticos.pdf",
+            "size": "24.5 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Diretrizes Brasileiras e Internacionais 2026.pdf",
+            "size": "12.8 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Resumo Esquematizado de Alta Fixação.pdf",
+            "size": "6.4 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "03 - Casos Clínicos & Banco de Questões Comentadas",
+        "files": [
+          {
+            "name": "Banco com 100 Questões Comentadas de Residência.pdf",
+            "size": "15.2 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Caderno de Casos Clínicos e Discussão Terapêutica.pdf",
+            "size": "9.8 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "04 - Slides das Aulas & Fluxogramas Práticos",
+        "files": [
+          {
+            "name": "Slides Completos das Videoaulas.pdf",
+            "size": "34.0 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Fluxogramas de Bolso para Plantão e Ambulatório.pdf",
+            "size": "4.1 MB",
+            "type": "pdf"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "infectologia-antibioticoterapia",
@@ -177,7 +2959,207 @@
     "modulesCount": 35,
     "materials": "Videoaulas + Guia Rápido de Antibioticoterapia + Protocolos de Isolamento",
     "icon": "🔬",
-    "color": "orange"
+    "color": "orange",
+    "modules": [
+      {
+        "id": "mod-1",
+        "title": "Módulo 1: Fundamentos, Fisiopatologia & Diagnóstico",
+        "lessons": [
+          {
+            "id": "infectologia-antibioticoterapia-a1",
+            "title": "Aula 01: Introdução e Diretrizes de Infectologia",
+            "duration": "30 min",
+            "type": "video",
+            "summary": "Revisão dos conceitos fundamentais de Infectologia & Guia de Antibioticoterapia, epidemiologia e critérios diagnósticos segundo consensos mundiais.",
+            "keyPoints": [
+              "Conceitos basilares e definições clínicas",
+              "Indicações de rastreio e investigação laboratorial",
+              "Diagnóstico diferencial"
+            ],
+            "caseStudy": {
+              "question": "Em relação à propedêutica e abordagem inicial em Infectologia, qual a conduta prioritária indicada pelas diretrizes?",
+              "options": [
+                "Investigação laboratorial e estratificação de risco individualizada",
+                "Iniciar antibioticoterapia empírica em todos os pacientes",
+                "Encaminhamento cirúrgico imediato sem exames prévios",
+                "Aguardar evolução sintomática por 6 meses"
+              ],
+              "answer": 0,
+              "explanation": "As diretrizes clínicas preconizam estratificação de risco imediata e investigação diagnóstica orientada antes de intervenções invasivas desnecessárias."
+            }
+          },
+          {
+            "id": "infectologia-antibioticoterapia-a2",
+            "title": "Aula 02: Raciocínio Clínico e Diagnóstico Diferencial",
+            "duration": "35 min",
+            "type": "video",
+            "summary": "Abordagem sindrômica e passos sistemáticos para chegar à etiologia correta em Infectologia.",
+            "keyPoints": [
+              "História clínica direcionada",
+              "Exame físico focado",
+              "Exames de imagem e laboratoriais de primeira linha"
+            ]
+          },
+          {
+            "id": "infectologia-antibioticoterapia-a3",
+            "title": "Aula 03: Propedêutica Armada e Interpretação de Exames",
+            "duration": "28 min",
+            "type": "video",
+            "summary": "Como solicitar e interpretar os exames complementares essenciais em Infectologia.",
+            "keyPoints": [
+              "Sensibilidade e especificidade dos testes",
+              "Armadilhas diagnósticas mais frequentes"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-2",
+        "title": "Módulo 2: Terapêutica, Farmacologia & Prescrição Prática",
+        "lessons": [
+          {
+            "id": "infectologia-antibioticoterapia-a4",
+            "title": "Aula 04: Manejo Clínico e Esquemas Medicamentosos",
+            "duration": "38 min",
+            "type": "video",
+            "summary": "Prescrição passo a passo, doses de ataque e manutenção, efeitos adversos e ajustes em disfunção renal ou hepática.",
+            "keyPoints": [
+              "Drogas de primeira linha e doses usuais",
+              "Interações medicamentosas graves",
+              "Metas de controle clínico"
+            ]
+          },
+          {
+            "id": "infectologia-antibioticoterapia-a5",
+            "title": "Aula 05: Casos Complexos e Falha Terapêutica",
+            "duration": "32 min",
+            "type": "video",
+            "summary": "Como conduzir pacientes refratários ao tratamento inicial e quando trocar esquemas terapêuticos.",
+            "keyPoints": [
+              "Critérios de falha terapêutica",
+              "Associações medicamentosas seguras",
+              "Critérios de internação"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-3",
+        "title": "Módulo 3: Emergências, Casos Práticos de Plantão & Questões",
+        "lessons": [
+          {
+            "id": "infectologia-antibioticoterapia-a6",
+            "title": "Aula 06: Condutas em Situações Críticas e Descompensações",
+            "duration": "40 min",
+            "type": "video",
+            "summary": "O que fazer nos primeiros 15 minutos de descompensação aguda de Infectologia no pronto-socorro.",
+            "keyPoints": [
+              "Medidas imediatas 'beira do leito'",
+              "Drogas de ação rápida",
+              "Critérios para vaga de UTI"
+            ]
+          },
+          {
+            "id": "infectologia-antibioticoterapia-a7",
+            "title": "Aula 07: Discussão de Casos Reais & Resolução de Questões de Prova",
+            "duration": "45 min",
+            "type": "video",
+            "summary": "Resolução comentada de questões de concursos de Residência Médica (USP, ENARE, SUS-SP) e Revalida.",
+            "keyPoints": [
+              "Pegadinhas mais comuns de bancas examinadoras",
+              "Memorização rápida de diretrizes"
+            ]
+          }
+        ]
+      }
+    ],
+    "folders": [
+      {
+        "name": "01 - Videoaulas em HD (1080p)",
+        "files": [
+          {
+            "name": "Aula 01 - Introdução e Princípios Fundamentais.mp4",
+            "size": "380 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 02 - Fisiopatologia e Mecanismos Etiológicos.mp4",
+            "size": "420 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 03 - Propedêutica e Exame Físico Específico.mp4",
+            "size": "350 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 04 - Terapêutica e Prescrição no Ambulatório.mp4",
+            "size": "490 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 05 - Condutas de Emergência e Descompensações.mp4",
+            "size": "510 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 06 - Casos Clínicos Discutidos & Provas.mp4",
+            "size": "460 MB",
+            "type": "video"
+          }
+        ]
+      },
+      {
+        "name": "02 - Apostilas & Diretrizes Oficiais (PDF)",
+        "files": [
+          {
+            "name": "Apostila Teórica Completa - Infectologia & Guia de Antibioticoterapia.pdf",
+            "size": "24.5 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Diretrizes Brasileiras e Internacionais 2026.pdf",
+            "size": "12.8 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Resumo Esquematizado de Alta Fixação.pdf",
+            "size": "6.4 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "03 - Casos Clínicos & Banco de Questões Comentadas",
+        "files": [
+          {
+            "name": "Banco com 100 Questões Comentadas de Residência.pdf",
+            "size": "15.2 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Caderno de Casos Clínicos e Discussão Terapêutica.pdf",
+            "size": "9.8 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "04 - Slides das Aulas & Fluxogramas Práticos",
+        "files": [
+          {
+            "name": "Slides Completos das Videoaulas.pdf",
+            "size": "34.0 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Fluxogramas de Bolso para Plantão e Ambulatório.pdf",
+            "size": "4.1 MB",
+            "type": "pdf"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "endocrinologia-diabetes",
@@ -189,7 +3171,207 @@
     "modulesCount": 28,
     "materials": "Videoaulas + Tabelas de Insulinas e Antidiabéticos + Diretrizes SBD",
     "icon": "⚖",
-    "color": "pink"
+    "color": "pink",
+    "modules": [
+      {
+        "id": "mod-1",
+        "title": "Módulo 1: Fundamentos, Fisiopatologia & Diagnóstico",
+        "lessons": [
+          {
+            "id": "endocrinologia-diabetes-a1",
+            "title": "Aula 01: Introdução e Diretrizes de Endocrinologia",
+            "duration": "30 min",
+            "type": "video",
+            "summary": "Revisão dos conceitos fundamentais de Endocrinologia, Diabetes & Tireoide, epidemiologia e critérios diagnósticos segundo consensos mundiais.",
+            "keyPoints": [
+              "Conceitos basilares e definições clínicas",
+              "Indicações de rastreio e investigação laboratorial",
+              "Diagnóstico diferencial"
+            ],
+            "caseStudy": {
+              "question": "Em relação à propedêutica e abordagem inicial em Endocrinologia, qual a conduta prioritária indicada pelas diretrizes?",
+              "options": [
+                "Investigação laboratorial e estratificação de risco individualizada",
+                "Iniciar antibioticoterapia empírica em todos os pacientes",
+                "Encaminhamento cirúrgico imediato sem exames prévios",
+                "Aguardar evolução sintomática por 6 meses"
+              ],
+              "answer": 0,
+              "explanation": "As diretrizes clínicas preconizam estratificação de risco imediata e investigação diagnóstica orientada antes de intervenções invasivas desnecessárias."
+            }
+          },
+          {
+            "id": "endocrinologia-diabetes-a2",
+            "title": "Aula 02: Raciocínio Clínico e Diagnóstico Diferencial",
+            "duration": "35 min",
+            "type": "video",
+            "summary": "Abordagem sindrômica e passos sistemáticos para chegar à etiologia correta em Endocrinologia.",
+            "keyPoints": [
+              "História clínica direcionada",
+              "Exame físico focado",
+              "Exames de imagem e laboratoriais de primeira linha"
+            ]
+          },
+          {
+            "id": "endocrinologia-diabetes-a3",
+            "title": "Aula 03: Propedêutica Armada e Interpretação de Exames",
+            "duration": "28 min",
+            "type": "video",
+            "summary": "Como solicitar e interpretar os exames complementares essenciais em Endocrinologia.",
+            "keyPoints": [
+              "Sensibilidade e especificidade dos testes",
+              "Armadilhas diagnósticas mais frequentes"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-2",
+        "title": "Módulo 2: Terapêutica, Farmacologia & Prescrição Prática",
+        "lessons": [
+          {
+            "id": "endocrinologia-diabetes-a4",
+            "title": "Aula 04: Manejo Clínico e Esquemas Medicamentosos",
+            "duration": "38 min",
+            "type": "video",
+            "summary": "Prescrição passo a passo, doses de ataque e manutenção, efeitos adversos e ajustes em disfunção renal ou hepática.",
+            "keyPoints": [
+              "Drogas de primeira linha e doses usuais",
+              "Interações medicamentosas graves",
+              "Metas de controle clínico"
+            ]
+          },
+          {
+            "id": "endocrinologia-diabetes-a5",
+            "title": "Aula 05: Casos Complexos e Falha Terapêutica",
+            "duration": "32 min",
+            "type": "video",
+            "summary": "Como conduzir pacientes refratários ao tratamento inicial e quando trocar esquemas terapêuticos.",
+            "keyPoints": [
+              "Critérios de falha terapêutica",
+              "Associações medicamentosas seguras",
+              "Critérios de internação"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-3",
+        "title": "Módulo 3: Emergências, Casos Práticos de Plantão & Questões",
+        "lessons": [
+          {
+            "id": "endocrinologia-diabetes-a6",
+            "title": "Aula 06: Condutas em Situações Críticas e Descompensações",
+            "duration": "40 min",
+            "type": "video",
+            "summary": "O que fazer nos primeiros 15 minutos de descompensação aguda de Endocrinologia no pronto-socorro.",
+            "keyPoints": [
+              "Medidas imediatas 'beira do leito'",
+              "Drogas de ação rápida",
+              "Critérios para vaga de UTI"
+            ]
+          },
+          {
+            "id": "endocrinologia-diabetes-a7",
+            "title": "Aula 07: Discussão de Casos Reais & Resolução de Questões de Prova",
+            "duration": "45 min",
+            "type": "video",
+            "summary": "Resolução comentada de questões de concursos de Residência Médica (USP, ENARE, SUS-SP) e Revalida.",
+            "keyPoints": [
+              "Pegadinhas mais comuns de bancas examinadoras",
+              "Memorização rápida de diretrizes"
+            ]
+          }
+        ]
+      }
+    ],
+    "folders": [
+      {
+        "name": "01 - Videoaulas em HD (1080p)",
+        "files": [
+          {
+            "name": "Aula 01 - Introdução e Princípios Fundamentais.mp4",
+            "size": "380 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 02 - Fisiopatologia e Mecanismos Etiológicos.mp4",
+            "size": "420 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 03 - Propedêutica e Exame Físico Específico.mp4",
+            "size": "350 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 04 - Terapêutica e Prescrição no Ambulatório.mp4",
+            "size": "490 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 05 - Condutas de Emergência e Descompensações.mp4",
+            "size": "510 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 06 - Casos Clínicos Discutidos & Provas.mp4",
+            "size": "460 MB",
+            "type": "video"
+          }
+        ]
+      },
+      {
+        "name": "02 - Apostilas & Diretrizes Oficiais (PDF)",
+        "files": [
+          {
+            "name": "Apostila Teórica Completa - Endocrinologia, Diabetes & Tireoide.pdf",
+            "size": "24.5 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Diretrizes Brasileiras e Internacionais 2026.pdf",
+            "size": "12.8 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Resumo Esquematizado de Alta Fixação.pdf",
+            "size": "6.4 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "03 - Casos Clínicos & Banco de Questões Comentadas",
+        "files": [
+          {
+            "name": "Banco com 100 Questões Comentadas de Residência.pdf",
+            "size": "15.2 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Caderno de Casos Clínicos e Discussão Terapêutica.pdf",
+            "size": "9.8 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "04 - Slides das Aulas & Fluxogramas Práticos",
+        "files": [
+          {
+            "name": "Slides Completos das Videoaulas.pdf",
+            "size": "34.0 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Fluxogramas de Bolso para Plantão e Ambulatório.pdf",
+            "size": "4.1 MB",
+            "type": "pdf"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "ortopedia-traumatologia",
@@ -201,7 +3383,207 @@
     "modulesCount": 26,
     "materials": "Videoaulas + Guia Prático de Imobilização Gessada + Casos de Raio-X",
     "icon": "🦴",
-    "color": "sage"
+    "color": "sage",
+    "modules": [
+      {
+        "id": "mod-1",
+        "title": "Módulo 1: Fundamentos, Fisiopatologia & Diagnóstico",
+        "lessons": [
+          {
+            "id": "ortopedia-traumatologia-a1",
+            "title": "Aula 01: Introdução e Diretrizes de Ortopedia",
+            "duration": "30 min",
+            "type": "video",
+            "summary": "Revisão dos conceitos fundamentais de Ortopedia & Traumatologia Essencial, epidemiologia e critérios diagnósticos segundo consensos mundiais.",
+            "keyPoints": [
+              "Conceitos basilares e definições clínicas",
+              "Indicações de rastreio e investigação laboratorial",
+              "Diagnóstico diferencial"
+            ],
+            "caseStudy": {
+              "question": "Em relação à propedêutica e abordagem inicial em Ortopedia, qual a conduta prioritária indicada pelas diretrizes?",
+              "options": [
+                "Investigação laboratorial e estratificação de risco individualizada",
+                "Iniciar antibioticoterapia empírica em todos os pacientes",
+                "Encaminhamento cirúrgico imediato sem exames prévios",
+                "Aguardar evolução sintomática por 6 meses"
+              ],
+              "answer": 0,
+              "explanation": "As diretrizes clínicas preconizam estratificação de risco imediata e investigação diagnóstica orientada antes de intervenções invasivas desnecessárias."
+            }
+          },
+          {
+            "id": "ortopedia-traumatologia-a2",
+            "title": "Aula 02: Raciocínio Clínico e Diagnóstico Diferencial",
+            "duration": "35 min",
+            "type": "video",
+            "summary": "Abordagem sindrômica e passos sistemáticos para chegar à etiologia correta em Ortopedia.",
+            "keyPoints": [
+              "História clínica direcionada",
+              "Exame físico focado",
+              "Exames de imagem e laboratoriais de primeira linha"
+            ]
+          },
+          {
+            "id": "ortopedia-traumatologia-a3",
+            "title": "Aula 03: Propedêutica Armada e Interpretação de Exames",
+            "duration": "28 min",
+            "type": "video",
+            "summary": "Como solicitar e interpretar os exames complementares essenciais em Ortopedia.",
+            "keyPoints": [
+              "Sensibilidade e especificidade dos testes",
+              "Armadilhas diagnósticas mais frequentes"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-2",
+        "title": "Módulo 2: Terapêutica, Farmacologia & Prescrição Prática",
+        "lessons": [
+          {
+            "id": "ortopedia-traumatologia-a4",
+            "title": "Aula 04: Manejo Clínico e Esquemas Medicamentosos",
+            "duration": "38 min",
+            "type": "video",
+            "summary": "Prescrição passo a passo, doses de ataque e manutenção, efeitos adversos e ajustes em disfunção renal ou hepática.",
+            "keyPoints": [
+              "Drogas de primeira linha e doses usuais",
+              "Interações medicamentosas graves",
+              "Metas de controle clínico"
+            ]
+          },
+          {
+            "id": "ortopedia-traumatologia-a5",
+            "title": "Aula 05: Casos Complexos e Falha Terapêutica",
+            "duration": "32 min",
+            "type": "video",
+            "summary": "Como conduzir pacientes refratários ao tratamento inicial e quando trocar esquemas terapêuticos.",
+            "keyPoints": [
+              "Critérios de falha terapêutica",
+              "Associações medicamentosas seguras",
+              "Critérios de internação"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-3",
+        "title": "Módulo 3: Emergências, Casos Práticos de Plantão & Questões",
+        "lessons": [
+          {
+            "id": "ortopedia-traumatologia-a6",
+            "title": "Aula 06: Condutas em Situações Críticas e Descompensações",
+            "duration": "40 min",
+            "type": "video",
+            "summary": "O que fazer nos primeiros 15 minutos de descompensação aguda de Ortopedia no pronto-socorro.",
+            "keyPoints": [
+              "Medidas imediatas 'beira do leito'",
+              "Drogas de ação rápida",
+              "Critérios para vaga de UTI"
+            ]
+          },
+          {
+            "id": "ortopedia-traumatologia-a7",
+            "title": "Aula 07: Discussão de Casos Reais & Resolução de Questões de Prova",
+            "duration": "45 min",
+            "type": "video",
+            "summary": "Resolução comentada de questões de concursos de Residência Médica (USP, ENARE, SUS-SP) e Revalida.",
+            "keyPoints": [
+              "Pegadinhas mais comuns de bancas examinadoras",
+              "Memorização rápida de diretrizes"
+            ]
+          }
+        ]
+      }
+    ],
+    "folders": [
+      {
+        "name": "01 - Videoaulas em HD (1080p)",
+        "files": [
+          {
+            "name": "Aula 01 - Introdução e Princípios Fundamentais.mp4",
+            "size": "380 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 02 - Fisiopatologia e Mecanismos Etiológicos.mp4",
+            "size": "420 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 03 - Propedêutica e Exame Físico Específico.mp4",
+            "size": "350 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 04 - Terapêutica e Prescrição no Ambulatório.mp4",
+            "size": "490 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 05 - Condutas de Emergência e Descompensações.mp4",
+            "size": "510 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 06 - Casos Clínicos Discutidos & Provas.mp4",
+            "size": "460 MB",
+            "type": "video"
+          }
+        ]
+      },
+      {
+        "name": "02 - Apostilas & Diretrizes Oficiais (PDF)",
+        "files": [
+          {
+            "name": "Apostila Teórica Completa - Ortopedia & Traumatologia Essencial.pdf",
+            "size": "24.5 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Diretrizes Brasileiras e Internacionais 2026.pdf",
+            "size": "12.8 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Resumo Esquematizado de Alta Fixação.pdf",
+            "size": "6.4 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "03 - Casos Clínicos & Banco de Questões Comentadas",
+        "files": [
+          {
+            "name": "Banco com 100 Questões Comentadas de Residência.pdf",
+            "size": "15.2 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Caderno de Casos Clínicos e Discussão Terapêutica.pdf",
+            "size": "9.8 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "04 - Slides das Aulas & Fluxogramas Práticos",
+        "files": [
+          {
+            "name": "Slides Completos das Videoaulas.pdf",
+            "size": "34.0 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Fluxogramas de Bolso para Plantão e Ambulatório.pdf",
+            "size": "4.1 MB",
+            "type": "pdf"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "psiquiatria-saude-mental",
@@ -213,7 +3595,207 @@
     "modulesCount": 25,
     "materials": "Videoaulas + Critérios DSM-5 Simplificados + Guia de Psicofármacos",
     "icon": "🧠",
-    "color": "violet"
+    "color": "violet",
+    "modules": [
+      {
+        "id": "mod-1",
+        "title": "Módulo 1: Fundamentos, Fisiopatologia & Diagnóstico",
+        "lessons": [
+          {
+            "id": "psiquiatria-saude-mental-a1",
+            "title": "Aula 01: Introdução e Diretrizes de Psiquiatria",
+            "duration": "30 min",
+            "type": "video",
+            "summary": "Revisão dos conceitos fundamentais de Psiquiatria & Saúde Mental no Ambulatório, epidemiologia e critérios diagnósticos segundo consensos mundiais.",
+            "keyPoints": [
+              "Conceitos basilares e definições clínicas",
+              "Indicações de rastreio e investigação laboratorial",
+              "Diagnóstico diferencial"
+            ],
+            "caseStudy": {
+              "question": "Em relação à propedêutica e abordagem inicial em Psiquiatria, qual a conduta prioritária indicada pelas diretrizes?",
+              "options": [
+                "Investigação laboratorial e estratificação de risco individualizada",
+                "Iniciar antibioticoterapia empírica em todos os pacientes",
+                "Encaminhamento cirúrgico imediato sem exames prévios",
+                "Aguardar evolução sintomática por 6 meses"
+              ],
+              "answer": 0,
+              "explanation": "As diretrizes clínicas preconizam estratificação de risco imediata e investigação diagnóstica orientada antes de intervenções invasivas desnecessárias."
+            }
+          },
+          {
+            "id": "psiquiatria-saude-mental-a2",
+            "title": "Aula 02: Raciocínio Clínico e Diagnóstico Diferencial",
+            "duration": "35 min",
+            "type": "video",
+            "summary": "Abordagem sindrômica e passos sistemáticos para chegar à etiologia correta em Psiquiatria.",
+            "keyPoints": [
+              "História clínica direcionada",
+              "Exame físico focado",
+              "Exames de imagem e laboratoriais de primeira linha"
+            ]
+          },
+          {
+            "id": "psiquiatria-saude-mental-a3",
+            "title": "Aula 03: Propedêutica Armada e Interpretação de Exames",
+            "duration": "28 min",
+            "type": "video",
+            "summary": "Como solicitar e interpretar os exames complementares essenciais em Psiquiatria.",
+            "keyPoints": [
+              "Sensibilidade e especificidade dos testes",
+              "Armadilhas diagnósticas mais frequentes"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-2",
+        "title": "Módulo 2: Terapêutica, Farmacologia & Prescrição Prática",
+        "lessons": [
+          {
+            "id": "psiquiatria-saude-mental-a4",
+            "title": "Aula 04: Manejo Clínico e Esquemas Medicamentosos",
+            "duration": "38 min",
+            "type": "video",
+            "summary": "Prescrição passo a passo, doses de ataque e manutenção, efeitos adversos e ajustes em disfunção renal ou hepática.",
+            "keyPoints": [
+              "Drogas de primeira linha e doses usuais",
+              "Interações medicamentosas graves",
+              "Metas de controle clínico"
+            ]
+          },
+          {
+            "id": "psiquiatria-saude-mental-a5",
+            "title": "Aula 05: Casos Complexos e Falha Terapêutica",
+            "duration": "32 min",
+            "type": "video",
+            "summary": "Como conduzir pacientes refratários ao tratamento inicial e quando trocar esquemas terapêuticos.",
+            "keyPoints": [
+              "Critérios de falha terapêutica",
+              "Associações medicamentosas seguras",
+              "Critérios de internação"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-3",
+        "title": "Módulo 3: Emergências, Casos Práticos de Plantão & Questões",
+        "lessons": [
+          {
+            "id": "psiquiatria-saude-mental-a6",
+            "title": "Aula 06: Condutas em Situações Críticas e Descompensações",
+            "duration": "40 min",
+            "type": "video",
+            "summary": "O que fazer nos primeiros 15 minutos de descompensação aguda de Psiquiatria no pronto-socorro.",
+            "keyPoints": [
+              "Medidas imediatas 'beira do leito'",
+              "Drogas de ação rápida",
+              "Critérios para vaga de UTI"
+            ]
+          },
+          {
+            "id": "psiquiatria-saude-mental-a7",
+            "title": "Aula 07: Discussão de Casos Reais & Resolução de Questões de Prova",
+            "duration": "45 min",
+            "type": "video",
+            "summary": "Resolução comentada de questões de concursos de Residência Médica (USP, ENARE, SUS-SP) e Revalida.",
+            "keyPoints": [
+              "Pegadinhas mais comuns de bancas examinadoras",
+              "Memorização rápida de diretrizes"
+            ]
+          }
+        ]
+      }
+    ],
+    "folders": [
+      {
+        "name": "01 - Videoaulas em HD (1080p)",
+        "files": [
+          {
+            "name": "Aula 01 - Introdução e Princípios Fundamentais.mp4",
+            "size": "380 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 02 - Fisiopatologia e Mecanismos Etiológicos.mp4",
+            "size": "420 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 03 - Propedêutica e Exame Físico Específico.mp4",
+            "size": "350 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 04 - Terapêutica e Prescrição no Ambulatório.mp4",
+            "size": "490 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 05 - Condutas de Emergência e Descompensações.mp4",
+            "size": "510 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 06 - Casos Clínicos Discutidos & Provas.mp4",
+            "size": "460 MB",
+            "type": "video"
+          }
+        ]
+      },
+      {
+        "name": "02 - Apostilas & Diretrizes Oficiais (PDF)",
+        "files": [
+          {
+            "name": "Apostila Teórica Completa - Psiquiatria & Saúde Mental no Ambulatório.pdf",
+            "size": "24.5 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Diretrizes Brasileiras e Internacionais 2026.pdf",
+            "size": "12.8 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Resumo Esquematizado de Alta Fixação.pdf",
+            "size": "6.4 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "03 - Casos Clínicos & Banco de Questões Comentadas",
+        "files": [
+          {
+            "name": "Banco com 100 Questões Comentadas de Residência.pdf",
+            "size": "15.2 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Caderno de Casos Clínicos e Discussão Terapêutica.pdf",
+            "size": "9.8 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "04 - Slides das Aulas & Fluxogramas Práticos",
+        "files": [
+          {
+            "name": "Slides Completos das Videoaulas.pdf",
+            "size": "34.0 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Fluxogramas de Bolso para Plantão e Ambulatório.pdf",
+            "size": "4.1 MB",
+            "type": "pdf"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "medicina-familia-sus",
@@ -225,7 +3807,207 @@
     "modulesCount": 30,
     "materials": "Videoaulas + Cadernos de Atenção Básica + Resumos de SUS para Provas",
     "icon": "👥",
-    "color": "sage"
+    "color": "sage",
+    "modules": [
+      {
+        "id": "mod-1",
+        "title": "Módulo 1: Fundamentos, Fisiopatologia & Diagnóstico",
+        "lessons": [
+          {
+            "id": "medicina-familia-sus-a1",
+            "title": "Aula 01: Introdução e Diretrizes de Saúde Coletiva",
+            "duration": "30 min",
+            "type": "video",
+            "summary": "Revisão dos conceitos fundamentais de Medicina de Família & Saúde Coletiva (SUS), epidemiologia e critérios diagnósticos segundo consensos mundiais.",
+            "keyPoints": [
+              "Conceitos basilares e definições clínicas",
+              "Indicações de rastreio e investigação laboratorial",
+              "Diagnóstico diferencial"
+            ],
+            "caseStudy": {
+              "question": "Em relação à propedêutica e abordagem inicial em Saúde Coletiva, qual a conduta prioritária indicada pelas diretrizes?",
+              "options": [
+                "Investigação laboratorial e estratificação de risco individualizada",
+                "Iniciar antibioticoterapia empírica em todos os pacientes",
+                "Encaminhamento cirúrgico imediato sem exames prévios",
+                "Aguardar evolução sintomática por 6 meses"
+              ],
+              "answer": 0,
+              "explanation": "As diretrizes clínicas preconizam estratificação de risco imediata e investigação diagnóstica orientada antes de intervenções invasivas desnecessárias."
+            }
+          },
+          {
+            "id": "medicina-familia-sus-a2",
+            "title": "Aula 02: Raciocínio Clínico e Diagnóstico Diferencial",
+            "duration": "35 min",
+            "type": "video",
+            "summary": "Abordagem sindrômica e passos sistemáticos para chegar à etiologia correta em Saúde Coletiva.",
+            "keyPoints": [
+              "História clínica direcionada",
+              "Exame físico focado",
+              "Exames de imagem e laboratoriais de primeira linha"
+            ]
+          },
+          {
+            "id": "medicina-familia-sus-a3",
+            "title": "Aula 03: Propedêutica Armada e Interpretação de Exames",
+            "duration": "28 min",
+            "type": "video",
+            "summary": "Como solicitar e interpretar os exames complementares essenciais em Saúde Coletiva.",
+            "keyPoints": [
+              "Sensibilidade e especificidade dos testes",
+              "Armadilhas diagnósticas mais frequentes"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-2",
+        "title": "Módulo 2: Terapêutica, Farmacologia & Prescrição Prática",
+        "lessons": [
+          {
+            "id": "medicina-familia-sus-a4",
+            "title": "Aula 04: Manejo Clínico e Esquemas Medicamentosos",
+            "duration": "38 min",
+            "type": "video",
+            "summary": "Prescrição passo a passo, doses de ataque e manutenção, efeitos adversos e ajustes em disfunção renal ou hepática.",
+            "keyPoints": [
+              "Drogas de primeira linha e doses usuais",
+              "Interações medicamentosas graves",
+              "Metas de controle clínico"
+            ]
+          },
+          {
+            "id": "medicina-familia-sus-a5",
+            "title": "Aula 05: Casos Complexos e Falha Terapêutica",
+            "duration": "32 min",
+            "type": "video",
+            "summary": "Como conduzir pacientes refratários ao tratamento inicial e quando trocar esquemas terapêuticos.",
+            "keyPoints": [
+              "Critérios de falha terapêutica",
+              "Associações medicamentosas seguras",
+              "Critérios de internação"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-3",
+        "title": "Módulo 3: Emergências, Casos Práticos de Plantão & Questões",
+        "lessons": [
+          {
+            "id": "medicina-familia-sus-a6",
+            "title": "Aula 06: Condutas em Situações Críticas e Descompensações",
+            "duration": "40 min",
+            "type": "video",
+            "summary": "O que fazer nos primeiros 15 minutos de descompensação aguda de Saúde Coletiva no pronto-socorro.",
+            "keyPoints": [
+              "Medidas imediatas 'beira do leito'",
+              "Drogas de ação rápida",
+              "Critérios para vaga de UTI"
+            ]
+          },
+          {
+            "id": "medicina-familia-sus-a7",
+            "title": "Aula 07: Discussão de Casos Reais & Resolução de Questões de Prova",
+            "duration": "45 min",
+            "type": "video",
+            "summary": "Resolução comentada de questões de concursos de Residência Médica (USP, ENARE, SUS-SP) e Revalida.",
+            "keyPoints": [
+              "Pegadinhas mais comuns de bancas examinadoras",
+              "Memorização rápida de diretrizes"
+            ]
+          }
+        ]
+      }
+    ],
+    "folders": [
+      {
+        "name": "01 - Videoaulas em HD (1080p)",
+        "files": [
+          {
+            "name": "Aula 01 - Introdução e Princípios Fundamentais.mp4",
+            "size": "380 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 02 - Fisiopatologia e Mecanismos Etiológicos.mp4",
+            "size": "420 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 03 - Propedêutica e Exame Físico Específico.mp4",
+            "size": "350 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 04 - Terapêutica e Prescrição no Ambulatório.mp4",
+            "size": "490 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 05 - Condutas de Emergência e Descompensações.mp4",
+            "size": "510 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 06 - Casos Clínicos Discutidos & Provas.mp4",
+            "size": "460 MB",
+            "type": "video"
+          }
+        ]
+      },
+      {
+        "name": "02 - Apostilas & Diretrizes Oficiais (PDF)",
+        "files": [
+          {
+            "name": "Apostila Teórica Completa - Medicina de Família & Saúde Coletiva (SUS).pdf",
+            "size": "24.5 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Diretrizes Brasileiras e Internacionais 2026.pdf",
+            "size": "12.8 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Resumo Esquematizado de Alta Fixação.pdf",
+            "size": "6.4 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "03 - Casos Clínicos & Banco de Questões Comentadas",
+        "files": [
+          {
+            "name": "Banco com 100 Questões Comentadas de Residência.pdf",
+            "size": "15.2 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Caderno de Casos Clínicos e Discussão Terapêutica.pdf",
+            "size": "9.8 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "04 - Slides das Aulas & Fluxogramas Práticos",
+        "files": [
+          {
+            "name": "Slides Completos das Videoaulas.pdf",
+            "size": "34.0 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Fluxogramas de Bolso para Plantão e Ambulatório.pdf",
+            "size": "4.1 MB",
+            "type": "pdf"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "residencia-extensivo-r1",
@@ -237,6 +4019,206 @@
     "modulesCount": 90,
     "materials": "Videoaulas de Alto Rendimento + Caderno de Questões Comentadas + Cronogramas",
     "icon": "🏆",
-    "color": "red"
+    "color": "red",
+    "modules": [
+      {
+        "id": "mod-1",
+        "title": "Módulo 1: Fundamentos, Fisiopatologia & Diagnóstico",
+        "lessons": [
+          {
+            "id": "residencia-extensivo-r1-a1",
+            "title": "Aula 01: Introdução e Diretrizes de Residência Médica",
+            "duration": "30 min",
+            "type": "video",
+            "summary": "Revisão dos conceitos fundamentais de Extensivo R1 — Revisão Geral para Residência Médica, epidemiologia e critérios diagnósticos segundo consensos mundiais.",
+            "keyPoints": [
+              "Conceitos basilares e definições clínicas",
+              "Indicações de rastreio e investigação laboratorial",
+              "Diagnóstico diferencial"
+            ],
+            "caseStudy": {
+              "question": "Em relação à propedêutica e abordagem inicial em Residência Médica, qual a conduta prioritária indicada pelas diretrizes?",
+              "options": [
+                "Investigação laboratorial e estratificação de risco individualizada",
+                "Iniciar antibioticoterapia empírica em todos os pacientes",
+                "Encaminhamento cirúrgico imediato sem exames prévios",
+                "Aguardar evolução sintomática por 6 meses"
+              ],
+              "answer": 0,
+              "explanation": "As diretrizes clínicas preconizam estratificação de risco imediata e investigação diagnóstica orientada antes de intervenções invasivas desnecessárias."
+            }
+          },
+          {
+            "id": "residencia-extensivo-r1-a2",
+            "title": "Aula 02: Raciocínio Clínico e Diagnóstico Diferencial",
+            "duration": "35 min",
+            "type": "video",
+            "summary": "Abordagem sindrômica e passos sistemáticos para chegar à etiologia correta em Residência Médica.",
+            "keyPoints": [
+              "História clínica direcionada",
+              "Exame físico focado",
+              "Exames de imagem e laboratoriais de primeira linha"
+            ]
+          },
+          {
+            "id": "residencia-extensivo-r1-a3",
+            "title": "Aula 03: Propedêutica Armada e Interpretação de Exames",
+            "duration": "28 min",
+            "type": "video",
+            "summary": "Como solicitar e interpretar os exames complementares essenciais em Residência Médica.",
+            "keyPoints": [
+              "Sensibilidade e especificidade dos testes",
+              "Armadilhas diagnósticas mais frequentes"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-2",
+        "title": "Módulo 2: Terapêutica, Farmacologia & Prescrição Prática",
+        "lessons": [
+          {
+            "id": "residencia-extensivo-r1-a4",
+            "title": "Aula 04: Manejo Clínico e Esquemas Medicamentosos",
+            "duration": "38 min",
+            "type": "video",
+            "summary": "Prescrição passo a passo, doses de ataque e manutenção, efeitos adversos e ajustes em disfunção renal ou hepática.",
+            "keyPoints": [
+              "Drogas de primeira linha e doses usuais",
+              "Interações medicamentosas graves",
+              "Metas de controle clínico"
+            ]
+          },
+          {
+            "id": "residencia-extensivo-r1-a5",
+            "title": "Aula 05: Casos Complexos e Falha Terapêutica",
+            "duration": "32 min",
+            "type": "video",
+            "summary": "Como conduzir pacientes refratários ao tratamento inicial e quando trocar esquemas terapêuticos.",
+            "keyPoints": [
+              "Critérios de falha terapêutica",
+              "Associações medicamentosas seguras",
+              "Critérios de internação"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mod-3",
+        "title": "Módulo 3: Emergências, Casos Práticos de Plantão & Questões",
+        "lessons": [
+          {
+            "id": "residencia-extensivo-r1-a6",
+            "title": "Aula 06: Condutas em Situações Críticas e Descompensações",
+            "duration": "40 min",
+            "type": "video",
+            "summary": "O que fazer nos primeiros 15 minutos de descompensação aguda de Residência Médica no pronto-socorro.",
+            "keyPoints": [
+              "Medidas imediatas 'beira do leito'",
+              "Drogas de ação rápida",
+              "Critérios para vaga de UTI"
+            ]
+          },
+          {
+            "id": "residencia-extensivo-r1-a7",
+            "title": "Aula 07: Discussão de Casos Reais & Resolução de Questões de Prova",
+            "duration": "45 min",
+            "type": "video",
+            "summary": "Resolução comentada de questões de concursos de Residência Médica (USP, ENARE, SUS-SP) e Revalida.",
+            "keyPoints": [
+              "Pegadinhas mais comuns de bancas examinadoras",
+              "Memorização rápida de diretrizes"
+            ]
+          }
+        ]
+      }
+    ],
+    "folders": [
+      {
+        "name": "01 - Videoaulas em HD (1080p)",
+        "files": [
+          {
+            "name": "Aula 01 - Introdução e Princípios Fundamentais.mp4",
+            "size": "380 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 02 - Fisiopatologia e Mecanismos Etiológicos.mp4",
+            "size": "420 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 03 - Propedêutica e Exame Físico Específico.mp4",
+            "size": "350 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 04 - Terapêutica e Prescrição no Ambulatório.mp4",
+            "size": "490 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 05 - Condutas de Emergência e Descompensações.mp4",
+            "size": "510 MB",
+            "type": "video"
+          },
+          {
+            "name": "Aula 06 - Casos Clínicos Discutidos & Provas.mp4",
+            "size": "460 MB",
+            "type": "video"
+          }
+        ]
+      },
+      {
+        "name": "02 - Apostilas & Diretrizes Oficiais (PDF)",
+        "files": [
+          {
+            "name": "Apostila Teórica Completa - Extensivo R1 — Revisão Geral para Residência Médica.pdf",
+            "size": "24.5 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Diretrizes Brasileiras e Internacionais 2026.pdf",
+            "size": "12.8 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Resumo Esquematizado de Alta Fixação.pdf",
+            "size": "6.4 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "03 - Casos Clínicos & Banco de Questões Comentadas",
+        "files": [
+          {
+            "name": "Banco com 100 Questões Comentadas de Residência.pdf",
+            "size": "15.2 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Caderno de Casos Clínicos e Discussão Terapêutica.pdf",
+            "size": "9.8 MB",
+            "type": "pdf"
+          }
+        ]
+      },
+      {
+        "name": "04 - Slides das Aulas & Fluxogramas Práticos",
+        "files": [
+          {
+            "name": "Slides Completos das Videoaulas.pdf",
+            "size": "34.0 MB",
+            "type": "pdf"
+          },
+          {
+            "name": "Fluxogramas de Bolso para Plantão e Ambulatório.pdf",
+            "size": "4.1 MB",
+            "type": "pdf"
+          }
+        ]
+      }
+    ]
   }
 ]

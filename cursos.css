@@ -512,6 +512,68 @@ body {
   box-shadow: 0 4px 18px #19382966;
 }
 
+.btn-study-site {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 9px;
+  background: var(--red);
+  border: 1px solid var(--red);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.18s;
+  box-shadow: 0 4px 14px rgba(237, 65, 75, 0.3);
+}
+
+.btn-study-site:hover {
+  background: #ff555e;
+  transform: translateY(-1px);
+}
+
+.btn-folder-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 14px;
+  border-radius: 8px;
+  background: #171c1a;
+  border: 1px solid #2e3633;
+  color: #c7d2cd;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: all 0.15s;
+}
+
+.btn-folder-preview:hover {
+  background: #222926;
+  border-color: #495751;
+  color: #fff;
+}
+
+.btn-external-subtle {
+  font-size: 10px;
+  color: #7b8882;
+  text-decoration: none;
+  display: block;
+  text-align: center;
+  margin-top: 8px;
+  transition: color 0.15s;
+}
+
+.btn-external-subtle:hover {
+  color: #a4b2ac;
+  text-decoration: underline;
+}
+
 .btn-lock {
   display: flex;
   align-items: center;

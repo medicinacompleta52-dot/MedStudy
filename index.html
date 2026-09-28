@@ -20,8 +20,9 @@
     </a>
     <nav class="main-nav" aria-label="Navegação principal">
       <a href="#areas">Áreas Médicas</a>
+      <a href="#catalogo-pastas">Catálogo &amp; Pastas</a>
       <a href="#como-funciona">Como Funciona</a>
-      <a href="cursos.html">Catálogo de Cursos</a>
+      <a href="cursos.html">Catálogo Completo</a>
       <a href="conta.html">Planos</a>
     </nav>
     <a class="header-cta" href="conta.html">Entrar / Assinatura <span>↗</span></a>
@@ -203,6 +204,64 @@
 
       <p class="no-areas" id="no-areas" hidden>Nenhuma área encontrada. Experimente buscar outro tema.</p>
       <div class="area-footnote"><span>✦</span> Todos os cursos possuem materiais de apoio vinculados no Google Drive.</div>
+    </section>
+
+    <!-- SEÇÃO COMPLETA: CATÁLOGO DE CURSOS E PASTAS DE CONTEÚDO NA LANDING PAGE -->
+    <section class="landing-catalog-section" id="catalogo-pastas">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow light-eyebrow"><span class="live-dot"></span> ACERVO INTEGRADO NO SITE</p>
+          <h2>Catálogo de Cursos &amp; <em>Pastas de Estudo</em></h2>
+          <p class="section-lead">Navegue pelas pastas e videoaulas organizadas. Você não precisa ir para outro site: assista às aulas e leia as apostilas direto aqui no MedStudy.</p>
+        </div>
+        <a class="text-link dark-link" href="cursos.html">Ver catálogo completo <span>↗</span></a>
+      </div>
+
+      <!-- Barra de Controle e Busca na Landing Page -->
+      <div class="landing-controls-box">
+        <div class="landing-search-bar">
+          <span class="search-icon">⌕</span>
+          <input type="search" id="landing-course-search" placeholder="Buscar por curso, especialidade ou nome da pasta..." aria-label="Buscar cursos ou pastas">
+        </div>
+
+        <div class="landing-filter-pills" id="landing-filter-pills">
+          <button class="landing-pill active" data-filter="all">Todos os Cursos</button>
+          <button class="landing-pill" data-filter="Ciclo Básico">Ciclo Básico</button>
+          <button class="landing-pill" data-filter="Ciclo Clínico">Ciclo Clínico</button>
+          <button class="landing-pill" data-filter="Prática &amp; Internato">Prática &amp; Internato</button>
+          <button class="landing-pill" data-filter="Residência &amp; Revalida">Residência &amp; Revalida</button>
+        </div>
+      </div>
+
+      <!-- Layout Dual: Explorador de Pastas do Drive + Grade de Cursos -->
+      <div class="landing-dual-wrapper">
+        <!-- Lado Esquerdo: Árvore de Diretórios e Pastas do Google Drive -->
+        <div class="landing-folders-panel">
+          <div class="folders-panel-top">
+            <div>
+              <span class="folders-badge-tag">GOOGLE DRIVE ORGANIZADO</span>
+              <h3>Pastas do Acervo</h3>
+              <p>Estrutura oficial de diretórios por ciclo e matéria.</p>
+            </div>
+          </div>
+
+          <div class="folders-tree-accordion" id="landing-folders-tree">
+            <!-- Renderizado dinamicamente via home.js -->
+          </div>
+        </div>
+
+        <!-- Lado Direito: Cards de Cursos com Acesso Imediato à Sala de Aula -->
+        <div class="landing-courses-feed">
+          <div class="feed-status-bar">
+            <span id="landing-courses-count">Carregando catálogo de cursos...</span>
+            <span class="feed-tip">▶ Clique para abrir a Sala de Aula no site</span>
+          </div>
+
+          <div class="landing-courses-grid" id="landing-courses-grid">
+            <!-- Cards renderizados dinamicamente via home.js -->
+          </div>
+        </div>
+      </div>
     </section>
 
     <section class="workflow-section" id="como-funciona">

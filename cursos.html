@@ -139,6 +139,29 @@
         </form>
       </div>
     </div>
+
+    <!-- MODAL DE EXPLORAÇÃO DE PASTAS DO CURSO -->
+    <div class="modal-backdrop" id="folder-preview-modal" hidden>
+      <div class="modal-dialog" style="max-width: 720px;">
+        <div class="modal-header">
+          <div>
+            <p class="eyebrow" id="preview-modal-cycle">CICLO CLÍNICO</p>
+            <h2 id="preview-modal-title">Pastas do Curso no Drive</h2>
+          </div>
+          <button class="modal-close" id="close-folder-modal-btn" aria-label="Fechar">×</button>
+        </div>
+        <div class="modal-body" style="padding: 24px; max-height: 70vh; overflow-y: auto;">
+          <p id="preview-modal-desc" style="color: var(--muted); font-size: 13px; margin-bottom: 20px; line-height: 1.6;"></p>
+          <div id="preview-modal-folders-list" style="display: flex; flex-direction: column; gap: 14px;">
+            <!-- Pastas e arquivos renderizados dinamicamente -->
+          </div>
+        </div>
+        <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
+          <a href="#" id="preview-modal-study-btn" class="btn-study-site" style="width: auto; padding: 10px 20px;">▶ Abrir Sala de Aula no Site</a>
+          <button type="button" class="btn-cancel" id="cancel-folder-modal-btn">Fechar</button>
+        </div>
+      </div>
+    </div>
   </main>
 
   <footer class="site-footer">
