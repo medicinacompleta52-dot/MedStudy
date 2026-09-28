@@ -133,24 +133,24 @@ app.use(helmet({ contentSecurityPolicy: false }));
 app.use("/api", rateLimit({ windowMs: 15 * 60 * 1000, limit: 120, standardHeaders: "draft-8", legacyHeaders: false }));
 app.use(express.json({ limit: "1mb" }));
 
-function configured(res) {
-  const absent = [...missing, ...(!process.env.MP_ACCESS_TOKEN ? ["MP_ACCESS_TOKEN"] : [])];
-  if (absent.length) {
-    res.status(503).json({ error: "O serviço ainda precisa ser configurado no Render.", missing: absent });
-    return false;
-  }
-  return true;
+async function getMpAccessToken() {
+  const config = await loadSiteConfig();
+  return (config.mpAccessToken || process.env.MP_ACCESS_TOKEN || "").trim();
 }
 
 async function mpRequest(endpoint, options = {}) {
+  const token = await getMpAccessToken();
+  if (!token) {
+    throw new Error("O Mercado Pago ainda não foi configurado (adicione o Access Token no Painel do Administrador).");
+  }
   const response = await fetch("https://api.mercadopago.com" + endpoint, {
     ...options,
-    headers: { Authorization: "Bearer " + process.env.MP_ACCESS_TOKEN, "Content-Type": "application/json", ...(options.headers || {}) }
+    headers: { Authorization: "Bearer " + token, "Content-Type": "application/json", ...(options.headers || {}) }
   });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
     console.error("Mercado Pago request failed:", response.status, JSON.stringify(data));
-    throw new Error("O Mercado Pago não conseguiu iniciar ou confirmar o pagamento.");
+    throw new Error(data.message || "O Mercado Pago não conseguiu iniciar ou confirmar o pagamento.");
   }
   return data;
 }
@@ -190,8 +190,9 @@ async function updateSubscription(userId, values) {
   if (error) throw error;
 }
 
-function validMpSignature(req, dataId) {
-  const secret = process.env.MP_WEBHOOK_SECRET || "";
+async function validMpSignature(req, dataId) {
+  const config = await loadSiteConfig();
+  const secret = (config.mpWebhookSecret || process.env.MP_WEBHOOK_SECRET || "").trim();
   const signature = String(req.headers["x-signature"] || "");
   const requestId = String(req.headers["x-request-id"] || "");
   if (!secret || !signature || !requestId || !dataId) return false;
@@ -205,10 +206,15 @@ function validMpSignature(req, dataId) {
 }
 
 app.post("/api/mercadopago/webhook", async (req, res) => {
-  if (!supabaseAdmin || !process.env.MP_ACCESS_TOKEN || !process.env.MP_WEBHOOK_SECRET) return res.status(503).send("Webhook is not configured.");
+  const token = await getMpAccessToken();
+  if (!supabaseAdmin || !token) return res.status(503).send("Webhook is not configured.");
   const topic = String(req.query.type || req.query.topic || req.body?.type || "");
   const dataId = String(req.query["data.id"] || req.body?.data?.id || "");
-  if (!validMpSignature(req, dataId)) return res.status(401).send("Invalid signature.");
+  const config = await loadSiteConfig();
+  const webhookSecret = config.mpWebhookSecret || process.env.MP_WEBHOOK_SECRET;
+  if (webhookSecret && !(await validMpSignature(req, dataId))) {
+    return res.status(401).send("Invalid signature.");
+  }
   try {
     if (topic === "payment" && /^\d+$/.test(dataId)) {
       const payment = await mpRequest("/v1/payments/" + encodeURIComponent(dataId));
@@ -244,7 +250,9 @@ app.post("/api/mercadopago/webhook", async (req, res) => {
 });
 
 async function requireUser(req, res, next) {
-  if (!configured(res)) return;
+  if (!supabaseAdmin) {
+    return res.status(503).json({ error: "Serviço de autenticação Supabase ainda não está ativo no servidor." });
+  }
   const token = req.headers.authorization?.match(/^Bearer (.+)$/i)?.[1];
   if (!token) return res.status(401).json({ error: "Entre na sua conta para continuar." });
   try {
@@ -271,15 +279,28 @@ async function requireActiveSubscription(req, res, next) {
   }
 }
 
-app.get("/api/config", (_req, res) => res.json({
-  supabaseUrl: process.env.SUPABASE_URL || "",
-  supabaseAnonKey: process.env.SUPABASE_ANON_KEY || "",
-  configured: missing.length === 0 && Boolean(process.env.MP_ACCESS_TOKEN),
-  plans: Object.fromEntries(Object.entries(plans).map(([id, plan]) => [id, {
-    name: plan.name, price: plan.display,
-    available: Boolean(process.env.MP_ACCESS_TOKEN && process.env.APP_URL)
-  }]))
-}));
+app.get("/api/config", async (_req, res) => {
+  const siteConfig = await loadSiteConfig();
+  const mpToken = siteConfig.mpAccessToken || process.env.MP_ACCESS_TOKEN || "";
+  const hasMpToken = Boolean(mpToken);
+  res.json({
+    supabaseUrl: process.env.SUPABASE_URL || "",
+    supabaseAnonKey: process.env.SUPABASE_ANON_KEY || "",
+    configured: missing.length === 0,
+    mpConfigured: hasMpToken || Boolean(siteConfig.mpLinkMonthly || siteConfig.mpLinkAnnual || siteConfig.mpLinkLifetime),
+    plans: Object.fromEntries(Object.entries(plans).map(([id, plan]) => {
+      const linkKey = id === "monthly" ? "mpLinkMonthly" : id === "annual" ? "mpLinkAnnual" : "mpLinkLifetime";
+      const directLink = siteConfig[linkKey] || "";
+      return [id, {
+        name: plan.name,
+        price: plan.display,
+        priceValue: plan.price,
+        available: true,
+        directLink
+      }];
+    }))
+  });
+});
 
 app.get("/api/me", requireUser, async (req, res) => {
   const { data } = await supabaseAdmin.from("user_subscriptions").select("plan_id,status,current_period_end").eq("user_id", req.user.id).maybeSingle();
@@ -289,54 +310,93 @@ app.get("/api/me", requireUser, async (req, res) => {
   res.json({ user: { id: req.user.id, email: req.user.email }, subscription: data || null, active });
 });
 
-app.post("/api/checkout", requireUser, async (req, res) => {
+app.post("/api/checkout", async (req, res) => {
   const planId = req.body?.plan;
   const plan = plans[planId];
   if (!plan) return res.status(400).json({ error: "Plano inválido." });
-  if (!process.env.MP_ACCESS_TOKEN || !process.env.APP_URL) return res.status(503).json({ error: "Mercado Pago ainda não foi configurado no Render." });
-  if (!req.user.email) return res.status(400).json({ error: "Sua conta precisa ter um e-mail válido." });
+
+  const siteConfig = await loadSiteConfig();
+  const linkKey = planId === "monthly" ? "mpLinkMonthly" : planId === "annual" ? "mpLinkAnnual" : "mpLinkLifetime";
+  const directLink = siteConfig[linkKey];
+
+  // Se houver um link de pagamento direto configurado no Painel Admin, redireciona diretamente:
+  if (directLink && directLink.startsWith("http")) {
+    return res.json({ url: directLink });
+  }
+
+  // Identifica usuário autenticado ou visitante
+  let userId = null;
+  let userEmail = (req.body?.email || "").trim().toLowerCase();
+
+  const authHeader = req.headers.authorization?.match(/^Bearer (.+)$/i)?.[1];
+  if (authHeader && supabaseAdmin) {
+    try {
+      const { data } = await supabaseAdmin.auth.getUser(authHeader);
+      if (data?.user) {
+        userId = data.user.id;
+        userEmail = data.user.email || userEmail;
+      }
+    } catch (e) {}
+  }
+
+  const mpToken = await getMpAccessToken();
+  if (!mpToken) {
+    return res.status(503).json({
+      error: "O Mercado Pago ainda não foi configurado. Configure no Painel do Administrador ou pague diretamente pelo Pix WhatsApp (54 99631-8816)."
+    });
+  }
+
+  const appUrl = process.env.APP_URL || (req.headers.origin || "https://medstudy-secure.onrender.com");
+  const returnUrl = new URL("/conta.html?checkout=return", appUrl).toString();
+  const externalReference = `medstudy:${userId || randomUUID()}:${planId}:${randomUUID()}`;
+
   try {
-    const externalReference = `medstudy:${req.user.id}:${planId}:${randomUUID()}`;
-    const returnUrl = new URL("/conta.html?checkout=return", process.env.APP_URL).toString();
-    let checkout;
-    if (planId === "lifetime") {
-      checkout = await mpRequest("/checkout/preferences", {
-        method: "POST",
-        body: JSON.stringify({
-          items: [{ id: "medstudy-lifetime", title: plan.name, description: plan.display, quantity: 1, currency_id: "BRL", unit_price: plan.price }],
-          external_reference: externalReference,
-          back_urls: { success: returnUrl, pending: returnUrl, failure: returnUrl },
-          auto_return: "approved",
-          notification_url: new URL("/api/mercadopago/webhook?source=news&topic=payment", process.env.APP_URL).toString()
-        })
-      });
-    } else {
-      checkout = await mpRequest("/preapproval", {
-        method: "POST",
-        body: JSON.stringify({
-          reason: plan.name,
-          external_reference: externalReference,
-          payer_email: req.user.email,
-          auto_recurring: { frequency: plan.frequency, frequency_type: plan.frequencyType, transaction_amount: plan.price, currency_id: "BRL" },
-          back_url: returnUrl,
-          status: "pending"
-        })
-      });
+    const preferencePayload = {
+      items: [
+        {
+          id: `medstudy-${planId}`,
+          title: plan.name,
+          description: `${plan.name} — Acesso aos Cursos Médicos do Google Drive MedStudy`,
+          quantity: 1,
+          currency_id: "BRL",
+          unit_price: plan.price
+        }
+      ],
+      payer: userEmail ? { email: userEmail } : undefined,
+      external_reference: externalReference,
+      back_urls: {
+        success: returnUrl,
+        pending: returnUrl,
+        failure: returnUrl
+      },
+      auto_return: "approved",
+      notification_url: new URL("/api/mercadopago/webhook?source=news&topic=payment", appUrl).toString()
+    };
+
+    const checkout = await mpRequest("/checkout/preferences", {
+      method: "POST",
+      body: JSON.stringify(preferencePayload)
+    });
+
+    const checkoutUrl = checkout.init_point || checkout.sandbox_init_point;
+    if (!checkoutUrl) throw new Error("O Mercado Pago não retornou a URL de checkout.");
+
+    if (userId && supabaseAdmin) {
+      await supabaseAdmin.from("user_subscriptions").upsert({
+        user_id: userId,
+        plan_id: planId,
+        status: "pending",
+        current_period_end: null,
+        mp_external_reference: externalReference,
+        mp_preference_id: String(checkout.id),
+        updated_at: new Date().toISOString()
+      }, { onConflict: "user_id" });
     }
-    const checkoutUrl = checkout.init_point;
-    if (!checkoutUrl) throw new Error("O Mercado Pago não retornou o link de pagamento.");
-    const subscriptionFields = planId === "lifetime"
-      ? { mp_preference_id: String(checkout.id) }
-      : { mp_preapproval_id: String(checkout.id) };
-    const { error } = await supabaseAdmin.from("user_subscriptions").upsert({
-      user_id: req.user.id, plan_id: planId, status: "pending", current_period_end: null,
-      mp_external_reference: externalReference, ...subscriptionFields, updated_at: new Date().toISOString()
-    }, { onConflict: "user_id" });
-    if (error) throw error;
+
     res.json({ url: checkoutUrl });
   } catch (error) {
     console.error("Mercado Pago checkout creation failed:", error.message);
-    res.status(502).json({ error: error.message || "Não foi possível iniciar o checkout." });
+    res.status(502).json({ error: error.message || "Não foi possível iniciar o checkout no Mercado Pago." });
   }
 });
 
@@ -639,13 +699,28 @@ app.get("/api/site-config", async (_req, res) => {
 });
 
 app.post("/api/admin/site-config", requireAdmin, async (req, res) => {
-  const { whatsappNumber, pixKey, pixName } = req.body || {};
+  const {
+    whatsappNumber,
+    pixKey,
+    pixName,
+    mpAccessToken,
+    mpWebhookSecret,
+    mpLinkMonthly,
+    mpLinkAnnual,
+    mpLinkLifetime
+  } = req.body || {};
+
   const current = await loadSiteConfig();
   const updated = {
     ...current,
     whatsappNumber: whatsappNumber !== undefined ? String(whatsappNumber).trim() : current.whatsappNumber,
     pixKey: pixKey !== undefined ? String(pixKey).trim() : current.pixKey,
-    pixName: pixName !== undefined ? String(pixName).trim() : current.pixName
+    pixName: pixName !== undefined ? String(pixName).trim() : current.pixName,
+    mpAccessToken: mpAccessToken !== undefined ? String(mpAccessToken).trim() : (current.mpAccessToken || ""),
+    mpWebhookSecret: mpWebhookSecret !== undefined ? String(mpWebhookSecret).trim() : (current.mpWebhookSecret || ""),
+    mpLinkMonthly: mpLinkMonthly !== undefined ? String(mpLinkMonthly).trim() : (current.mpLinkMonthly || ""),
+    mpLinkAnnual: mpLinkAnnual !== undefined ? String(mpLinkAnnual).trim() : (current.mpLinkAnnual || ""),
+    mpLinkLifetime: mpLinkLifetime !== undefined ? String(mpLinkLifetime).trim() : (current.mpLinkLifetime || "")
   };
   await saveSiteConfig(updated);
   res.json({ ok: true, config: updated });

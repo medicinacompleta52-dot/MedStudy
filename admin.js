@@ -398,13 +398,18 @@ async function deleteCourse(id, title) {
 }
 
 // ==========================================
-// VENDAS WHATSAPP & PIX DIRETO
+// VENDAS WHATSAPP & PIX DIRETO & MERCADO PAGO
 // ==========================================
 async function loadSiteConfig() {
   try {
     const config = await adminApi("/api/site-config");
-    if ($("#cfg-whatsapp")) $("#cfg-whatsapp").value = config.whatsappNumber || "5511999999999";
-    if ($("#cfg-pix")) $("#cfg-pix").value = config.pixKey || "contato@medstudy.com";
+    if ($("#cfg-whatsapp")) $("#cfg-whatsapp").value = config.whatsappNumber || "5554996318816";
+    if ($("#cfg-pix")) $("#cfg-pix").value = config.pixKey || "54996318816";
+    if ($("#cfg-mp-token")) $("#cfg-mp-token").value = config.mpAccessToken || "";
+    if ($("#cfg-mp-webhook")) $("#cfg-mp-webhook").value = config.mpWebhookSecret || "";
+    if ($("#cfg-mp-link-monthly")) $("#cfg-mp-link-monthly").value = config.mpLinkMonthly || "";
+    if ($("#cfg-mp-link-annual")) $("#cfg-mp-link-annual").value = config.mpLinkAnnual || "";
+    if ($("#cfg-mp-link-lifetime")) $("#cfg-mp-link-lifetime").value = config.mpLinkLifetime || "";
   } catch (e) {}
 }
 
@@ -435,6 +440,46 @@ function setupSiteConfigForm() {
     } finally {
       btn.disabled = false;
       btn.textContent = "Salvar WhatsApp & Chave Pix";
+    }
+  });
+}
+
+function setupMpConfigForm() {
+  const form = $("#mp-config-form");
+  const statusMsg = $("#mp-config-status");
+  if (!form) return;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const mpAccessToken = $("#cfg-mp-token")?.value.trim() || "";
+    const mpWebhookSecret = $("#cfg-mp-webhook")?.value.trim() || "";
+    const mpLinkMonthly = $("#cfg-mp-link-monthly")?.value.trim() || "";
+    const mpLinkAnnual = $("#cfg-mp-link-annual")?.value.trim() || "";
+    const mpLinkLifetime = $("#cfg-mp-link-lifetime")?.value.trim() || "";
+    const btn = $("#btn-save-mp-config");
+
+    btn.disabled = true;
+    btn.textContent = "Salvando configurações...";
+
+    try {
+      await adminApi("/api/admin/site-config", {
+        method: "POST",
+        body: JSON.stringify({
+          mpAccessToken,
+          mpWebhookSecret,
+          mpLinkMonthly,
+          mpLinkAnnual,
+          mpLinkLifetime
+        })
+      });
+      statusMsg.className = "drive-status-msg success";
+      statusMsg.textContent = "✓ Configurações do Mercado Pago salvas com sucesso! A opção de pagamento foi atualizada no site.";
+      statusMsg.hidden = false;
+    } catch (err) {
+      alert("Erro ao salvar dados do Mercado Pago: " + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Salvar Configurações do Mercado Pago";
     }
   });
 }
@@ -537,6 +582,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupTestingTools();
   setupCourseModal();
   setupSiteConfigForm();
+  setupMpConfigForm();
   setupGrantAccessForm();
   checkAuth();
 });

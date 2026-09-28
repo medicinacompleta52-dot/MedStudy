@@ -207,6 +207,66 @@
         </form>
       </section>
 
+      <!-- SEÇÃO: CONFIGURAÇÃO DE PAGAMENTO MERCADO PAGO -->
+      <section class="panel-box">
+        <div class="panel-box-header">
+          <div>
+            <h3>💳 Configuração de Pagamento — Mercado Pago</h3>
+            <p>Ative a opção de pagamento automático por Cartão de Crédito (até 12x), Pix Automático e Boleto Bancário.</p>
+          </div>
+        </div>
+        <form id="mp-config-form" class="bulk-drive-form" style="display:flex; flex-direction:column; gap:16px; align-items:stretch;">
+          <div style="background:var(--panel2); padding:16px; border-radius:10px; border:1px solid var(--line);">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+              <span style="background:#009ee3; color:#fff; font-size:11px; font-weight:800; padding:2px 8px; border-radius:4px;">OPÇÃO 1 · API OFICIAL</span>
+              <strong style="color:#fff; font-size:14px;">Access Token do Mercado Pago</strong>
+            </div>
+            <p style="margin:0 0 12px; font-size:12px; color:var(--muted); line-height:1.5;">
+              Cole aqui o seu <strong>Access Token de Produção</strong> obtido no portal de desenvolvedores do Mercado Pago. Com ele, o checkout transparente é gerado automaticamente.
+            </p>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:12px;">
+              <div>
+                <label style="font-size:12px; font-weight:700; color:var(--muted); margin-bottom:4px; display:block;">Access Token (APP_USR-...)</label>
+                <input type="text" id="cfg-mp-token" placeholder="APP_USR-0000000000000000-000000-..." autocomplete="off">
+              </div>
+              <div>
+                <label style="font-size:12px; font-weight:700; color:var(--muted); margin-bottom:4px; display:block;">Webhook Secret (Opcional)</label>
+                <input type="text" id="cfg-mp-webhook" placeholder="Chave de assinatura de webhook do Mercado Pago" autocomplete="off">
+              </div>
+            </div>
+          </div>
+
+          <div style="background:var(--panel2); padding:16px; border-radius:10px; border:1px solid var(--line);">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+              <span style="background:#38a169; color:#fff; font-size:11px; font-weight:800; padding:2px 8px; border-radius:4px;">OPÇÃO 2 · LINKS DE PAGAMENTO</span>
+              <strong style="color:#fff; font-size:14px;">Links Diretos do Mercado Pago (Cobrança Rápida)</strong>
+            </div>
+            <p style="margin:0 0 12px; font-size:12px; color:var(--muted); line-height:1.5;">
+              Se você preferir criar botões/links no app do Mercado Pago, basta colar os links correspondentes abaixo. Ao clicar em "Pagar com Mercado Pago", o aluno será aberto diretamente no link do plano.
+            </p>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:12px;">
+              <div>
+                <label style="font-size:12px; font-weight:700; color:var(--muted); margin-bottom:4px; display:block;">Link do Plano Mensal (R$ 80)</label>
+                <input type="url" id="cfg-mp-link-monthly" placeholder="https://mpago.la/... ou link Mercado Pago">
+              </div>
+              <div>
+                <label style="font-size:12px; font-weight:700; color:var(--muted); margin-bottom:4px; display:block;">Link do Plano Anual (R$ 500)</label>
+                <input type="url" id="cfg-mp-link-annual" placeholder="https://mpago.la/... ou link Mercado Pago">
+              </div>
+              <div>
+                <label style="font-size:12px; font-weight:700; color:var(--muted); margin-bottom:4px; display:block;">Link do Plano Vitalício (R$ 750)</label>
+                <input type="url" id="cfg-mp-link-lifetime" placeholder="https://mpago.la/... ou link Mercado Pago">
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end;">
+            <button type="submit" class="btn-primary" id="btn-save-mp-config">Salvar Configurações do Mercado Pago</button>
+          </div>
+          <div class="drive-status-msg" id="mp-config-status" hidden></div>
+        </form>
+      </section>
+
       <!-- SEÇÃO: LIBERAÇÃO MANUAL DE ALUNOS (PAGAMENTOS PIX / WHATSAPP) -->
       <section class="panel-box">
         <div class="panel-box-header">
