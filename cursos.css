@@ -119,16 +119,16 @@ body {
 
 .user-badge.active-sub {
   display: inline-flex;
-  background: #09261a;
-  border-color: #1b5e3f;
-  color: #4ade80;
+  background: #0f1f38;
+  border-color: #1e3a8a;
+  color: #60a5fa;
 }
 
 .user-badge.inactive-sub {
   display: inline-flex;
-  background: #271a0c;
-  border-color: #5c3b16;
-  color: #fbd38d;
+  background: #090d14;
+  border-color: #1e293b;
+  color: #94a3b8;
 }
 
 .trial-pill {
@@ -247,8 +247,8 @@ body {
 }
 
 .status-banner.unlocked {
-  background: #09261a;
-  border: 1px solid #1b5e3f;
+  background: #0f192d;
+  border: 1px solid var(--blue);
 }
 
 .status-info {

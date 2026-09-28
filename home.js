@@ -171,10 +171,12 @@ function renderLandingFoldersTree() {
   container.replaceChildren();
 
   const cycles = [
-    { name: "01 - Ciclo Básico", filter: "Ciclo Básico", icon: "◈" },
-    { name: "02 - Ciclo Clínico", filter: "Ciclo Clínico", icon: "♡" },
-    { name: "03 - Prática & Internato", filter: "Prática & Internato", icon: "＋" },
-    { name: "04 - Residência & Revalida", filter: "Residência & Revalida", icon: "🏆" }
+    { name: "Medcurso & Medgrupo", filter: "Medcurso & Medgrupo", icon: "🩺" },
+    { name: "Medway", filter: "Medway", icon: "🎯" },
+    { name: "Estratégia MED", filter: "Estratégia MED", icon: "📚" },
+    { name: "MEDCOF", filter: "MEDCOF", icon: "💎" },
+    { name: "Hardwork Medicina", filter: "Hardwork Medicina", icon: "💪" },
+    { name: "Sanar & Outros", filter: "Sanar & Outros", icon: "⭐" }
   ];
 
   cycles.forEach((cycle, idx) => {

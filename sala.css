@@ -11,11 +11,11 @@
   --red: #2563eb;
   --red-hover: #1d4ed8;
   --red-subtle: #0f1d38;
-  --green: #48bb78;
-  --green-subtle: #142a1f;
+  --green: #2563eb;
+  --green-subtle: #0f1d38;
   --blue: #2563eb;
   --blue-subtle: #0f1d38;
-  --amber: #ecc94b;
+  --amber: #60a5fa;
   --font-main: "DM Sans", -apple-system, BlinkMacSystemFont, sans-serif;
   --font-heading: "Manrope", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
@@ -186,8 +186,8 @@ body {
   padding: 4px 10px;
   border-radius: 20px;
   background: var(--green-subtle);
-  color: #68d391;
-  border: 1px solid #22543d;
+  color: #60a5fa;
+  border: 1px solid #1e3a8a;
 }
 
 .header-btn {
@@ -771,8 +771,8 @@ body {
 
 .pdf-btn-download {
   background: var(--green-subtle);
-  border-color: #22543d;
-  color: #68d391;
+  border-color: #1e3a8a;
+  color: #60a5fa;
 }
 
 .pdf-btn-download:hover {
@@ -968,8 +968,8 @@ body {
 
 .ext-pdf {
   background: var(--green-subtle);
-  color: #68d391;
-  border: 1px solid rgba(72, 187, 120, 0.4);
+  color: #60a5fa;
+  border: 1px solid rgba(37, 99, 235, 0.4);
 }
 
 .file-name {
@@ -1085,7 +1085,7 @@ body {
 .quiz-option-btn.correct {
   background: var(--green-subtle);
   border-color: var(--green);
-  color: #9ae6b4;
+  color: #93c5fd;
 }
 
 .quiz-option-btn.correct .quiz-letter {
@@ -1116,7 +1116,7 @@ body {
 
 .quiz-feedback h4 {
   font: 700 15px var(--font-heading);
-  color: #9ae6b4;
+  color: #93c5fd;
   margin-bottom: 6px;
 }
 
@@ -1586,7 +1586,7 @@ body {
 .trial-pill.unlimited {
   background: rgba(72, 187, 120, 0.12);
   border-color: rgba(72, 187, 120, 0.35);
-  color: #68d391;
+  color: #60a5fa;
 }
 
 .trial-pill.admin {
@@ -1847,7 +1847,7 @@ body {
 }
 
 .btn-modal-login {
-  color: #68d391;
+  color: #60a5fa;
   text-decoration: none;
   font-size: 13px;
   font-weight: 600;

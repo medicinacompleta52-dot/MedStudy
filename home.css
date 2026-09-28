@@ -14,7 +14,7 @@
   --blue-glow: rgba(37, 99, 235, 0.45);
   --blue-badge: #1d4ed8;
   --cyan: #38bdf8;
-  --green: #22c55e;
+  --blue-light: #60a5fa;
   --line: #1e293b;
   --line-strong: #334155;
   font-family: "DM Sans", -apple-system, BlinkMacSystemFont, sans-serif;
@@ -360,7 +360,8 @@ body {
   display: inline-block;
   width: 6px;
   height: 6px;
-  background: var(--green);
+  background: var(--cyan);
+  box-shadow: 0 0 6px var(--cyan);
   border-radius: 50%;
   margin-right: 5px;
 }

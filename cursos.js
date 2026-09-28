@@ -288,8 +288,12 @@ function setupFilters() {
   });
 
   const urlParams = new URLSearchParams(window.location.search);
+  const filtroParam = urlParams.get("filtro");
   const areaParam = urlParams.get("area");
-  if (areaParam && searchInput) {
+  if (filtroParam) {
+    currentFilter = filtroParam;
+    pills.forEach((p) => p.classList.toggle("active", p.dataset.filter === filtroParam));
+  } else if (areaParam && searchInput) {
     searchInput.value = areaParam;
     if (clearBtn) clearBtn.hidden = false;
   }
