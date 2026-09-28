@@ -58,7 +58,10 @@ function updateStatusBanner(active) {
           <span>Sua assinatura está ativa. Todos os links diretos para pastas e materiais em alta resolução estão disponíveis abaixo.</span>
         </div>
       </div>
-      <a href="conta.html" class="status-btn" style="background: #1c3c2b; color: #8be0b2; border: 1px solid #2f694b;">Gerenciar Plano</a>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <a href="https://drive.google.com/drive/my-drive" target="_blank" rel="noopener noreferrer" class="status-btn" style="background: #193829; color: #67d69d; border: 1px solid #2e694c; font-weight: 700;">📂 Abrir Drive Completo ↗</a>
+        <a href="conta.html" class="status-btn" style="background: #1c3c2b; color: #8be0b2; border: 1px solid #2f694b;">Gerenciar Plano</a>
+      </div>
     `;
   } else {
     banner.className = "status-banner locked";
