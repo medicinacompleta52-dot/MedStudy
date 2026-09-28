@@ -12,7 +12,7 @@ if (search) {
       card.hidden = !match;
       if (match) visible += 1;
     });
-    noAreas.hidden = visible > 0;
+    if (noAreas) noAreas.hidden = visible > 0;
   });
 
   document.addEventListener("keydown", (event) => {
@@ -27,17 +27,54 @@ if (search) {
 let landingCourses = [];
 let landingFilter = "all";
 
+// Filtragem instantânea dos cards renderizados no HTML
+function filterStaticCards() {
+  const cards = document.querySelectorAll(".landing-course-card");
+  const countEl = document.querySelector("#landing-courses-count");
+  const searchInput = document.querySelector("#landing-course-search");
+  const query = (searchInput?.value || "").trim().toLowerCase();
+
+  let visibleCount = 0;
+  cards.forEach((card) => {
+    const category = card.dataset.category || "";
+    const area = card.dataset.area || "";
+    const searchData = card.dataset.search || card.textContent.toLowerCase();
+
+    const matchesFilter =
+      landingFilter === "all" ||
+      category.toLowerCase() === landingFilter.toLowerCase() ||
+      area.toLowerCase() === landingFilter.toLowerCase();
+
+    const matchesSearch = !query || searchData.includes(query);
+
+    if (matchesFilter && matchesSearch) {
+      card.hidden = false;
+      card.style.display = "";
+      visibleCount++;
+    } else {
+      card.hidden = true;
+      card.style.display = "none";
+    }
+  });
+
+  if (countEl) {
+    countEl.textContent = `Exibindo ${visibleCount} de ${cards.length} cursos disponíveis no acervo`;
+  }
+}
+
 async function loadLandingCourses() {
   try {
     const res = await fetch("/api/courses");
     const data = await res.json();
     landingCourses = data.courses || [];
-    renderLandingCatalog();
-    renderLandingFoldersTree();
+    // Se a API trouxer mais cursos do que os pré-renderizados, atualiza
+    const existingCards = document.querySelectorAll(".landing-course-card");
+    if (landingCourses.length > 0 && landingCourses.length !== existingCards.length) {
+      renderLandingCatalog();
+      renderLandingFoldersTree();
+    }
   } catch (err) {
-    console.error("Erro ao carregar catálogo da landing page:", err);
-    const countEl = document.querySelector("#landing-courses-count");
-    if (countEl) countEl.textContent = "Erro ao carregar acervo.";
+    console.warn("Aviso: carregando a partir dos dados locais pré-renderizados:", err);
   }
 }
 
@@ -45,7 +82,7 @@ function renderLandingCatalog() {
   const grid = document.querySelector("#landing-courses-grid");
   const countEl = document.querySelector("#landing-courses-count");
   const searchInput = document.querySelector("#landing-course-search");
-  if (!grid) return;
+  if (!grid || landingCourses.length === 0) return;
 
   const query = (searchInput?.value || "").trim().toLowerCase();
 
@@ -66,23 +103,23 @@ function renderLandingCatalog() {
   });
 
   if (countEl) {
-    countEl.textContent = `Exibindo ${filtered.length} de ${landingCourses.length} cursos disponíveis no site`;
+    countEl.textContent = `Exibindo ${filtered.length} de ${landingCourses.length} cursos disponíveis no acervo`;
   }
 
   grid.replaceChildren();
 
   if (filtered.length === 0) {
     grid.innerHTML = `
-      <div style="grid-column: 1/-1; text-align: center; padding: 40px; background: #fff; border-radius: 10px; border: 1px solid #dfe4df;">
-        <p style="font-size: 14px; color: #63716a; margin: 0 0 10px;">Nenhum curso encontrado para os critérios selecionados.</p>
-        <button id="btn-clear-landing-filter" style="background:#ed414b; color:#fff; border:none; padding:8px 16px; border-radius:6px; font-weight:700; cursor:pointer;">Limpar Filtros</button>
+      <div style="grid-column: 1/-1; text-align: center; padding: 40px; background: #0f1622; border-radius: 12px; border: 1px solid #1e293b;">
+        <p style="font-size: 14px; color: #94a3b8; margin: 0 0 14px;">Nenhum curso encontrado para os critérios selecionados.</p>
+        <button id="btn-clear-landing-filter" style="background:#2563eb; color:#fff; border:none; padding:9px 18px; border-radius:6px; font-weight:700; cursor:pointer;">Limpar Filtros</button>
       </div>
     `;
     document.querySelector("#btn-clear-landing-filter")?.addEventListener("click", () => {
       if (searchInput) searchInput.value = "";
       landingFilter = "all";
       document.querySelectorAll(".landing-pill").forEach((p) => p.classList.toggle("active", p.dataset.filter === "all"));
-      renderLandingCatalog();
+      filterStaticCards();
     });
     return;
   }
@@ -90,14 +127,17 @@ function renderLandingCatalog() {
   filtered.forEach((course) => {
     const card = document.createElement("article");
     card.className = "landing-course-card";
+    card.dataset.category = course.category;
+    card.dataset.area = course.area;
+    card.dataset.id = course.id;
+    card.dataset.search = (course.title + " " + course.area + " " + (course.description || "")).toLowerCase();
 
-    const colorClass = "symbol-" + (course.color || "red");
     const icon = course.icon || "◈";
     const foldersCount = (course.folders || []).length || 4;
 
     card.innerHTML = `
       <div class="landing-card-top">
-        <div class="landing-symbol ${colorClass}">${icon}</div>
+        <div class="landing-symbol">${icon}</div>
         <span class="landing-badge-cycle">${course.category || "Medicina"}</span>
       </div>
       <div class="landing-card-area">${course.area || "Geral"}</div>
@@ -112,7 +152,7 @@ function renderLandingCatalog() {
 
       <div class="landing-card-actions">
         <a href="sala.html?curso=${course.id}" class="landing-btn-study" title="Assistir aulas diretamente no site">
-          ▶ Assistir no Site ➔
+          ▶ Estudar no Site ➔
         </a>
         <a href="cursos.html?area=${encodeURIComponent(course.area)}" class="landing-btn-folder" title="Ver grade completa de pastas">
           📁 Explorar Pastas
@@ -130,7 +170,6 @@ function renderLandingFoldersTree() {
 
   container.replaceChildren();
 
-  // Agrupa os cursos por ciclo
   const cycles = [
     { name: "01 - Ciclo Básico", filter: "Ciclo Básico", icon: "◈" },
     { name: "02 - Ciclo Clínico", filter: "Ciclo Clínico", icon: "♡" },
@@ -170,25 +209,28 @@ function renderLandingFoldersTree() {
       </div>
     `;
 
-    item.querySelector(".tree-folder-header").addEventListener("click", () => {
-      item.classList.toggle("open");
-    });
-
-    item.querySelectorAll(".tree-course-row").forEach((row) => {
-      row.addEventListener("click", (e) => {
-        if (e.target.classList.contains("tree-play-link")) return;
-        const cId = row.dataset.courseId;
-        const searchInput = document.querySelector("#landing-course-search");
-        const found = landingCourses.find((c) => c.id === cId);
-        if (found && searchInput) {
-          searchInput.value = found.title;
-          renderLandingCatalog();
-          document.querySelector("#landing-courses-grid")?.scrollIntoView({ behavior: "smooth" });
-        }
-      });
-    });
-
+    bindFolderItemEvents(item);
     container.appendChild(item);
+  });
+}
+
+function bindFolderItemEvents(item) {
+  item.querySelector(".tree-folder-header")?.addEventListener("click", () => {
+    item.classList.toggle("open");
+  });
+
+  item.querySelectorAll(".tree-course-row").forEach((row) => {
+    row.addEventListener("click", (e) => {
+      if (e.target.classList.contains("tree-play-link")) return;
+      const cId = row.dataset.courseId;
+      const searchInput = document.querySelector("#landing-course-search");
+      const title = row.querySelector("strong")?.textContent;
+      if (title && searchInput) {
+        searchInput.value = title;
+        filterStaticCards();
+        document.querySelector("#catalogo-pastas")?.scrollIntoView({ behavior: "smooth" });
+      }
+    });
   });
 }
 
@@ -199,16 +241,21 @@ function setupLandingControls() {
       pills.forEach((p) => p.classList.remove("active"));
       pill.classList.add("active");
       landingFilter = pill.dataset.filter;
-      renderLandingCatalog();
+      filterStaticCards();
     });
   });
 
   const searchInput = document.querySelector("#landing-course-search");
   if (searchInput) {
     searchInput.addEventListener("input", () => {
-      renderLandingCatalog();
+      filterStaticCards();
     });
   }
+
+  // Bind existing static folders-tree items
+  document.querySelectorAll(".folders-tree-item").forEach((item) => {
+    bindFolderItemEvents(item);
+  });
 }
 
 document.addEventListener("DOMContentLoaded", () => {

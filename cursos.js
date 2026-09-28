@@ -85,8 +85,9 @@ function updateTrialUI() {
 }
 
 function lockTrialExpired() {
-  const modal = $("#trial-expired-modal");
-  if (modal) modal.hidden = false;
+  const timerEl = $("#trial-timer");
+  if (timerEl) timerEl.textContent = "Degustação: 00:00";
+  // No catálogo geral cursos.html a navegação permanece sempre aberta para visualização dos cursos!
 }
 
 function updateHeaderUser(user, active) {
@@ -186,7 +187,7 @@ function renderCourses() {
     const card = document.createElement("article");
     card.className = "course-card";
 
-    const colorClass = "symbol-" + (course.color || "red");
+    const colorClass = "symbol-blue";
     const icon = course.icon || "◈";
     const foldersCount = (course.folders || []).length || 4;
 
@@ -211,7 +212,7 @@ function renderCourses() {
       </div>
 
       <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
-        <a href="sala.html?curso=${course.id}" class="btn-study-site" style="background:#ed414b; color:#fff; text-decoration:none; padding:11px 16px; border-radius:8px; font-weight:800; display:flex; align-items:center; justify-content:space-between; font-size:13px;" title="Assistir aulas diretamente no player HD da sala">
+        <a href="sala.html?curso=${course.id}" class="btn-study-site" style="background:#2563eb; color:#fff; text-decoration:none; padding:11px 16px; border-radius:8px; font-weight:800; display:flex; align-items:center; justify-content:space-between; font-size:13px;" title="Assistir aulas diretamente no player HD da sala">
           <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
         </a>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
@@ -223,11 +224,11 @@ function renderCourses() {
           </button>
         </div>
         ${isUserActive && course.driveUrl ? `
-          <a href="${course.driveUrl}" target="_blank" rel="noopener noreferrer" class="btn-external-subtle" style="font-size:11px; text-align:center; color:#68d391; text-decoration:underline;">
+          <a href="${course.driveUrl}" target="_blank" rel="noopener noreferrer" class="btn-external-subtle" style="font-size:11px; text-align:center; color:#38bdf8; text-decoration:underline;">
             📂 Abrir pasta no Google Drive externo ↗
           </a>
         ` : `
-          <a href="conta.html" style="font-size:11px; color:#8fa099; text-align:center; text-decoration:none; margin-top:2px;">
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
             🔒 Desbloquear permanente com Mercado Pago ou Pix
           </a>
         `}
@@ -456,5 +457,9 @@ async function loadCoursesData() {
 document.addEventListener("DOMContentLoaded", async () => {
   setupFilters();
   setupModal();
+  $("#close-trial-expired-btn")?.addEventListener("click", () => {
+    const modal = $("#trial-expired-modal");
+    if (modal) modal.hidden = true;
+  });
   await loadCoursesData();
 });

@@ -10,7 +10,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="cursos.css">
-  <link rel="stylesheet" href="sala.css">
   <script src="cursos.js" defer></script>
 </head>
 <body>
@@ -23,7 +22,7 @@
     <nav class="main-nav" aria-label="Navegação principal">
       <a href="index.html">Início</a>
       <a href="cursos.html" class="active">Catálogo (36 Cursos)</a>
-      <a href="sala.html" style="color: #ecc94b; font-weight: 700;">⚡ Sala de Aula (30 min)</a>
+      <a href="sala.html" style="color: #38bdf8; font-weight: 700;">⚡ Sala de Aula (30 min)</a>
       <a href="admin.html">Painel Admin</a>
       <a href="conta.html">Planos &amp; Mercado Pago</a>
     </nav>
@@ -61,10 +60,10 @@
           </div>
         </div>
         <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-          <a href="sala.html" class="status-btn" style="background:#ed414b; color:#fff; font-weight:800; border:none; padding:12px 22px; font-size:14px; text-decoration:none; border-radius:8px; display:inline-flex; align-items:center; gap:8px;">
+          <a href="sala.html" class="status-btn" style="background:#2563eb; color:#fff; font-weight:800; border:none; padding:12px 22px; font-size:14px; text-decoration:none; border-radius:8px; display:inline-flex; align-items:center; gap:8px;">
             <span>▶ Iniciar Degustação na Sala de Aula</span> <span>➔</span>
           </a>
-          <a href="conta.html" class="status-btn" style="background:#14221b; color:#68d391; border:1px solid #27523a; font-weight:700; padding:12px 18px; text-decoration:none; border-radius:8px;">
+          <a href="conta.html" class="status-btn" style="background:#0f172a; color:#38bdf8; border:1px solid #1e3a8a; font-weight:700; padding:12px 18px; text-decoration:none; border-radius:8px;">
             💳 Assinar Acesso Permanente
           </a>
         </div>
@@ -88,14 +87,1345 @@
       </div>
 
       <div class="catalog-actions-bar">
-        <span class="courses-count" id="courses-count">Carregando catálogo de cursos...</span>
+        <span class="courses-count" id="courses-count">Exibindo todos os 36 cursos cadastrados</span>
         <button class="add-course-btn" id="open-add-modal-btn">＋ Cadastrar Novo Curso do Drive</button>
       </div>
     </section>
 
     <!-- GRADE DE CURSOS DO CATÁLOGO -->
     <section class="courses-grid" id="courses-grid">
-      <!-- Cards renderizados dinamicamente via cursos.js -->
+      <article class="course-card" data-category="Ciclo Básico" data-area="Anatomia" data-id="anatomia-humana">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">◈</div>
+          <span class="badge-cycle">Ciclo Básico</span>
+        </div>
+        <div class="card-area">Anatomia</div>
+        <h2 class="card-title">Anatomia Humana Sistêmica &amp; Topográfica</h2>
+        <p class="card-description">Dissecção anatômica guiada, neuroanatomia tridimensional, osteologia, miologia e anatomia topográfica dos sistemas cardiovascular, digestório e respiratório.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>60 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Atlas 3D Digital + Pranchas Anatômicas em PDF</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=anatomia-humana" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=anatomia-humana&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="anatomia-humana" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Ciclo Básico" data-area="Fisiologia" data-id="fisiologia-fisiopatologia">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">⌁</div>
+          <span class="badge-cycle">Ciclo Básico</span>
+        </div>
+        <div class="card-area">Fisiologia</div>
+        <h2 class="card-title">Fisiologia Humana &amp; Fisiopatologia Integrada</h2>
+        <p class="card-description">Homeostase, potenciais de ação, fisiologia cardiovascular, respiratória, renal e endócrina integradas com a gênese das principais patologias clínicas.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>45 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Esquemas Fisiológicos + Resumos Ilustrados</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=fisiologia-fisiopatologia" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=fisiologia-fisiopatologia&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="fisiologia-fisiopatologia" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Ciclo Básico" data-area="Bioquímica" data-id="bioquimica-medica">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">⚗</div>
+          <span class="badge-cycle">Ciclo Básico</span>
+        </div>
+        <div class="card-area">Bioquímica</div>
+        <h2 class="card-title">Bioquímica Médica &amp; Metabolismo Energético</h2>
+        <p class="card-description">Ciclo de Krebs, fosforilação oxidativa, glicólise, metabolismo lipídico e proteico, erros inatos do metabolismo e enzimologia clínica.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>36 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Mapas Metabólicos Ilustrados + Apostilas em PDF</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=bioquimica-medica" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=bioquimica-medica&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="bioquimica-medica" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Ciclo Básico" data-area="Histologia" data-id="histologia-embriologia">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">🔬</div>
+          <span class="badge-cycle">Ciclo Básico</span>
+        </div>
+        <div class="card-area">Histologia</div>
+        <h2 class="card-title">Histologia, Biologia Celular &amp; Embriologia Médica</h2>
+        <p class="card-description">Tecidos fundamentais, lâminas de microscopia dos órgãos vitais, desenvolvimento embrionário da 1ª à 8ª semana e malformações congênitas.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>32 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Atlas de Lâminas Microscópicas em Alta Resolução + Guias</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=histologia-embriologia" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=histologia-embriologia&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="histologia-embriologia" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Ciclo Básico" data-area="Imunologia" data-id="imunologia-basica-clinica">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">🛡</div>
+          <span class="badge-cycle">Ciclo Básico</span>
+        </div>
+        <div class="card-area">Imunologia</div>
+        <h2 class="card-title">Imunologia Básica &amp; Clínica</h2>
+        <p class="card-description">Imunidade inata e adaptativa, ativação de linfócitos T e B, citocinas, hipersensibilidade tipos I a IV, imunodeficiências primárias e vacinologia.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>30 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Diagramas de Resposta Imune + Resumos de Vacinologia</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=imunologia-basica-clinica" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=imunologia-basica-clinica&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="imunologia-basica-clinica" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Ciclo Básico" data-area="Microbiologia" data-id="microbiologia-parasitologia">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">🦠</div>
+          <span class="badge-cycle">Ciclo Básico</span>
+        </div>
+        <div class="card-area">Microbiologia</div>
+        <h2 class="card-title">Microbiologia &amp; Parasitologia Médica</h2>
+        <p class="card-description">Bactérias Gram-positivas e Gram-negativas, vírus DNA/RNA, fungos oportunistas, protozoários e helmintos endêmicos no Brasil com foco em diagnóstico.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>34 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Chaves de Identificação de Patógenos + Atlas Parasitológico</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=microbiologia-parasitologia" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=microbiologia-parasitologia&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="microbiologia-parasitologia" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Ciclo Básico" data-area="Patologia" data-id="patologia-geral-especial">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">⚕</div>
+          <span class="badge-cycle">Ciclo Básico</span>
+        </div>
+        <div class="card-area">Patologia</div>
+        <h2 class="card-title">Patologia Geral &amp; Anatomia Patológica</h2>
+        <p class="card-description">Lesão celular e morte, inflamação aguda e crônica, reparo tecidual, neoplasias benignas e malignas e correlação anátomo-clínica de necrópsias.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>38 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Atlas de Macroscopia e Microscopia Patológica + Casos</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=patologia-geral-especial" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=patologia-geral-especial&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="patologia-geral-especial" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Ciclo Básico" data-area="Farmacologia" data-id="farmacologia-medica">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">✳</div>
+          <span class="badge-cycle">Ciclo Básico</span>
+        </div>
+        <div class="card-area">Farmacologia</div>
+        <h2 class="card-title">Farmacologia Médica &amp; Terapêutica Aplicada</h2>
+        <p class="card-description">Farmacocinética e farmacodinâmica, antibióticos, psicofármacos, anti-hipertensivos, analgésicos, anestésicos e prescrição segura.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>40 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Tabelas Comparativas de Fármacos + Guia de Prescrição</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=farmacologia-medica" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=farmacologia-medica&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="farmacologia-medica" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Ciclo Básico" data-area="Semiologia" data-id="semiologia-propedutica">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">🔍</div>
+          <span class="badge-cycle">Ciclo Básico</span>
+        </div>
+        <div class="card-area">Semiologia</div>
+        <h2 class="card-title">Semiologia &amp; Propedêutica Médica</h2>
+        <p class="card-description">Anamnese detalhada, exame físico geral e segmentar: ausculta pulmonar e cardíaca, palpação abdominal, reflexos neurológicos e sinais patognomônicos.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>38 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas de Exame Físico Prático + Roteiros de Anamnese em PDF</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=semiologia-propedutica" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=semiologia-propedutica&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="semiologia-propedutica" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Ciclo Básico" data-area="Genética" data-id="genetica-medica">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">🧬</div>
+          <span class="badge-cycle">Ciclo Básico</span>
+        </div>
+        <div class="card-area">Genética</div>
+        <h2 class="card-title">Genética Médica &amp; Biologia Molecular</h2>
+        <p class="card-description">Herança mendeliana e não-mendeliana, cromossomopatias (Down, Turner, Klinefelter), triagem neonatal, aconselhamento genético e oncogenética.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>26 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Heredogramas Interpretados + Resumos de Biologia Molecular</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=genetica-medica" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=genetica-medica&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="genetica-medica" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Ciclo Clínico" data-area="Cardiologia" data-id="cardiologia-ecg">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">♡</div>
+          <span class="badge-cycle">Ciclo Clínico</span>
+        </div>
+        <div class="card-area">Cardiologia</div>
+        <h2 class="card-title">Cardiologia Clínica &amp; ECG na Prática</h2>
+        <p class="card-description">Interpretação sistemática de traçados de ECG, arritmias cardíacas, síndrome coronariana aguda (SCA), insuficiência cardíaca, hipertensão e valvopatias com diretrizes atualizadas.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>48 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Banco de Traçados de ECG + Apostilas PDF</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=cardiologia-ecg" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=cardiologia-ecg&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="cardiologia-ecg" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Ciclo Clínico" data-area="Pneumologia" data-id="pneumologia-respiratoria">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">🌬</div>
+          <span class="badge-cycle">Ciclo Clínico</span>
+        </div>
+        <div class="card-area">Pneumologia</div>
+        <h2 class="card-title">Pneumologia &amp; Doenças Respiratórias</h2>
+        <p class="card-description">Asma brônquica (GINA), DPOC (GOLD), pneumonias comunitárias e hospitalares, derrame pleural, embolia pulmonar e espirometria clínica.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>32 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Interpretação de Espirometria + Diretrizes GINA e GOLD</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=pneumologia-respiratoria" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=pneumologia-respiratoria&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="pneumologia-respiratoria" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Ciclo Clínico" data-area="Gastroenterologia" data-id="gastroenterologia-hepatologia">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">⌖</div>
+          <span class="badge-cycle">Ciclo Clínico</span>
+        </div>
+        <div class="card-area">Gastroenterologia</div>
+        <h2 class="card-title">Gastroenterologia &amp; Hepatologia Clínica</h2>
+        <p class="card-description">DRGE, úlcera péptica, hemorragia digestiva alta e baixa, cirrose hepática, hipertensão portal, esteatose (MASLD), hepatites virais e pancreatite aguda.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>38 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Algoritmos de Conduta em HDA/HDB + Manuais de Hepatologia</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=gastroenterologia-hepatologia" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=gastroenterologia-hepatologia&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="gastroenterologia-hepatologia" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Ciclo Clínico" data-area="Nefrologia" data-id="nefrologia-disturbios">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">💧</div>
+          <span class="badge-cycle">Ciclo Clínico</span>
+        </div>
+        <div class="card-area">Nefrologia</div>
+        <h2 class="card-title">Nefrologia &amp; Distúrbios Hidroeletrolíticos</h2>
+        <p class="card-description">Injúria renal aguda (KDIGO), doença renal crônica, síndrome nefrítica e nefrótica, hipo/hipernatremia, hipo/hipercalemia e gasometria arterial.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>36 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Calculadoras e Fórmulas de Correção Eletrolítica + Casos</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=nefrologia-disturbios" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=nefrologia-disturbios&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="nefrologia-disturbios" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Ciclo Clínico" data-area="Hematologia" data-id="hematologia-hemoterapia">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">🩸</div>
+          <span class="badge-cycle">Ciclo Clínico</span>
+        </div>
+        <div class="card-area">Hematologia</div>
+        <h2 class="card-title">Hematologia &amp; Hemoterapia Clínica</h2>
+        <p class="card-description">Anemias carenciais e hemolíticas, leucemias agudas e crônicas, linfomas de Hodgkin e não-Hodgkin, distúrbios da hemostasia e transfusão de hemocomponentes.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>30 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Lâminas de Hematoscopia + Guias de Transfusão do MS</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=hematologia-hemoterapia" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=hematologia-hemoterapia&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="hematologia-hemoterapia" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Ciclo Clínico" data-area="Endocrinologia" data-id="endocrinologia-diabetes">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">⚖</div>
+          <span class="badge-cycle">Ciclo Clínico</span>
+        </div>
+        <div class="card-area">Endocrinologia</div>
+        <h2 class="card-title">Endocrinologia, Diabetes &amp; Tireoide</h2>
+        <p class="card-description">Diabetes Mellitus tipos 1 e 2, esquemas de insulinoterapia, cetoacidose diabética, hipotireoidismo, hipertireoidismo, nódulos tireoidianos e obesidade.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>28 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Tabelas de Insulinas e Antidiabéticos + Diretrizes SBD</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=endocrinologia-diabetes" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=endocrinologia-diabetes&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="endocrinologia-diabetes" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Ciclo Clínico" data-area="Neurologia" data-id="neurologia-clinica">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">🧠</div>
+          <span class="badge-cycle">Ciclo Clínico</span>
+        </div>
+        <div class="card-area">Neurologia</div>
+        <h2 class="card-title">Neurologia Clínica &amp; Exame Neurológico</h2>
+        <p class="card-description">Acidente vascular cerebral isquêmico e hemorrágico, cefaleias primárias e secundárias, epilepsia, síndromes demenciais, Parkinson e esclerose múltipla.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>42 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Demonstração do Exame Neurológico + Protocolos de AVC</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=neurologia-clinica" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=neurologia-clinica&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="neurologia-clinica" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Ciclo Clínico" data-area="Infectologia" data-id="infectologia-antimicrobianos">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">🛡</div>
+          <span class="badge-cycle">Ciclo Clínico</span>
+        </div>
+        <div class="card-area">Infectologia</div>
+        <h2 class="card-title">Infectologia &amp; Terapia Antimicrobiana</h2>
+        <p class="card-description">Manejo do HIV/AIDS, tuberculose, infecções de pele e partes moles, febres tropicais (dengue, chikungunya, malária), meningites e guia prático de antibióticos.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>35 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Guia de Prescrição Antimicrobiana + Protocolos do MS</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=infectologia-antimicrobianos" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=infectologia-antimicrobianos&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="infectologia-antimicrobianos" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Ciclo Clínico" data-area="Reumatologia" data-id="reumatologia-autoimunes">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">🦴</div>
+          <span class="badge-cycle">Ciclo Clínico</span>
+        </div>
+        <div class="card-area">Reumatologia</div>
+        <h2 class="card-title">Reumatologia &amp; Doenças Autoimunes</h2>
+        <p class="card-description">Lúpus eritematoso sistêmico (LES), artrite reumatoide, espondiloartrites, gota e hiperuricemia, osteoartrite, vasculites e interpretação de autoanticorpos (FAN).</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>28 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Guia de Interpretação do FAN + Critérios ACR/EULAR</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=reumatologia-autoimunes" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=reumatologia-autoimunes&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="reumatologia-autoimunes" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Ciclo Clínico" data-area="Dermatologia" data-id="dermatologia-clinica">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">☀️</div>
+          <span class="badge-cycle">Ciclo Clínico</span>
+        </div>
+        <div class="card-area">Dermatologia</div>
+        <h2 class="card-title">Dermatologia Clínica &amp; Lesões Elementares</h2>
+        <p class="card-description">Identificação das lesões elementares da pele, dermatoses inflamatórias (psoríase, dermatite atópica), micoses superficiais, farmacodermias e câncer de pele.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>26 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Atlas Fotográfico Dermatológico + Algoritmo ABCDE de Melanoma</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=dermatologia-clinica" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=dermatologia-clinica&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="dermatologia-clinica" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Ciclo Clínico" data-area="Psiquiatria" data-id="psiquiatria-saude-mental">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">🧠</div>
+          <span class="badge-cycle">Ciclo Clínico</span>
+        </div>
+        <div class="card-area">Psiquiatria</div>
+        <h2 class="card-title">Psiquiatria &amp; Saúde Mental no Ambulatório</h2>
+        <p class="card-description">Transtorno depressivo maior, transtornos de ansiedade, transtorno bipolar, esquizofrenia, ideação suicida e emergências psiquiátricas no pronto-socorro.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>25 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Critérios DSM-5 Simplificados + Guia de Psicofármacos</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=psiquiatria-saude-mental" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=psiquiatria-saude-mental&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="psiquiatria-saude-mental" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Ciclo Clínico" data-area="Oncologia" data-id="oncologia-paliativos">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">🎗</div>
+          <span class="badge-cycle">Ciclo Clínico</span>
+        </div>
+        <div class="card-area">Oncologia</div>
+        <h2 class="card-title">Oncologia Clínica &amp; Cuidados Paliativos</h2>
+        <p class="card-description">Bases da carcinogênese, estadiamento TNM, princípios de quimioterapia e imunoterapia, emergências oncológicas e controle de dor crônica por escala analgésica da OMS.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>24 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Tabelas de Opioides e Conversão de Doses + Casos Clínicos</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=oncologia-paliativos" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=oncologia-paliativos&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="oncologia-paliativos" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Ciclo Clínico" data-area="Geriatria" data-id="geriatria-sindromes">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">👴</div>
+          <span class="badge-cycle">Ciclo Clínico</span>
+        </div>
+        <div class="card-area">Geriatria</div>
+        <h2 class="card-title">Geriatria &amp; Grandes Síndromes Geriátricas</h2>
+        <p class="card-description">Os gigantes da geriatria (I&#39;s da geriatria): instabilidade postural e quedas, incontinência, iatrogenia/polifarmácia, imobilidade e insuficiência cognitiva (demência e delirium).</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>22 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Avaliação Geriátrica Ampla (AGA) + Critérios de Beers</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=geriatria-sindromes" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=geriatria-sindromes&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="geriatria-sindromes" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Ciclo Clínico" data-area="Radiologia" data-id="radiologia-imagem">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">📷</div>
+          <span class="badge-cycle">Ciclo Clínico</span>
+        </div>
+        <div class="card-area">Radiologia</div>
+        <h2 class="card-title">Radiologia &amp; Diagnóstico por Imagem na Prática</h2>
+        <p class="card-description">Leitura sistemática de radiografias de tórax e abdome, tomografia computadorizada de crânio e abdome, ressonância magnética e introdução ao ultrassom POCUS.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>36 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Casos com Imagens Reais Comentadas + Checklist de Laudo</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=radiologia-imagem" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=radiologia-imagem&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="radiologia-imagem" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Ciclo Clínico" data-area="Clínica Médica" data-id="clinica-medica-sindromes">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">⌖</div>
+          <span class="badge-cycle">Ciclo Clínico</span>
+        </div>
+        <div class="card-area">Clínica Médica</div>
+        <h2 class="card-title">Clínica Médica — Grandes Síndromes</h2>
+        <p class="card-description">Raciocínio clínico estruturado, investigação diagnóstica sindrômica e manejo terapêutico das patologias mais prevalentes da enfermaria e ambulatório.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>72 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Casos Clínicos Discutidos + Resumos Direcionados</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=clinica-medica-sindromes" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=clinica-medica-sindromes&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="clinica-medica-sindromes" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Ciclo Clínico" data-area="Saúde Coletiva" data-id="medicina-familia-sus">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">👥</div>
+          <span class="badge-cycle">Ciclo Clínico</span>
+        </div>
+        <div class="card-area">Saúde Coletiva</div>
+        <h2 class="card-title">Medicina de Família &amp; Saúde Coletiva (SUS)</h2>
+        <p class="card-description">Princípios da Atenção Primária, ferramentas de abordagem familiar (genograma, ecomapa), rastreamento populacional, epidemiologia, bioestatística e legislação do SUS.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>30 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Cadernos de Atenção Básica + Resumos de SUS para Provas</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=medicina-familia-sus" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=medicina-familia-sus&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="medicina-familia-sus" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Prática &amp; Internato" data-area="Emergência" data-id="emergencia-trauma-acls">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">＋</div>
+          <span class="badge-cycle">Prática &amp; Internato</span>
+        </div>
+        <div class="card-area">Emergência</div>
+        <h2 class="card-title">Medicina de Emergência, Trauma &amp; Suporte Avançado (ACLS/ATLS)</h2>
+        <p class="card-description">Manejo da via aérea e intubação, PCR segundo ACLS, protocolos do trauma ATLS, choque, sepse, ventilação mecânica e condutas rápidas de plantão.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>56 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Fluxogramas de Plantão + Protocolos Rápidos de Emergência</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=emergencia-trauma-acls" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=emergencia-trauma-acls&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="emergencia-trauma-acls" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Prática &amp; Internato" data-area="Cirurgia" data-id="cirurgia-geral-tecnica">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">⚔</div>
+          <span class="badge-cycle">Prática &amp; Internato</span>
+        </div>
+        <div class="card-area">Cirurgia</div>
+        <h2 class="card-title">Cirurgia Geral, Abdome Agudo &amp; Técnica Operatória</h2>
+        <p class="card-description">Diagnóstico do abdome agudo, propedêutica cirúrgica, cuidados pré e pós-operatórios, nós cirúrgicos, técnicas de sutura e cirurgia do trauma.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>44 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Vídeos de Demonstração Cirúrgica + Guias de Bolso</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=cirurgia-geral-tecnica" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=cirurgia-geral-tecnica&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="cirurgia-geral-tecnica" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Prática &amp; Internato" data-area="Pediatria" data-id="pediatria-puericultura">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">✿</div>
+          <span class="badge-cycle">Prática &amp; Internato</span>
+        </div>
+        <div class="card-area">Pediatria</div>
+        <h2 class="card-title">Pediatria Integral, Puericultura &amp; Urgências Pediátricas</h2>
+        <p class="card-description">Marcos do neurodesenvolvimento, crescimento, calendário vacinal do PNI, infecções de vias aéreas, desidratação infantil, PALS e emergências neonatais.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>50 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Caderno de Doses Pediátricas + Casos Reais</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=pediatria-puericultura" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=pediatria-puericultura&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="pediatria-puericultura" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Prática &amp; Internato" data-area="Ginecologia e Obstetrícia" data-id="ginecologia-obstetricia">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">◉</div>
+          <span class="badge-cycle">Prática &amp; Internato</span>
+        </div>
+        <div class="card-area">Ginecologia e Obstetrícia</div>
+        <h2 class="card-title">Ginecologia, Obstetrícia &amp; Assistência ao Parto</h2>
+        <p class="card-description">Assistência pré-natal, mecânica e condução do parto, hemorragias gestacionais, pré-eclâmpsia/eclâmpsia, rastreio de câncer ginecológico e anticoncepção.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>52 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Manuais Febrasgo + Protocolos de Maternidade</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=ginecologia-obstetricia" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=ginecologia-obstetricia&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="ginecologia-obstetricia" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Prática &amp; Internato" data-area="Ortopedia" data-id="ortopedia-traumatologia">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">🦴</div>
+          <span class="badge-cycle">Prática &amp; Internato</span>
+        </div>
+        <div class="card-area">Ortopedia</div>
+        <h2 class="card-title">Ortopedia &amp; Traumatologia Essencial</h2>
+        <p class="card-description">Exame articular do ombro, joelho e coluna, principais fraturas e luxações do pronto-socorro, imobilizações e critérios para encaminhamento cirúrgico.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>26 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Guia Prático de Imobilização Gessada + Casos de Raio-X</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=ortopedia-traumatologia" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=ortopedia-traumatologia&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="ortopedia-traumatologia" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Prática &amp; Internato" data-area="Anestesiologia" data-id="anestesiologia-analgesia">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">💉</div>
+          <span class="badge-cycle">Prática &amp; Internato</span>
+        </div>
+        <div class="card-area">Anestesiologia</div>
+        <h2 class="card-title">Anestesiologia, Analgesia &amp; Sedação no PS</h2>
+        <p class="card-description">Avaliação pré-anestésica (ASA, Mallampati), farmacologia dos anestésicos gerais e locais, bloqueios de nervos periféricos, sedação consciente e analgesia pós-operatória.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>24 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Tabela de Anestésicos Locais e Toxicidade + Guias</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=anestesiologia-analgesia" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=anestesiologia-analgesia&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="anestesiologia-analgesia" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Prática &amp; Internato" data-area="Oftalmologia &amp; Otorrino" data-id="oftalmo-otorrino-urgencias">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">👁</div>
+          <span class="badge-cycle">Prática &amp; Internato</span>
+        </div>
+        <div class="card-area">Oftalmologia &amp; Otorrino</div>
+        <h2 class="card-title">Oftalmologia &amp; Otorrinolaringologia no Pronto-Socorro</h2>
+        <p class="card-description">Olho vermelho, corpo estranho ocular, epistaxe, otite média aguda, sinusite aguda, vertigem posicional paroxística benigna (VPPB) e manobras de reposicionamento.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>22 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas + Vídeos Práticos de Manobras de Epley + Algoritmos</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=oftalmo-otorrino-urgencias" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=oftalmo-otorrino-urgencias&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="oftalmo-otorrino-urgencias" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Residência &amp; Revalida" data-area="Residência Médica" data-id="residencia-extensivo-r1">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">🏆</div>
+          <span class="badge-cycle">Residência &amp; Revalida</span>
+        </div>
+        <div class="card-area">Residência Médica</div>
+        <h2 class="card-title">Extensivo R1 — Revisão Geral para Residência Médica</h2>
+        <p class="card-description">Revisão intensiva das 5 grandes áreas da medicina com foco nas bancas mais concorridas (USP, UNIFESP, ENARE, SUS-SP, UERJ, AMP) e Revalida.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>90 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas de Alto Rendimento + Caderno de Questões Comentadas + Cronogramas</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=residencia-extensivo-r1" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=residencia-extensivo-r1&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="residencia-extensivo-r1" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Residência &amp; Revalida" data-area="Revalida INEP" data-id="revalida-alto-rendimento">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">🎯</div>
+          <span class="badge-cycle">Residência &amp; Revalida</span>
+        </div>
+        <div class="card-area">Revalida INEP</div>
+        <h2 class="card-title">Revalida de Alto Rendimento — Prova Teórica &amp; Estações Práticas</h2>
+        <p class="card-description">Preparatório focado nas matrizes de competência do INEP: questões discursivas comentadas e simulação em vídeo das 10 estações da prova prática de habilidades.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>75 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Videoaulas de Estações Práticas + Checklists INEP + Provas Anteriores</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=revalida-alto-rendimento" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=revalida-alto-rendimento&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="revalida-alto-rendimento" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
+      <article class="course-card" data-category="Residência &amp; Revalida" data-area="Questões &amp; Treinamento" data-id="banco-questoes-comentadas">
+        <div class="card-top">
+          <div class="card-symbol symbol-blue">📊</div>
+          <span class="badge-cycle">Residência &amp; Revalida</span>
+        </div>
+        <div class="card-area">Questões &amp; Treinamento</div>
+        <h2 class="card-title">Banco de Questões Comentadas &amp; Provas na Íntegra (USP/ENARE/SUS-SP)</h2>
+        <p class="card-description">Mais de 10.000 questões de concursos médicos divididas por tema e subtema, com gabarito comentado alternativa por alternativa e estatísticas de incidência.</p>
+        
+        <div class="card-meta">
+          <div class="meta-row">
+            <span class="meta-icon">▶</span>
+            <span>80 módulos / aulas estruturadas</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon">📁</span>
+            <span>Banco de Questões Interativo + Simulados Periódicos com Ranking</span>
+          </div>
+        </div>
+
+        <div class="card-action" style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <a href="sala.html?curso=banco-questoes-comentadas" class="btn-study-site" title="Assistir aulas diretamente no player HD da sala">
+            <span>▶ Assistir Aula (Player HD)</span> <span>➔</span>
+          </a>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <a href="sala.html?curso=banco-questoes-comentadas&tab=pdf" class="btn-folder-preview" style="text-decoration:none; text-align:center; padding:8px; font-size:12px; font-weight:600;" title="Ver apostilas e diretrizes em PDF">
+              📄 Apostila PDF
+            </a>
+            <button type="button" class="btn-folder-preview" data-preview-course="banco-questoes-comentadas" style="padding:8px; font-size:12px; font-weight:600;">
+              📁 Pastas Drive (4)
+            </button>
+          </div>
+          <a href="conta.html" style="font-size:11px; color:#94a3b8; text-align:center; text-decoration:none; margin-top:2px;">
+            🔒 Desbloquear permanente com Mercado Pago ou Pix
+          </a>
+        </div>
+      </article>
     </section>
 
     <div class="no-courses" id="no-courses" hidden>
@@ -194,6 +1524,7 @@
     <!-- MODAL DE EXPIRAÇÃO DA DEGUSTAÇÃO GRÁTIS (30 MINUTOS) -->
     <div class="trial-expired-modal" id="trial-expired-modal" hidden>
       <div class="trial-modal-content">
+        <button type="button" class="modal-close" id="close-trial-expired-btn" aria-label="Fechar" style="position: absolute; top: 16px; right: 16px; background: transparent; border: none; font-size: 26px; color: #94a3b8; cursor: pointer;">×</button>
         <div class="trial-expired-icon">⏱️</div>
         <h2>Seu Teste Grátis de 30 Minutos Encerrou</h2>
         <p>Para desbloquear acesso permanente a todos os <strong>36 cursos</strong> médicos, videoaulas e pastas do Google Drive, escolha seu plano:</p>

@@ -1,20 +1,20 @@
 :root {
   color-scheme: dark;
-  --bg: #0b0d0d;
-  --panel: #131615;
-  --panel2: #191e1c;
-  --panel3: #222926;
-  --text: #f0f3f1;
-  --muted: #8e9893;
-  --line: #262c29;
-  --line-strong: #363e3a;
-  --red: #ed414b;
-  --red-hover: #ff525c;
-  --red-subtle: #291516;
+  --bg: #06080c;
+  --panel: #0d1117;
+  --panel2: #131923;
+  --panel3: #1e293b;
+  --text: #ffffff;
+  --muted: #94a3b8;
+  --line: #1e293b;
+  --line-strong: #334155;
+  --red: #2563eb;
+  --red-hover: #1d4ed8;
+  --red-subtle: #0f1d38;
   --green: #48bb78;
   --green-subtle: #142a1f;
-  --blue: #4299e1;
-  --blue-subtle: #172738;
+  --blue: #2563eb;
+  --blue-subtle: #0f1d38;
   --amber: #ecc94b;
   --font-main: "DM Sans", -apple-system, BlinkMacSystemFont, sans-serif;
   --font-heading: "Manrope", sans-serif;
@@ -273,7 +273,7 @@ body {
 .tab-btn.active {
   background: var(--red);
   color: #fff;
-  box-shadow: 0 4px 14px rgba(237, 65, 75, 0.3);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
 }
 
 .tab-icon {
@@ -324,7 +324,7 @@ body {
 
 .video-badge-live {
   align-self: flex-start;
-  background: rgba(237, 65, 75, 0.2);
+  background: rgba(37, 99, 235, 0.2);
   border: 1px solid var(--red);
   color: #ff6b72;
   font-size: 10px;
@@ -360,7 +360,7 @@ body {
   display: grid;
   place-items: center;
   cursor: pointer;
-  box-shadow: 0 0 30px rgba(237, 65, 75, 0.5);
+  box-shadow: 0 0 30px rgba(37, 99, 235, 0.5);
   transition: transform 0.2s, background 0.2s;
 }
 
@@ -824,7 +824,7 @@ body {
 }
 
 .pdf-callout {
-  background: rgba(237, 65, 75, 0.08);
+  background: rgba(37, 99, 235, 0.1);
   border-left: 4px solid var(--red);
   padding: 14px 18px;
   border-radius: 0 8px 8px 0;
@@ -963,7 +963,7 @@ body {
 .ext-mp4 {
   background: var(--red-subtle);
   color: #ff757b;
-  border: 1px solid rgba(237, 65, 75, 0.4);
+  border: 1px solid rgba(37, 99, 235, 0.4);
 }
 
 .ext-pdf {
@@ -1392,7 +1392,7 @@ body {
 }
 
 .lesson-item.active {
-  background: rgba(237, 65, 75, 0.12);
+  background: rgba(37, 99, 235, 0.15);
   border-left: 3px solid var(--red);
   padding-left: 25px;
 }
@@ -1652,6 +1652,10 @@ body {
   backdrop-filter: blur(24px);
 }
 
+.drm-blackout-shield[hidden] {
+  display: none !important;
+}
+
 .drm-blackout-content {
   max-width: 540px;
   background: #0f1211;
@@ -1715,6 +1719,10 @@ body {
   align-items: center;
   justify-content: center;
   padding: 20px;
+}
+
+.trial-expired-modal[hidden] {
+  display: none !important;
 }
 
 .trial-modal-content {
