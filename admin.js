@@ -108,7 +108,7 @@ function setupLoginForm() {
 // ==========================================
 async function loadDashboardData() {
   try {
-    await Promise.all([loadStats(), loadCourses(), loadSiteConfig(), loadManualSubscribers()]);
+    await Promise.all([loadStats(), loadCourses(), loadSiteConfig(), loadManualSubscribers(), loadTrialLeads()]);
   } catch (err) {
     console.error("Erro ao carregar dados do painel:", err);
   }
@@ -273,13 +273,14 @@ function setupBulkDriveUpdate() {
 }
 
 // ==========================================
-// FERRAMENTAS DE TESTE & DEGUSTAÇÃO GRÁTIS (30 MIN)
+// FERRAMENTAS DE TESTE & TESTE GRÁTIS (30 MIN)
 // ==========================================
 function setupTestingTools() {
   $("#btn-reset-my-trial")?.addEventListener("click", () => {
     localStorage.removeItem(TRIAL_KEY);
     localStorage.removeItem(TRIAL_START_KEY);
-    alert("✓ Teste grátis resetado com sucesso! Ao abrir a sala de aula, você terá novamente os 30 minutos completos de degustação.");
+    localStorage.removeItem("medstudy.trial_user");
+    alert("✓ Teste grátis resetado com sucesso! Ao abrir a sala de aula, você poderá se cadastrar novamente e terá os 30 minutos completos de teste grátis.");
   });
 
   $("#btn-force-expire-trial")?.addEventListener("click", () => {
@@ -290,6 +291,10 @@ function setupTestingTools() {
   $("#btn-enable-admin-bypass")?.addEventListener("click", () => {
     alert("✓ O token de administrador está ativo neste navegador. O teste de 30 minutos e os bloqueios de perda de foco foram desativados para você navegar livremente como Administrador.");
     window.open("sala.html", "_blank");
+  });
+
+  $("#btn-refresh-leads")?.addEventListener("click", () => {
+    loadTrialLeads();
   });
 }
 
@@ -539,6 +544,76 @@ async function loadManualSubscribers() {
     });
   } catch (err) {
     console.error("Erro ao carregar assinantes manuais:", err);
+  }
+}
+
+// ==========================================
+// LEADS DO TESTE GRÁTIS (CADASTROS OBRIGATÓRIOS)
+// ==========================================
+async function loadTrialLeads() {
+  const tbody = $("#leads-table-body");
+  const counter = $("#leads-counter");
+  if (!tbody) return;
+
+  try {
+    const data = await adminApi("/api/admin/trial-leads");
+    const leads = data.leads || [];
+
+    if (counter) counter.textContent = leads.length;
+    tbody.replaceChildren();
+
+    if (leads.length === 0) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td colspan="5" style="text-align:center; padding:20px; color:var(--muted);">Nenhum lead cadastrado ainda no teste grátis.</td>`;
+      tbody.appendChild(tr);
+      return;
+    }
+
+    leads.forEach((lead) => {
+      const tr = document.createElement("tr");
+      const cleanPhone = String(lead.whatsapp || "").replace(/\D/g, "");
+      const waLink = `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(`Olá ${lead.name}! Vi que você iniciou o teste grátis no MedStudy. Gostaria de tirar dúvidas ou assinar o acesso completo aos 36 cursos via Pix?`)}`;
+      const registeredDate = lead.registeredAt ? new Date(lead.registeredAt).toLocaleString("pt-BR") : "Recentemente";
+
+      tr.innerHTML = `
+        <td><strong>${lead.name}</strong></td>
+        <td><a href="mailto:${lead.email}" style="color:#60a5fa; text-decoration:none;">${lead.email}</a></td>
+        <td>
+          <a href="${waLink}" target="_blank" rel="noopener noreferrer" style="color:#38bdf8; text-decoration:none; font-weight:700; display:inline-flex; align-items:center; gap:4px;">
+            <span>💬</span> <span>${lead.whatsapp}</span> <span>↗</span>
+          </a>
+        </td>
+        <td><small style="color:var(--muted);">${registeredDate}</small></td>
+        <td style="text-align:right; white-space:nowrap;">
+          <button type="button" class="btn-action-small btn-quick-grant" style="background:#2563eb; color:#fff; border:none; padding:5px 12px; border-radius:4px; font-weight:700; cursor:pointer; margin-right:6px;" data-email="${encodeURIComponent(lead.email)}">
+            ⚡ Liberar Assinatura
+          </button>
+          <button type="button" class="btn-action-small btn-action-delete btn-delete-lead" data-email="${encodeURIComponent(lead.email)}">
+            Excluir
+          </button>
+        </td>
+      `;
+
+      tr.querySelector(".btn-quick-grant")?.addEventListener("click", () => {
+        $("#grant-email").value = lead.email;
+        const targetForm = $("#grant-access-form");
+        if (targetForm) {
+          window.scrollTo({ top: targetForm.offsetTop - 80, behavior: "smooth" });
+          $("#grant-email").focus();
+        }
+      });
+
+      tr.querySelector(".btn-delete-lead")?.addEventListener("click", async () => {
+        if (confirm(`Excluir lead de ${lead.name} (${lead.email})?`)) {
+          await adminApi(`/api/admin/trial-leads/${encodeURIComponent(lead.email)}`, { method: "DELETE" });
+          await loadTrialLeads();
+        }
+      });
+
+      tbody.appendChild(tr);
+    });
+  } catch (err) {
+    console.error("Erro ao carregar leads do teste grátis:", err);
   }
 }
 

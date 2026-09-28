@@ -3,6 +3,21 @@ const ADMIN_TOKEN_KEY = "medstudy.admin_token";
 const TRIAL_KEY = "medstudy.trial_remaining_seconds";
 const TRIAL_START_KEY = "medstudy.trial_started_at";
 const TOTAL_TRIAL_SECONDS = 1800; // 30 minutos
+const TRIAL_USER_KEY = "medstudy.trial_user";
+
+function getTrialUser() {
+  try {
+    const raw = localStorage.getItem(TRIAL_USER_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function openTrialRegisterModal() {
+  const modal = $("#trial-register-modal");
+  if (modal) modal.hidden = false;
+}
 
 let allCourses = [];
 let currentCourse = null;
@@ -162,9 +177,16 @@ function setupVideoPlayer() {
   const markDoneBtn = $("#ctrl-mark-done");
 
   function togglePlay() {
-    if (trialSecondsRemaining <= 0 && !isUserActive && !isAdmin) {
-      lockTrialExpired();
-      return;
+    if (!isUserActive && !isAdmin) {
+      const trialUser = getTrialUser();
+      if (!trialUser) {
+        openTrialRegisterModal();
+        return;
+      }
+      if (trialSecondsRemaining <= 0) {
+        lockTrialExpired();
+        return;
+      }
     }
     isPlaying = !isPlaying;
     btnPlayBig.textContent = isPlaying ? "❚❚" : "▶";
@@ -675,8 +697,83 @@ function renderSidebar() {
 }
 
 // ==========================================
-// TESTE GRÁTIS DE 30 MINUTOS COM BLOQUEIO
+// TESTE GRÁTIS DE 30 MINUTOS COM CADASTRO OBRIGATÓRIO
 // ==========================================
+function setupTrialRegister() {
+  const form = $("#trial-register-form");
+  const errorEl = $("#trial-register-error");
+  const btnSubmit = $("#btn-submit-trial");
+
+  if (!form) return;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (errorEl) errorEl.hidden = true;
+
+    const name = ($("#trial-name")?.value || "").trim();
+    const email = ($("#trial-email")?.value || "").trim().toLowerCase();
+    const whatsapp = ($("#trial-whatsapp")?.value || "").replace(/\D/g, "");
+
+    if (name.length < 2) {
+      showError("Por favor, digite seu nome completo.");
+      return;
+    }
+    if (!email.includes("@") || !email.includes(".")) {
+      showError("Por favor, informe um e-mail válido.");
+      return;
+    }
+    if (whatsapp.length < 10) {
+      showError("Por favor, informe seu WhatsApp com DDD (mínimo 10 dígitos).");
+      return;
+    }
+
+    if (btnSubmit) {
+      btnSubmit.disabled = true;
+      btnSubmit.innerHTML = `<span>Validando cadastro...</span>`;
+    }
+
+    try {
+      const res = await api("/api/trial/register", {
+        method: "POST",
+        body: JSON.stringify({ name, email, whatsapp })
+      });
+
+      const userRecord = res.user || { name, email, whatsapp };
+      localStorage.setItem(TRIAL_USER_KEY, JSON.stringify(userRecord));
+      localStorage.setItem(TRIAL_KEY, "1800");
+      localStorage.setItem(TRIAL_START_KEY, String(Date.now()));
+      trialSecondsRemaining = 1800;
+
+      // Fecha o modal de registro
+      const modal = $("#trial-register-modal");
+      if (modal) modal.hidden = true;
+
+      // Inicia timer e UI
+      initFreeTrial();
+      updateUserBadge();
+
+      // Inicia a aula automaticamente se estiver pausada
+      if (!isPlaying) {
+        $("#btn-play-big")?.click();
+      }
+    } catch (err) {
+      showError(err.message || "Erro ao registrar teste grátis. Verifique seus dados.");
+    } finally {
+      if (btnSubmit) {
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = `<span>Liberar 30 Minutos de Teste Grátis</span> <span>➔</span>`;
+      }
+    }
+  });
+
+  function showError(msg) {
+    if (errorEl) {
+      errorEl.textContent = msg;
+      errorEl.hidden = false;
+    }
+  }
+}
+
 function initFreeTrial() {
   const pill = $("#trial-pill");
   const timerText = $("#trial-timer");
@@ -694,7 +791,19 @@ function initFreeTrial() {
     return;
   }
 
-  // Se o usuário já tiver contagem salva no navegador
+  const trialUser = getTrialUser();
+  if (!trialUser) {
+    if (pill && timerText) {
+      pill.className = "trial-pill";
+      timerText.textContent = "⚡ Iniciar Teste Grátis (30 min)";
+      pill.style.cursor = "pointer";
+      pill.onclick = () => openTrialRegisterModal();
+    }
+    openTrialRegisterModal();
+    return;
+  }
+
+  // Usuário cadastrado! Recupera tempo restante
   let savedRemaining = localStorage.getItem(TRIAL_KEY);
   if (savedRemaining === null) {
     trialSecondsRemaining = TOTAL_TRIAL_SECONDS;
@@ -733,9 +842,11 @@ function initFreeTrial() {
 function updateTrialUI() {
   const timerText = $("#trial-timer");
   if (!timerText) return;
+  const trialUser = getTrialUser();
   const m = String(Math.floor(trialSecondsRemaining / 60)).padStart(2, "0");
   const s = String(trialSecondsRemaining % 60).padStart(2, "0");
-  timerText.textContent = `Degustação: ${m}:${s}`;
+  const firstName = trialUser?.name ? trialUser.name.split(" ")[0] : "";
+  timerText.textContent = firstName ? `Teste Grátis (${firstName}): ${m}:${s}` : `Teste Grátis: ${m}:${s}`;
 }
 
 function lockTrialExpired() {
@@ -753,12 +864,12 @@ function lockTrialExpired() {
   }
 
   const timerText = $("#trial-timer");
-  if (timerText) timerText.textContent = "Degustação Expirada (00:00)";
+  if (timerText) timerText.textContent = "Teste Grátis Expirado (00:00)";
   const pill = $("#trial-pill");
   if (pill) {
-    pill.style.background = "rgba(237, 65, 75, 0.15)";
-    pill.style.borderColor = "rgba(237, 65, 75, 0.5)";
-    pill.style.color = "#ed414b";
+    pill.style.background = "rgba(37, 99, 235, 0.15)";
+    pill.style.borderColor = "#2563eb";
+    pill.style.color = "#60a5fa";
   }
 }
 
@@ -778,7 +889,8 @@ function initDRMProtection() {
     localStorage.setItem("medstudy.guest_session_id", guestId);
   }
 
-  const identity = currentUser?.email || (isAdmin ? "ADMIN MASTER" : `ALUNO #${guestId}`);
+  const trialUser = getTrialUser();
+  const identity = currentUser?.email || (isAdmin ? "ADMIN MASTER" : (trialUser ? `TESTE: ${trialUser.name.toUpperCase()} (${trialUser.whatsapp})` : `ALUNO #${guestId}`));
   if (userStamp) userStamp.textContent = identity;
 
   function updateWatermarkPosition() {
@@ -872,19 +984,7 @@ async function initCourse() {
     currentUser = data.user || null;
 
     // Header badge
-    const badge = $("#user-badge");
-    if (badge) {
-      if (isAdmin) {
-        badge.textContent = "👑 Administrador";
-        badge.style.display = "inline-flex";
-      } else if (currentUser) {
-        badge.textContent = isUserActive ? "● Assinatura Ativa" : "○ Visitante";
-        badge.style.display = "inline-flex";
-      } else {
-        badge.textContent = "○ Degustação Grátis";
-        badge.style.display = "inline-flex";
-      }
-    }
+    updateUserBadge();
 
     // Inicializa proteções e teste grátis
     initDRMProtection();
@@ -921,11 +1021,31 @@ async function initCourse() {
   }
 }
 
+function updateUserBadge() {
+  const badge = $("#user-badge");
+  if (!badge) return;
+  const trialUser = getTrialUser();
+  if (isAdmin) {
+    badge.textContent = "👑 Administrador";
+    badge.style.display = "inline-flex";
+  } else if (currentUser && isUserActive) {
+    badge.textContent = "● Assinatura Ativa";
+    badge.style.display = "inline-flex";
+  } else if (trialUser) {
+    badge.textContent = `⚡ Teste Grátis (${trialUser.name.split(" ")[0]})`;
+    badge.style.display = "inline-flex";
+  } else {
+    badge.textContent = "○ Teste Grátis";
+    badge.style.display = "inline-flex";
+  }
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   setupTabs();
   setupVideoPlayer();
   setupPdfViewer();
   setupNotes();
+  setupTrialRegister();
 
   $("#lesson-search")?.addEventListener("input", () => {
     renderSidebar();

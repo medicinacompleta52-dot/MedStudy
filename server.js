@@ -26,6 +26,23 @@ const plans = {
 const coursesFilePath = path.join(root, "courses.json");
 const manualSubscribersFilePath = path.join(root, "manual-subscribers.json");
 const siteConfigFilePath = path.join(root, "site-config.json");
+const trialLeadsFilePath = path.join(root, "trial-leads.json");
+
+async function loadTrialLeads() {
+  try {
+    if (existsSync(trialLeadsFilePath)) {
+      const data = await fs.readFile(trialLeadsFilePath, "utf-8");
+      return JSON.parse(data);
+    }
+  } catch (err) {
+    console.error("Failed to read trial-leads.json:", err.message);
+  }
+  return [];
+}
+
+async function saveTrialLeads(leads) {
+  await fs.writeFile(trialLeadsFilePath, JSON.stringify(leads, null, 2), "utf-8");
+}
 
 async function loadManualSubscribers() {
   try {
@@ -774,6 +791,69 @@ app.delete("/api/admin/manual-subscribers/:email", requireAdmin, async (req, res
   const list = await loadManualSubscribers();
   const filtered = list.filter(s => s.email?.toLowerCase() !== targetEmail);
   await saveManualSubscribers(filtered);
+  res.json({ ok: true });
+});
+
+// ==========================================
+// CADASTRO OBRIGATÓRIO PARA TESTE GRÁTIS (30 MIN)
+// ==========================================
+app.post("/api/trial/register", async (req, res) => {
+  const { name, email, whatsapp } = req.body || {};
+  if (!name || !email || !whatsapp) {
+    return res.status(400).json({ error: "Nome completo, e-mail e WhatsApp são obrigatórios para liberar o teste grátis." });
+  }
+
+  const cleanName = String(name).trim();
+  const cleanEmail = String(email).trim().toLowerCase();
+  const cleanPhone = String(whatsapp).replace(/\D/g, "");
+
+  if (cleanName.length < 2) {
+    return res.status(400).json({ error: "Por favor, digite seu nome completo." });
+  }
+  if (!cleanEmail.includes("@") || !cleanEmail.includes(".")) {
+    return res.status(400).json({ error: "Por favor, informe um e-mail válido." });
+  }
+  if (cleanPhone.length < 10) {
+    return res.status(400).json({ error: "Por favor, informe um WhatsApp válido com DDD." });
+  }
+
+  const leads = await loadTrialLeads();
+  const existingIdx = leads.findIndex(l => l.email === cleanEmail);
+  const leadRecord = {
+    name: cleanName,
+    email: cleanEmail,
+    whatsapp: cleanPhone,
+    registeredAt: new Date().toISOString(),
+    ip: req.ip
+  };
+
+  if (existingIdx >= 0) {
+    leads[existingIdx] = { ...leads[existingIdx], ...leadRecord };
+  } else {
+    leads.unshift(leadRecord);
+  }
+
+  await saveTrialLeads(leads);
+
+  res.json({
+    ok: true,
+    message: "Teste grátis de 30 minutos liberado com sucesso!",
+    user: { name: cleanName, email: cleanEmail, whatsapp: cleanPhone },
+    startedAt: Date.now(),
+    durationSeconds: 1800
+  });
+});
+
+app.get("/api/admin/trial-leads", requireAdmin, async (_req, res) => {
+  const leads = await loadTrialLeads();
+  res.json({ leads });
+});
+
+app.delete("/api/admin/trial-leads/:email", requireAdmin, async (req, res) => {
+  const targetEmail = decodeURIComponent(req.params.email).trim().toLowerCase();
+  const list = await loadTrialLeads();
+  const filtered = list.filter(l => l.email?.toLowerCase() !== targetEmail);
+  await saveTrialLeads(filtered);
   res.json({ ok: true });
 });
 

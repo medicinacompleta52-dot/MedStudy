@@ -132,9 +132,9 @@
         <div class="metric-card">
           <span class="metric-icon">⏱️</span>
           <div class="metric-info">
-            <span class="metric-label">Degustação Grátis</span>
-            <strong class="metric-value" style="color:#ecc94b;">30 min</strong>
-            <small>Bloqueio automático após o término</small>
+            <span class="metric-label">Teste Grátis</span>
+            <strong class="metric-value" style="color:#60a5fa;">30 min</strong>
+            <small>Cadastro obrigatório (Nome, Email, WhatsApp)</small>
           </div>
         </div>
       </section>
@@ -162,7 +162,7 @@
         <div class="panel-box-header">
           <div>
             <h3>🛠️ Ferramentas de Teste do Administrador</h3>
-            <p>Controles para simular a experiência de um visitante ou redefinir a degustação de 30 minutos.</p>
+            <p>Controles para simular a experiência de um visitante ou redefinir o teste grátis de 30 minutos.</p>
           </div>
         </div>
         <div class="tools-actions-row">
@@ -265,6 +265,38 @@
           </div>
           <div class="drive-status-msg" id="mp-config-status" hidden></div>
         </form>
+      </section>
+
+      <!-- SEÇÃO: LEADS DO TESTE GRÁTIS (CADASTROS OBRIGATÓRIOS) -->
+      <section class="panel-box">
+        <div class="panel-box-header">
+          <div>
+            <h3>📋 Leads do Teste Grátis (<span id="leads-counter">0</span> cadastrados)</h3>
+            <p>Visitantes que informaram Nome, E-mail e WhatsApp para liberar os 30 minutos de teste grátis. Inicie uma conversa com 1 clique para fechar a assinatura.</p>
+          </div>
+          <div>
+            <button type="button" class="btn-primary" id="btn-refresh-leads" style="background:#0f172a; border:1px solid #1e3a8a; color:#38bdf8; font-size:12px; padding:8px 14px; cursor:pointer;">🔄 Atualizar Leads</button>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="courses-table">
+            <thead>
+              <tr>
+                <th>Nome Completo</th>
+                <th>E-mail</th>
+                <th>WhatsApp</th>
+                <th>Data do Cadastro</th>
+                <th style="text-align:right;">Ações de Venda</th>
+              </tr>
+            </thead>
+            <tbody id="leads-table-body">
+              <tr>
+                <td colspan="5" style="text-align:center; padding:20px; color:var(--muted);">Carregando leads do teste grátis...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <!-- SEÇÃO: LIBERAÇÃO MANUAL DE ALUNOS (PAGAMENTOS PIX / WHATSAPP) -->

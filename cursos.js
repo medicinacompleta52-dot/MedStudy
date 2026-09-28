@@ -3,49 +3,124 @@ const ADMIN_TOKEN_KEY = "medstudy.admin_token";
 const TRIAL_KEY = "medstudy.trial_remaining_seconds";
 const TRIAL_START_KEY = "medstudy.trial_started_at";
 const TOTAL_TRIAL_SECONDS = 1800; // 30 minutos
+const TRIAL_USER_KEY = "medstudy.trial_user";
 
-let allCourses = [];
-let isUserActive = false;
-let isAdmin = false;
-let currentUser = null;
-let currentFilter = "all";
-let trialSecondsRemaining = 1800;
-let trialInterval = null;
-
-const $ = (selector) => document.querySelector(selector);
-const $$ = (selector) => document.querySelectorAll(selector);
-
-function getToken() {
-  return localStorage.getItem(TOKEN_KEY) || localStorage.getItem(ADMIN_TOKEN_KEY);
+function getTrialUser() {
+  try {
+    const raw = localStorage.getItem(TRIAL_USER_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    return null;
+  }
 }
 
-async function api(path, options = {}) {
-  const token = getToken();
-  const headers = {
-    "Content-Type": "application/json",
-    ...(token ? { Authorization: "Bearer " + token } : {}),
-    ...(options.headers || {})
-  };
+function openTrialRegisterModal() {
+  const modal = $("#trial-register-modal");
+  if (modal) modal.hidden = false;
+}
 
-  const res = await fetch(path, { ...options, headers });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    const error = new Error(data.error || "Ocorreu um erro ao comunicar com o servidor.");
-    error.status = res.status;
-    throw error;
+function setupTrialRegister() {
+  const modal = $("#trial-register-modal");
+  const form = $("#trial-register-form");
+  const errorEl = $("#trial-register-error");
+  const btnSubmit = $("#btn-submit-trial");
+  const closeBtn = $("#close-trial-register-btn");
+
+  if (closeBtn && modal) {
+    closeBtn.onclick = () => { modal.hidden = true; };
+    modal.onclick = (e) => {
+      if (e.target === modal) modal.hidden = true;
+    };
   }
-  return data;
+
+  if (!form) return;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (errorEl) errorEl.hidden = true;
+
+    const name = ($("#trial-name")?.value || "").trim();
+    const email = ($("#trial-email")?.value || "").trim().toLowerCase();
+    const whatsapp = ($("#trial-whatsapp")?.value || "").replace(/\D/g, "");
+
+    if (name.length < 2) {
+      showError("Por favor, digite seu nome completo.");
+      return;
+    }
+    if (!email.includes("@") || !email.includes(".")) {
+      showError("Por favor, informe um e-mail válido.");
+      return;
+    }
+    if (whatsapp.length < 10) {
+      showError("Por favor, informe seu WhatsApp com DDD (mínimo 10 dígitos).");
+      return;
+    }
+
+    if (btnSubmit) {
+      btnSubmit.disabled = true;
+      btnSubmit.innerHTML = `<span>Validando cadastro...</span>`;
+    }
+
+    try {
+      const res = await api("/api/trial/register", {
+        method: "POST",
+        body: JSON.stringify({ name, email, whatsapp })
+      });
+
+      const userRecord = res.user || { name, email, whatsapp };
+      localStorage.setItem(TRIAL_USER_KEY, JSON.stringify(userRecord));
+      localStorage.setItem(TRIAL_KEY, "1800");
+      localStorage.setItem(TRIAL_START_KEY, String(Date.now()));
+      trialSecondsRemaining = 1800;
+
+      if (modal) modal.hidden = true;
+      initFreeTrial();
+      updateStatusBanner(isUserActive);
+
+      // Redireciona imediatamente para a sala de aula
+      window.location.href = "sala.html";
+    } catch (err) {
+      showError(err.message || "Erro ao registrar teste grátis. Verifique seus dados.");
+    } finally {
+      if (btnSubmit) {
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = `<span>Liberar Meus 30 Minutos Grátis</span> <span>➔</span>`;
+      }
+    }
+  });
+
+  function showError(msg) {
+    if (errorEl) {
+      errorEl.textContent = msg;
+      errorEl.hidden = false;
+    }
+  }
 }
 
 // ==========================================
-// CONTROLE DE DEGUSTAÇÃO GRÁTIS (30 MINUTOS)
+// CONTROLE DE TESTE GRÁTIS (30 MINUTOS)
 // ==========================================
 function initFreeTrial() {
+  const pill = $("#trial-pill");
+  const timerEl = $("#trial-timer");
+
   if (isUserActive || isAdmin) {
-    const pill = $("#trial-pill");
     if (pill) {
       pill.className = isAdmin ? "trial-pill admin" : "trial-pill unlimited";
       pill.innerHTML = `<span class="trial-dot"></span><span>${isAdmin ? "👑 Acesso Administrador" : "✓ Assinatura Ativa"}</span>`;
+    }
+    return;
+  }
+
+  const trialUser = getTrialUser();
+  if (!trialUser) {
+    if (pill && timerEl) {
+      pill.className = "trial-pill";
+      timerEl.textContent = "⚡ Teste Grátis (30 min)";
+      pill.onclick = (e) => {
+        e.preventDefault();
+        openTrialRegisterModal();
+      };
     }
     return;
   }
@@ -79,15 +154,16 @@ function initFreeTrial() {
 function updateTrialUI() {
   const timerEl = $("#trial-timer");
   if (!timerEl) return;
+  const trialUser = getTrialUser();
   const m = Math.floor(trialSecondsRemaining / 60).toString().padStart(2, "0");
   const s = (trialSecondsRemaining % 60).toString().padStart(2, "0");
-  timerEl.textContent = `Degustação: ${m}:${s}`;
+  const firstName = trialUser?.name ? trialUser.name.split(" ")[0] : "";
+  timerEl.textContent = firstName ? `Teste Grátis (${firstName}): ${m}:${s}` : `Teste Grátis: ${m}:${s}`;
 }
 
 function lockTrialExpired() {
   const timerEl = $("#trial-timer");
-  if (timerEl) timerEl.textContent = "Degustação: 00:00";
-  // No catálogo geral cursos.html a navegação permanece sempre aberta para visualização dos cursos!
+  if (timerEl) timerEl.textContent = "Teste Grátis: 00:00";
 }
 
 function updateHeaderUser(user, active) {
@@ -109,7 +185,14 @@ function updateHeaderUser(user, active) {
     link.innerHTML = `<span>Minha Conta</span> <span>↗</span>`;
     link.href = "conta.html";
   } else {
-    badge.style.display = "none";
+    const trialUser = getTrialUser();
+    if (trialUser) {
+      badge.className = "user-badge active-sub";
+      badge.innerHTML = `<span>⚡</span> Teste Grátis (${trialUser.name.split(" ")[0]})`;
+      badge.style.display = "inline-flex";
+    } else {
+      badge.style.display = "none";
+    }
     link.innerHTML = `<span>Entrar / Assinar</span> <span>↗</span>`;
     link.href = "conta.html";
   }
@@ -135,20 +218,42 @@ function updateStatusBanner(active) {
       </div>
     `;
   } else {
+    const trialUser = getTrialUser();
     banner.className = "status-banner locked";
-    banner.innerHTML = `
-      <div class="status-info">
-        <div class="status-icon">⏱️</div>
-        <div class="status-text">
-          <strong>⚡ Degustação Grátis (30 Minutos) Ativa em Todos os Cursos!</strong>
-          <span>Você pode testar qualquer matéria: assista às videoaulas em HD, leia as apostilas completas e explore as pastas do Google Drive.</span>
+    if (trialUser) {
+      banner.innerHTML = `
+        <div class="status-info">
+          <div class="status-icon">⏱️</div>
+          <div class="status-text">
+            <strong>⚡ Teste Grátis de 30 Minutos Ativo (${trialUser.name})!</strong>
+            <span>Você pode testar qualquer matéria: assista às videoaulas em HD, leia as apostilas completas e explore as pastas do Google Drive.</span>
+          </div>
         </div>
-      </div>
-      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-        <a href="sala.html" class="status-btn" style="background: #ed414b; color: #fff; font-weight: 800; border: none; padding: 12px 20px; font-size:14px; text-decoration:none; border-radius:8px;">▶ Iniciar Degustação na Sala de Aula ➔</a>
-        <a href="conta.html" class="status-btn status-btn-primary">💳 Ver Planos &amp; Mercado Pago ↗</a>
-      </div>
-    `;
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+          <a href="sala.html" class="status-btn" style="background: #2563eb; color: #fff; font-weight: 800; border: none; padding: 12px 20px; font-size:14px; text-decoration:none; border-radius:8px;">▶ Continuar Teste na Sala de Aula ➔</a>
+          <a href="conta.html" class="status-btn status-btn-primary">💳 Ver Planos &amp; Mercado Pago ↗</a>
+        </div>
+      `;
+    } else {
+      banner.innerHTML = `
+        <div class="status-info">
+          <div class="status-icon">⚡</div>
+          <div class="status-text">
+            <strong>⚡ Teste Grátis (30 Minutos) Disponível em Todos os Cursos!</strong>
+            <span>Cadastre seu nome, e-mail e WhatsApp para liberar 30 minutos de teste imediato no player e apostilas.</span>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+          <button type="button" id="btn-banner-trial" class="status-btn" style="background: #2563eb; color: #fff; font-weight: 800; border: none; padding: 12px 20px; font-size:14px; text-decoration:none; border-radius:8px; cursor: pointer;">▶ Cadastrar &amp; Iniciar Teste Grátis ➔</button>
+          <a href="conta.html" class="status-btn status-btn-primary">💳 Ver Planos &amp; Mercado Pago ↗</a>
+        </div>
+      `;
+      setTimeout(() => {
+        $("#btn-banner-trial")?.addEventListener("click", () => {
+          openTrialRegisterModal();
+        });
+      }, 0);
+    }
   }
 }
 
@@ -461,6 +566,7 @@ async function loadCoursesData() {
 document.addEventListener("DOMContentLoaded", async () => {
   setupFilters();
   setupModal();
+  setupTrialRegister();
   $("#close-trial-expired-btn")?.addEventListener("click", () => {
     const modal = $("#trial-expired-modal");
     if (modal) modal.hidden = true;

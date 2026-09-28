@@ -43,9 +43,9 @@
     </div>
 
     <div class="header-right">
-      <div class="trial-pill" id="trial-pill" title="Tempo de degustação gratuita restante">
+      <div class="trial-pill" id="trial-pill" title="Tempo de teste grátis restante">
         <span class="trial-dot"></span>
-        <span id="trial-timer">Degustação: 30:00</span>
+        <span id="trial-timer">Teste Grátis: 30:00</span>
       </div>
       <div id="user-badge" class="user-badge"></div>
       <a href="admin.html" class="header-btn" title="Painel de Administração">Painel Admin</a>
@@ -184,7 +184,7 @@
               <span class="pdf-zoom-text" id="pdf-zoom-level">100%</span>
               <button class="pdf-btn" id="pdf-zoom-out" title="Reduzir zoom">-</button>
               <button class="pdf-btn" id="pdf-zoom-in" title="Aumentar zoom">+</button>
-              <span class="drm-download-locked" id="pdf-drm-badge">🔒 Leitura Protegida (Download Bloqueado na Degustação)</span>
+              <span class="drm-download-locked" id="pdf-drm-badge">🔒 Leitura Protegida (Download Bloqueado no Teste Grátis)</span>
             </div>
           </div>
 
@@ -313,7 +313,46 @@
     </div>
   </div>
 
-  <!-- MODAL DE EXPIRAÇÃO DA DEGUSTAÇÃO GRÁTIS (30 MINUTOS) -->
+  <!-- MODAL DE CADASTRO OBRIGATÓRIO PARA TESTE GRÁTIS (30 MINUTOS) -->
+  <div class="trial-register-modal" id="trial-register-modal" hidden>
+    <div class="trial-modal-content trial-register-content">
+      <div class="trial-register-icon">⚡</div>
+      <h2>Comece seu Teste Grátis de 30 Minutos</h2>
+      <p>Cadastre-se para liberar imediatamente <strong>30 minutos de acesso gratuito e irrestrito</strong> a todas as videoaulas em HD, apostilas completas e pastas do Google Drive.</p>
+      
+      <form id="trial-register-form" class="trial-register-form" autocomplete="on">
+        <div class="form-group-trial">
+          <label for="trial-name">Nome Completo</label>
+          <input type="text" id="trial-name" name="name" required placeholder="Ex: Dra. Mariana Silva" autocomplete="name">
+        </div>
+        <div class="form-group-trial">
+          <label for="trial-email">E-mail Profissional ou Pessoal</label>
+          <input type="email" id="trial-email" name="email" required placeholder="seu.melhor@email.com" autocomplete="email">
+        </div>
+        <div class="form-group-trial">
+          <label for="trial-whatsapp">WhatsApp com DDD (somente dígitos)</label>
+          <input type="tel" id="trial-whatsapp" name="whatsapp" required placeholder="Ex: 54996318816" autocomplete="tel">
+        </div>
+
+        <div id="trial-register-error" class="trial-form-error" hidden></div>
+
+        <button type="submit" class="btn-trial-submit" id="btn-submit-trial">
+          <span>Liberar 30 Minutos de Teste Grátis</span> <span>➔</span>
+        </button>
+      </form>
+
+      <div class="trial-guarantee-note">
+        <span>🛡️ Sem cartão de crédito · Liberação imediata no navegador · Acesso seguro</span>
+      </div>
+
+      <div class="trial-modal-footer" style="margin-top: 20px;">
+        <a href="conta.html" class="btn-modal-login">Já sou assinante / Fazer login ➔</a>
+        <a href="cursos.html" class="btn-modal-admin">Ver Catálogo de Cursos</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE EXPIRAÇÃO DO TESTE GRÁTIS (30 MINUTOS) -->
   <div class="trial-expired-modal" id="trial-expired-modal" hidden>
     <div class="trial-modal-content">
       <div class="trial-expired-icon">⏱️</div>
@@ -339,12 +378,12 @@
         </div>
       </div>
 
-      <div style="background: #141f18; border: 1px solid #28543b; border-radius: 10px; padding: 14px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;">
+      <div style="background: #0d1527; border: 1px solid #1e3a8a; border-radius: 10px; padding: 14px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;">
         <div style="text-align: left;">
-          <strong style="color: #68d391; font-size: 13px;">⚡ Pagamento Imediato no Pix</strong>
-          <div style="color: #a0aec0; font-size: 12px; margin-top: 2px;">Chave Pix (Celular): <strong style="color: #fff; font-family: monospace;">54996318816</strong></div>
+          <strong style="color: #60a5fa; font-size: 13px;">⚡ Pagamento Imediato no Pix</strong>
+          <div style="color: #94a3b8; font-size: 12px; margin-top: 2px;">Chave Pix (Celular): <strong style="color: #fff; font-family: monospace;">54996318816</strong></div>
         </div>
-        <a href="https://wa.me/5554996318816?text=Ol%C3%A1!%20Meu%20teste%20gr%C3%A1tis%20de%2030%20minutos%20encerrou%20e%20gostaria%20de%20assinar%20o%20MedStudy%20via%20Pix.%20Segue%20meu%20e-mail%20para%20libera%C3%A7%C3%A3o:" target="_blank" rel="noopener noreferrer" style="background: #25d366; color: #052b12; text-decoration: none; font-size: 13px; font-weight: 800; padding: 10px 18px; border-radius: 6px; white-space: nowrap;">
+        <a href="https://wa.me/5554996318816?text=Ol%C3%A1!%20Meu%20teste%20gr%C3%A1tis%20de%2030%20minutos%20encerrou%20e%20gostaria%20de%20assinar%20o%20MedStudy%20via%20Pix.%20Segue%20meu%20e-mail%20para%20libera%C3%A7%C3%A3o:" target="_blank" rel="noopener noreferrer" style="background: #2563eb; color: #ffffff; text-decoration: none; font-size: 13px; font-weight: 800; padding: 10px 18px; border-radius: 6px; white-space: nowrap;">
           💬 Pagar via Pix no WhatsApp
         </a>
       </div>
