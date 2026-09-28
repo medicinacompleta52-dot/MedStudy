@@ -4,15 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b0d0d">
-  <meta name="description" content="Catálogo completo de cursos médicos e videoaulas no Google Drive do MedStudy.">
-  <title>Catálogo de Cursos — MedStudy</title>
+  <meta name="description" content="Catálogo completo de cursos médicos e videoaulas no Google Drive do MedStudy com 30 minutos de degustação grátis.">
+  <title>Catálogo de Cursos &amp; Degustação — MedStudy</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="cursos.css">
+  <link rel="stylesheet" href="sala.css">
   <script src="cursos.js" defer></script>
 </head>
 <body>
+  <!-- HEADER DO SITE -->
   <header class="site-header">
     <a class="brand" href="index.html" aria-label="MedStudy início">
       <span class="brand-symbol">M</span>
@@ -20,12 +22,17 @@
     </a>
     <nav class="main-nav" aria-label="Navegação principal">
       <a href="index.html">Início</a>
-      <a href="cursos.html" class="active">Catálogo de Cursos</a>
-      <a href="sala.html" style="color: #ecc94b; font-weight: 700;">⚡ Degustação (30 min)</a>
+      <a href="cursos.html" class="active">Catálogo (36 Cursos)</a>
+      <a href="sala.html" style="color: #ecc94b; font-weight: 700;">⚡ Sala de Aula (30 min)</a>
       <a href="admin.html">Painel Admin</a>
-      <a href="conta.html">Planos &amp; Assinatura</a>
+      <a href="conta.html">Planos &amp; Mercado Pago</a>
     </nav>
     <div class="header-right">
+      <!-- Pílula de Degustação Grátis (30 min) -->
+      <a href="sala.html" class="trial-pill" id="trial-pill" title="Clique para abrir a Sala de Aula com player de vídeo" style="text-decoration:none;">
+        <span class="trial-dot"></span>
+        <span id="trial-timer">Degustação: 30:00</span>
+      </a>
       <div id="user-badge" class="user-badge"></div>
       <a class="header-cta" id="header-account-link" href="conta.html">
         <span>Minha Conta</span> <span>↗</span>
@@ -34,20 +41,37 @@
   </header>
 
   <main>
+    <!-- HERO COM STATUS DE DEGUSTAÇÃO -->
     <section class="catalog-hero">
       <div class="hero-content">
         <p class="eyebrow"><span class="live-dot"></span> ACERVO EXCLUSIVO NO GOOGLE DRIVE</p>
         <h1>Catálogo Geral de <em>Cursos Médicos</em></h1>
         <p class="hero-description">
-          Acesse diretamente as pastas do Google Drive com videoaulas em alta resolução, apostilas em PDF, fluxogramas e materiais de apoio organizados por especialidade e ciclo de formação.
+          Acesse diretamente as 36 matérias com videoaulas em alta resolução, apostilas em PDF e pastas do Google Drive organizadas por ciclo: Básico, Clínico, Prática &amp; Internato e Residência Médica.
         </p>
       </div>
 
+      <!-- BANNER DE TESTE GRÁTIS / DEGUSTAÇÃO ATIVA -->
       <div class="status-banner" id="status-banner">
-        <!-- Preenchido via cursos.js -->
+        <div class="status-info">
+          <div class="status-icon">⏱️</div>
+          <div class="status-text">
+            <strong>⚡ Modo Degustação Grátis (30 Minutos) Ativo!</strong>
+            <span>Você tem acesso aberto para experimentar qualquer um dos 36 cursos médicos: assistir às videoaulas no player, ler apostilas e consultar pastas.</span>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+          <a href="sala.html" class="status-btn" style="background:#ed414b; color:#fff; font-weight:800; border:none; padding:12px 22px; font-size:14px; text-decoration:none; border-radius:8px; display:inline-flex; align-items:center; gap:8px;">
+            <span>▶ Iniciar Degustação na Sala de Aula</span> <span>➔</span>
+          </a>
+          <a href="conta.html" class="status-btn" style="background:#14221b; color:#68d391; border:1px solid #27523a; font-weight:700; padding:12px 18px; text-decoration:none; border-radius:8px;">
+            💳 Assinar Acesso Permanente
+          </a>
+        </div>
       </div>
     </section>
 
+    <!-- BARRA DE CONTROLE E FILTROS -->
     <section class="catalog-controls">
       <div class="search-box">
         <span class="search-icon">⌕</span>
@@ -59,16 +83,17 @@
         <button class="pill active" data-filter="all">Todos os Cursos (36)</button>
         <button class="pill" data-filter="Ciclo Básico">Ciclo Básico</button>
         <button class="pill" data-filter="Ciclo Clínico">Ciclo Clínico</button>
-        <button class="pill" data-filter="Internato &amp; Prática">Prática &amp; Internato</button>
+        <button class="pill" data-filter="Prática &amp; Internato">Prática &amp; Internato</button>
         <button class="pill" data-filter="Residência &amp; Revalida">Residência &amp; Revalida</button>
       </div>
 
       <div class="catalog-actions-bar">
-        <span class="courses-count" id="courses-count">Carregando catálogo...</span>
+        <span class="courses-count" id="courses-count">Carregando catálogo de cursos...</span>
         <button class="add-course-btn" id="open-add-modal-btn">＋ Cadastrar Novo Curso do Drive</button>
       </div>
     </section>
 
+    <!-- GRADE DE CURSOS DO CATÁLOGO -->
     <section class="courses-grid" id="courses-grid">
       <!-- Cards renderizados dinamicamente via cursos.js -->
     </section>
@@ -160,8 +185,51 @@
           </div>
         </div>
         <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
-          <a href="#" id="preview-modal-study-btn" class="btn-study-site" style="width: auto; padding: 10px 20px;">▶ Abrir Sala de Aula no Site</a>
+          <a href="#" id="preview-modal-study-btn" class="btn-study-site" style="width: auto; padding: 10px 20px; text-decoration:none;">▶ Abrir Sala de Aula no Site</a>
           <button type="button" class="btn-cancel" id="cancel-folder-modal-btn">Fechar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL DE EXPIRAÇÃO DA DEGUSTAÇÃO GRÁTIS (30 MINUTOS) -->
+    <div class="trial-expired-modal" id="trial-expired-modal" hidden>
+      <div class="trial-modal-content">
+        <div class="trial-expired-icon">⏱️</div>
+        <h2>Seu Teste Grátis de 30 Minutos Encerrou</h2>
+        <p>Para desbloquear acesso permanente a todos os <strong>36 cursos</strong> médicos, videoaulas e pastas do Google Drive, escolha seu plano:</p>
+        
+        <div class="trial-plans-mini">
+          <div class="plan-mini-card">
+            <strong>Plano Mensal</strong>
+            <span class="plan-mini-price">R$ 80 / mês</span>
+            <a href="conta.html" class="plan-mini-btn">Assinar Mensal</a>
+          </div>
+          <div class="plan-mini-card highlighted">
+            <span class="mini-badge">Mais Escolhido</span>
+            <strong>Plano Anual</strong>
+            <span class="plan-mini-price">R$ 500 / ano</span>
+            <a href="conta.html" class="plan-mini-btn btn-highlight">Assinar Anual</a>
+          </div>
+          <div class="plan-mini-card">
+            <strong>Vitalício</strong>
+            <span class="plan-mini-price">R$ 750 único</span>
+            <a href="conta.html" class="plan-mini-btn">Acesso Vitalício</a>
+          </div>
+        </div>
+
+        <div style="background: #141f18; border: 1px solid #28543b; border-radius: 10px; padding: 14px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;">
+          <div style="text-align: left;">
+            <strong style="color: #68d391; font-size: 13px;">⚡ Pagamento Imediato no Pix</strong>
+            <div style="color: #a0aec0; font-size: 12px; margin-top: 2px;">Chave Pix (Celular): <strong style="color: #fff; font-family: monospace;">54996318816</strong></div>
+          </div>
+          <a href="https://wa.me/5554996318816?text=Ol%C3%A1!%20Meu%20teste%20gr%C3%A1tis%20de%2030%20minutos%20encerrou%20e%20gostaria%20de%20assinar%20o%20MedStudy%20via%20Pix.%20Segue%20meu%20e-mail%20para%20libera%C3%A7%C3%A3o:" target="_blank" rel="noopener noreferrer" style="background: #25d366; color: #052b12; text-decoration: none; font-size: 13px; font-weight: 800; padding: 10px 18px; border-radius: 6px; white-space: nowrap;">
+            💬 Pagar via Pix no WhatsApp
+          </a>
+        </div>
+
+        <div class="trial-modal-footer">
+          <a href="conta.html" class="btn-modal-login">Pagar com Mercado Pago ➔</a>
+          <a href="admin.html" class="btn-modal-admin">Painel Admin</a>
         </div>
       </div>
     </div>
@@ -173,7 +241,11 @@
       <span>med<span>study</span></span>
     </a>
     <p>Plataforma de estudos médicos integrada ao Google Drive.</p>
-    <a href="conta.html">Área do Assinante ↗</a>
+    <div style="display:flex; gap:16px; margin: 10px 0;">
+      <a href="sala.html">⚡ Sala de Aula Virtual ↗</a>
+      <a href="conta.html">Planos Mercado Pago ↗</a>
+      <a href="admin.html">Painel do Administrador ↗</a>
+    </div>
     <small>O MedStudy é um indexador e organizador educacional. O acesso ao material requer assinatura ativa.</small>
   </footer>
 </body>
