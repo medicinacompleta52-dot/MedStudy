@@ -895,6 +895,12 @@ app.delete("/api/admin/trial-leads/:email", requireAdmin, async (req, res) => {
   res.json({ ok: true });
 });
 
+// Rotas diretas de páginas
+app.get(["/admin", "/admin/", "/painel", "/adm"], (_req, res) => res.redirect(302, "/admin.html"));
+app.get(["/cursos", "/cursos/"], (_req, res) => res.redirect(302, "/cursos.html"));
+app.get(["/sala", "/sala/", "/aulas"], (_req, res) => res.redirect(302, "/sala.html"));
+app.get(["/conta", "/planos"], (_req, res) => res.redirect(302, "/conta.html"));
+
 // Redirecionamento de rotas legadas
 app.get("/estudar.html", (_req, res) => res.redirect(301, "/cursos.html"));
 
