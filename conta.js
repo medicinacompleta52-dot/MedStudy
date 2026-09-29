@@ -80,7 +80,30 @@ if (authForm) {
     event.preventDefault();
     const button = $("#auth-submit");
     button.disabled = true;
+    const email = $("#email").value.trim();
+    const password = $("#password").value;
+
     try {
+      // 1. Testa se é o Administrador do MedStudy
+      if (mode === "login") {
+        try {
+          const adminRes = await fetch("/api/admin/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+          });
+          const adminData = await adminRes.json();
+          if (adminRes.ok && adminData.ok) {
+            localStorage.setItem("medstudy.admin_token", adminData.token);
+            message("✓ Login de Administrador confirmado! Abrindo o Painel Administrativo...");
+            setTimeout(() => {
+              window.location.href = "admin.html";
+            }, 500);
+            return;
+          }
+        } catch (_) {}
+      }
+
       if (!config?.supabaseUrl || !config?.supabaseAnonKey) {
         throw new Error("Autenticação do Supabase ainda não configurada no servidor.");
       }
@@ -89,7 +112,7 @@ if (authForm) {
       const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json", apikey: config.supabaseAnonKey },
-        body: JSON.stringify({ email: $("#email").value.trim(), password: $("#password").value })
+        body: JSON.stringify({ email, password })
       });
       const data = await response.json();
       if (!response.ok) {
