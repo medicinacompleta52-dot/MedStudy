@@ -86,6 +86,19 @@
         </div>
       </section>
 
+      <!-- BARRA DE ATALHOS / NAVEGAÇÃO RÁPIDA -->
+      <nav class="admin-quick-nav" style="display:flex; gap:8px; flex-wrap:wrap; margin:16px 0 20px; padding:12px; background:var(--panel); border:1px solid var(--line); border-radius:12px;">
+        <button type="button" class="filter-pill" id="btn-quick-create" style="background:#2563eb; color:#fff; border-color:#2563eb; font-weight:700;">＋ Cadastrar Novo Curso</button>
+        <a href="#sec-courses" class="filter-pill active" style="text-decoration:none;">📚 Catálogo (36 Cursos)</a>
+        <a href="#sec-drive-bulk" class="filter-pill" style="text-decoration:none;">☁️ Link Mestre Drive</a>
+        <a href="#sec-leads" class="filter-pill" style="text-decoration:none;">📋 Leads do Teste Grátis</a>
+        <a href="#sec-subscribers" class="filter-pill" style="text-decoration:none;">👥 Alunos Pix / Manuais</a>
+        <a href="#sec-vendas" class="filter-pill" style="text-decoration:none;">💬 Vendas &amp; Pix</a>
+        <a href="#sec-mercadopago" class="filter-pill" style="text-decoration:none;">💳 Mercado Pago</a>
+        <a href="#sec-security" class="filter-pill" style="text-decoration:none;">🔒 Alterar Senha Admin</a>
+        <a href="#sec-testing" class="filter-pill" style="text-decoration:none;">🛠️ Testes &amp; Bypass</a>
+      </nav>
+
       <!-- CARDS DE MÉTRICAS -->
       <section class="metrics-grid">
         <div class="metric-card">
@@ -135,7 +148,7 @@
       </section>
 
       <!-- SEÇÃO: CONFIGURAÇÃO EM MASSA DO GOOGLE DRIVE -->
-      <section class="panel-box">
+      <section class="panel-box" id="sec-drive-bulk">
         <div class="panel-box-header">
           <div>
             <h3>☁️ Link Mestre do Google Drive (Atualização em Massa)</h3>
@@ -153,7 +166,7 @@
       </section>
 
       <!-- SEÇÃO: FERRAMENTAS DE TESTE & BYPASS -->
-      <section class="panel-box tools-box">
+      <section class="panel-box tools-box" id="sec-testing">
         <div class="panel-box-header">
           <div>
             <h3>🛠️ Ferramentas de Teste do Administrador</h3>
@@ -177,7 +190,7 @@
       </section>
 
       <!-- SEÇÃO: VENDAS PIX & WHATSAPP DE SUPORTE -->
-      <section class="panel-box">
+      <section class="panel-box" id="sec-vendas">
         <div class="panel-box-header">
           <div>
             <h3>💬 Configuração de Vendas (WhatsApp &amp; Chave Pix)</h3>
@@ -203,7 +216,7 @@
       </section>
 
       <!-- SEÇÃO: CONFIGURAÇÃO DE PAGAMENTO MERCADO PAGO -->
-      <section class="panel-box">
+      <section class="panel-box" id="sec-mercadopago">
         <div class="panel-box-header">
           <div>
             <h3>💳 Configuração de Pagamento — Mercado Pago</h3>
@@ -263,7 +276,7 @@
       </section>
 
       <!-- SEÇÃO: SEGURANÇA & CREDENCIAIS DO ADMINISTRADOR -->
-      <section class="panel-box">
+      <section class="panel-box" id="sec-security">
         <div class="panel-box-header">
           <div>
             <h3>🔒 Segurança &amp; Senha do Administrador</h3>
@@ -289,7 +302,7 @@
       </section>
 
       <!-- SEÇÃO: LEADS DO TESTE GRÁTIS (CADASTROS OBRIGATÓRIOS) -->
-      <section class="panel-box">
+      <section class="panel-box" id="sec-leads">
         <div class="panel-box-header">
           <div>
             <h3>📋 Leads do Teste Grátis (<span id="leads-counter">0</span> cadastrados)</h3>
@@ -321,7 +334,7 @@
       </section>
 
       <!-- SEÇÃO: LIBERAÇÃO MANUAL DE ALUNOS (PAGAMENTOS PIX / WHATSAPP) -->
-      <section class="panel-box">
+      <section class="panel-box" id="sec-subscribers">
         <div class="panel-box-header">
           <div>
             <h3>👥 Liberação Manual de Assinaturas (Alunos Pix)</h3>
@@ -367,12 +380,16 @@
       </section>
 
       <!-- SEÇÃO: GERENCIADOR COMPLETO DE CURSOS -->
-      <section class="panel-box">
+      <section class="panel-box" id="sec-courses">
         <div class="panel-box-header">
           <div>
             <h3>📚 Catálogo de Cursos Médicos (<span id="courses-counter">36</span> cursos)</h3>
             <p>Visualize, edite URLs individuais do Drive, altere títulos ou cadastre novos módulos.</p>
           </div>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <button class="btn-primary" id="btn-open-create-modal-2">＋ Cadastrar Novo Curso</button>
+          </div>
+        </div>
           <div class="table-search-row">
             <input type="search" id="course-filter-input" placeholder="Filtrar cursos..." aria-label="Filtrar cursos">
             <div class="cycle-filter-btns" id="cycle-filters">

@@ -325,92 +325,109 @@ function setupTestingTools() {
 // ==========================================
 // MODAL: CADASTRAR OU EDITAR CURSO
 // ==========================================
-const modal = $("#course-modal");
-const courseForm = $("#course-form");
-
 function openCreateModal() {
+  const modal = $("#course-modal");
+  if (!modal) return;
   $("#modal-title").textContent = "Cadastrar Novo Curso";
   $("#edit-course-id").value = "";
   $("#course-title").value = "";
   $("#course-category").value = "Ciclo Clínico";
   $("#course-area").value = "";
   $("#course-modules").value = "3";
-  $("#course-color").value = "red";
-  $("#course-drive-url").value = $("#master-drive-url").value || "https://drive.google.com/drive/my-drive";
+  $("#course-color").value = "blue";
+  $("#course-drive-url").value = $("#master-drive-url")?.value || "https://drive.google.com/drive/my-drive";
   $("#course-description").value = "";
   $("#course-materials").value = "Videoaulas em HD + Apostilas em PDF + Caderno de Casos Clínicos";
   modal.hidden = false;
+  modal.classList.add("is-open");
 }
 
 function openEditModal(course) {
+  const modal = $("#course-modal");
+  if (!modal) return;
   $("#modal-title").textContent = `Editar Curso: ${course.title}`;
   $("#edit-course-id").value = course.id;
   $("#course-title").value = course.title || "";
   $("#course-category").value = course.category || "Ciclo Clínico";
   $("#course-area").value = course.area || "";
   $("#course-modules").value = course.modulesCount || (course.modules ? course.modules.length : 1);
-  $("#course-color").value = course.color || "red";
+  $("#course-color").value = course.color || "blue";
   $("#course-drive-url").value = course.driveUrl || "";
   $("#course-description").value = course.description || "";
   $("#course-materials").value = course.materials || "";
   modal.hidden = false;
+  modal.classList.add("is-open");
 }
 
 function closeModal() {
-  modal.hidden = true;
+  const modal = $("#course-modal");
+  if (modal) {
+    modal.hidden = true;
+    modal.classList.remove("is-open");
+  }
 }
 
 function setupCourseModal() {
+  const modal = $("#course-modal");
+  const courseForm = $("#course-form");
+
   $("#btn-open-create-modal")?.addEventListener("click", openCreateModal);
+  $("#btn-open-create-modal-2")?.addEventListener("click", openCreateModal);
+  $("#btn-quick-create")?.addEventListener("click", openCreateModal);
   $("#btn-close-modal")?.addEventListener("click", closeModal);
   $("#btn-cancel-modal")?.addEventListener("click", closeModal);
 
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) closeModal();
-  });
+  if (modal) {
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeModal();
+    });
+  }
 
-  courseForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const id = $("#edit-course-id").value;
-    const isEdit = Boolean(id);
+  if (courseForm) {
+    courseForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const id = $("#edit-course-id").value;
+      const isEdit = Boolean(id);
 
-    const payload = {
-      title: $("#course-title").value.trim(),
-      category: $("#course-category").value,
-      area: $("#course-area").value.trim(),
-      modulesCount: Number($("#course-modules").value) || 1,
-      color: $("#course-color").value,
-      driveUrl: $("#course-drive-url").value.trim(),
-      description: $("#course-description").value.trim(),
-      materials: $("#course-materials").value.trim()
-    };
+      const payload = {
+        title: $("#course-title").value.trim(),
+        category: $("#course-category").value,
+        area: $("#course-area").value.trim(),
+        modulesCount: Number($("#course-modules").value) || 1,
+        color: $("#course-color").value,
+        driveUrl: $("#course-drive-url").value.trim(),
+        description: $("#course-description").value.trim(),
+        materials: $("#course-materials").value.trim()
+      };
 
-    const saveBtn = $("#btn-save-course");
-    saveBtn.disabled = true;
-    saveBtn.textContent = "Salvando...";
+      const saveBtn = $("#btn-save-course");
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Salvando...";
 
-    try {
-      if (isEdit) {
-        await adminApi(`/api/admin/courses/${id}`, {
-          method: "PUT",
-          body: JSON.stringify(payload)
-        });
-      } else {
-        await adminApi("/api/admin/courses", {
-          method: "POST",
-          body: JSON.stringify(payload)
-        });
+      try {
+        if (isEdit) {
+          await adminApi(`/api/admin/courses/${id}`, {
+            method: "PUT",
+            body: JSON.stringify(payload)
+          });
+        } else {
+          await adminApi("/api/admin/courses", {
+            method: "POST",
+            body: JSON.stringify(payload)
+          });
+        }
+
+        closeModal();
+        await loadDashboardData();
+        alert(`✓ Curso "${payload.title}" salvo com sucesso no acervo!`);
+      } catch (err) {
+        alert("Erro ao salvar curso: " + err.message);
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Salvar Curso";
       }
-
-      closeModal();
-      await loadDashboardData();
-    } catch (err) {
-      alert("Erro ao salvar curso: " + err.message);
-    } finally {
-      saveBtn.disabled = false;
-      saveBtn.textContent = "Salvar Curso";
-    }
-  });
+    });
+  }
 }
 
 async function deleteCourse(id, title) {

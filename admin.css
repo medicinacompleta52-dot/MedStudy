@@ -31,6 +31,10 @@
   padding: 0;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 body {
   background: var(--bg);
   color: var(--text);
@@ -709,13 +713,17 @@ body {
 .admin-modal {
   position: fixed;
   inset: 0;
-  z-index: 100;
+  z-index: 1000;
   background: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(12px);
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   padding: 20px;
+}
+
+.admin-modal.is-open {
+  display: flex !important;
 }
 
 .modal-card {
