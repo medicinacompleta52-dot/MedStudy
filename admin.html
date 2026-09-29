@@ -88,6 +88,7 @@
 
       <!-- BARRA DE ATALHOS / NAVEGAÇÃO RÁPIDA -->
       <nav class="admin-quick-nav" style="display:flex; gap:8px; flex-wrap:wrap; margin:16px 0 20px; padding:12px; background:var(--panel); border:1px solid var(--line); border-radius:12px;">
+        <a href="#sec-student-hub" class="filter-pill" style="background:rgba(37,99,235,0.25); color:#60a5fa; border-color:rgba(59,130,246,0.5); text-decoration:none; font-weight:700;">🎓 Estudar / Modo Aluno VIP</a>
         <button type="button" class="filter-pill" id="btn-quick-create" style="background:#2563eb; color:#fff; border-color:#2563eb; font-weight:700;">＋ Cadastrar Novo Curso</button>
         <a href="#sec-courses" class="filter-pill active" style="text-decoration:none;">📚 Catálogo (36 Cursos)</a>
         <a href="#sec-drive-bulk" class="filter-pill" style="text-decoration:none;">☁️ Link Mestre Drive</a>
@@ -98,6 +99,43 @@
         <a href="#sec-security" class="filter-pill" style="text-decoration:none;">🔒 Alterar Senha Admin</a>
         <a href="#sec-testing" class="filter-pill" style="text-decoration:none;">🛠️ Testes &amp; Bypass</a>
       </nav>
+
+      <!-- SEÇÃO VIP: ACESSO DO ALUNO & CENTRAL DE ESTUDOS DO ADMINISTRADOR -->
+      <section class="panel-box" id="sec-student-hub" style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(6, 8, 12, 0.95)); border: 1px solid rgba(59, 130, 246, 0.4); margin-bottom: 24px;">
+        <div class="panel-box-header">
+          <div>
+            <span class="badge-cycle" style="background:#2563eb; color:#fff; font-size:11px; font-weight:800; padding:3px 8px; border-radius:4px; display:inline-block; margin-bottom:6px;">👑 MODO ALUNO VIP · ACESSO TOTAL</span>
+            <h3 style="margin:0 0 4px; font-size:18px;">🎓 Sala de Aula Virtual &amp; Acesso a Todo o Acervo</h3>
+            <p style="margin:0; font-size:13px; color:var(--muted);">Como administrador, você tem acesso irrestrito de aluno VIP a todos os 36 cursos, videoaulas por streaming e download de apostilas.</p>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <a href="sala.html" target="_blank" class="btn-primary" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+              ▶ Abrir Sala de Aula ↗
+            </a>
+            <a href="cursos.html" target="_blank" class="btn-primary" style="background:#0f172a; border:1px solid #1e3a8a; color:#60a5fa; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+              📚 Catálogo Público ↗
+            </a>
+          </div>
+        </div>
+
+        <div style="background:var(--panel2); padding:16px; border-radius:10px; border:1px solid var(--line); margin-top:14px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+          <div style="flex:1; min-width:260px;">
+            <strong style="color:#fff; font-size:14px; display:block; margin-bottom:4px;">⚡ Escolha um Curso para Estudar Agora:</strong>
+            <p style="margin:0; font-size:12px; color:var(--muted);">Selecione qualquer curso abaixo e assista às videoaulas em streaming ou baixe o material de apoio:</p>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <select id="quick-student-course-select" style="height:42px; background:var(--panel); border:1px solid var(--line-strong); color:#fff; border-radius:8px; padding:0 12px; font-size:13px; min-width:260px;">
+              <!-- Preenchido via admin.js -->
+            </select>
+            <button type="button" class="btn-primary" id="btn-quick-open-sala" style="height:42px;">
+              ▶ Assistir Aulas ➔
+            </button>
+            <button type="button" class="btn-primary" id="btn-quick-download-apostila" style="height:42px; background:#1e293b; border:1px solid #334155; color:#93c5fd;">
+              📥 Baixar Apostila (PDF)
+            </button>
+          </div>
+        </div>
+      </section>
 
       <!-- CARDS DE MÉTRICAS -->
       <section class="metrics-grid">

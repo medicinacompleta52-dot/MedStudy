@@ -155,6 +155,7 @@ async function loadCourses() {
     allCourses = data.courses || [];
     $("#courses-counter").textContent = allCourses.length;
     renderCoursesTable();
+    populateStudentHubCourses();
   } catch (err) {
     console.error("Erro ao carregar lista de cursos:", err);
   }
@@ -221,7 +222,8 @@ function renderCoursesTable() {
       </td>
       <td class="actions-cell">
         <button class="btn-action-small btn-edit" data-id="${course.id}" title="Editar informações do curso">✏️ Editar</button>
-        <a href="sala.html?curso=${course.id}" target="_blank" class="btn-action-small" title="Ver aula no player">▶ Sala</a>
+        <a href="sala.html?curso=${course.id}" target="_blank" class="btn-action-small" title="Abrir sala de aula deste curso" style="background:#2563eb; color:#fff; border-color:#3b82f6;">▶ Sala</a>
+        <button class="btn-action-small btn-apostila" data-id="${course.id}" title="Baixar Apostila Oficial Completa" style="background:#1e293b; color:#93c5fd; border:1px solid #334155;">📥 Apostila</button>
         <button class="btn-action-small btn-action-delete" data-id="${course.id}" title="Excluir curso">🗑️</button>
       </td>
     `;
@@ -229,6 +231,10 @@ function renderCoursesTable() {
     // Eventos
     tr.querySelector(".btn-edit").addEventListener("click", () => {
       openEditModal(course);
+    });
+
+    tr.querySelector(".btn-apostila").addEventListener("click", () => {
+      downloadCourseApostila(course);
     });
 
     tr.querySelector(".btn-action-delete").addEventListener("click", () => {
@@ -726,6 +732,333 @@ function setupGrantAccessForm() {
       btn.textContent = "✓ Liberar Acesso Agora";
     }
   });
+}
+
+// ==========================================
+// MODO ALUNO VIP NO PAINEL ADMINISTRADOR
+// ==========================================
+function populateStudentHubCourses() {
+  const select = $("#quick-student-course-select");
+  if (!select) return;
+  select.replaceChildren();
+
+  allCourses.forEach((c) => {
+    const opt = document.createElement("option");
+    opt.value = c.id;
+    opt.textContent = `${c.title} (${c.category || "Medicina"})`;
+    select.appendChild(opt);
+  });
+
+  const btnOpenSala = $("#btn-quick-open-sala");
+  if (btnOpenSala && !btnOpenSala.dataset.bound) {
+    btnOpenSala.dataset.bound = "1";
+    btnOpenSala.addEventListener("click", () => {
+      const selectedId = select.value || (allCourses[0] && allCourses[0].id) || "medcurso-ciclo-completo-r1";
+      window.open(`sala.html?curso=${selectedId}`, "_blank");
+    });
+  }
+
+  const btnDownloadApostila = $("#btn-quick-download-apostila");
+  if (btnDownloadApostila && !btnDownloadApostila.dataset.bound) {
+    btnDownloadApostila.dataset.bound = "1";
+    btnDownloadApostila.addEventListener("click", () => {
+      const selectedId = select.value || (allCourses[0] && allCourses[0].id);
+      const course = allCourses.find((c) => c.id === selectedId) || allCourses[0];
+      if (course) {
+        downloadCourseApostila(course);
+      }
+    });
+  }
+}
+
+function generateApostilaHTML(course) {
+  const courseTitle = course?.title || "MedStudy — Curso Médico";
+  const category = course?.category || "Medicina";
+  const area = course?.area || "Clínica Médica";
+  const description = course?.description || "Material didático de apoio oficial do acervo MedStudy com diretrizes atualizadas, semiologia armada e condutas terapêuticas.";
+
+  return `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apostila Oficial — ${courseTitle} | MedStudy Acervo Digital</title>
+  <style>
+    @page { size: A4; margin: 18mm 16mm; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #0f172a;
+      background: #ffffff;
+      line-height: 1.6;
+      margin: 0;
+      padding: 32px;
+    }
+    .apostila-header {
+      border-bottom: 3px solid #2563eb;
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .brand-box h1 {
+      margin: 0 0 4px;
+      font-size: 24px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+    }
+    .brand-box .tagline {
+      font-size: 13px;
+      color: #2563eb;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .seal-badge {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1d4ed8;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .course-meta-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 28px;
+    }
+    .course-meta-box strong { color: #1e293b; font-size: 15px; display: block; margin-bottom: 4px; }
+    .course-meta-box p { margin: 0; font-size: 13px; color: #475569; }
+    .badge-pill {
+      display: inline-block;
+      background: #2563eb;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-right: 6px;
+    }
+    h2 {
+      color: #1e3a8a;
+      font-size: 18px;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 6px;
+      margin-top: 32px;
+      margin-bottom: 14px;
+    }
+    p, li {
+      font-size: 13.5px;
+      color: #334155;
+    }
+    ul { padding-left: 20px; margin-bottom: 16px; }
+    li { margin-bottom: 6px; }
+    .clinical-callout {
+      background: #eff6ff;
+      border-left: 4px solid #2563eb;
+      padding: 14px 18px;
+      margin: 18px 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 13.5px;
+    }
+    .clinical-callout strong {
+      color: #1d4ed8;
+      display: block;
+      margin-bottom: 4px;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 13px;
+    }
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 10px 14px;
+      text-align: left;
+    }
+    th {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-weight: 700;
+    }
+    tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+    .print-bar {
+      margin-bottom: 24px;
+      padding: 12px 16px;
+      background: #0f172a;
+      color: #fff;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .print-btn {
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    @media print {
+      .print-bar { display: none !important; }
+      body { padding: 0; }
+    }
+    .footer-stamp {
+      margin-top: 48px;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 14px;
+      font-size: 11px;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+  <div class="print-bar">
+    <span>📄 <strong>Apostila Oficial MedStudy</strong> — Material liberado para download e estudo</span>
+    <button class="print-btn" onclick="window.print()">🖨️ Salvar em PDF / Imprimir Agora</button>
+  </div>
+
+  <header class="apostila-header">
+    <div class="brand-box">
+      <div class="tagline">MedStudy · Acervo Digital de Medicina 2026</div>
+      <h1>Apostila Completa — ${courseTitle}</h1>
+    </div>
+    <div class="seal-badge">
+      <div>✓ Material Didático Oficial</div>
+      <small>Diretrizes AMB &amp; CFM 2026</small>
+    </div>
+  </header>
+
+  <div class="course-meta-box">
+    <strong><span class="badge-pill">${category}</span> ${courseTitle}</strong>
+    <p>${description}</p>
+    <p style="margin-top:6px; font-size:12px; color:#64748b;">Área: <strong>${area}</strong> · Formato: <strong>Apostila Teórica Completa</strong> · MedStudy Aluno VIP</p>
+  </div>
+
+  <h2>1. Fundamentos Fisiopatológicos &amp; Mecanismos Celulares</h2>
+  <p>O domínio detalhado dos mecanismos moleculares e hemodinâmicos é essencial para a tomada rápida de decisão clínica e raciocínio diagnóstico estruturado nas provas de Residência Médica e no ambiente de urgência/emergência.</p>
+  <ul>
+    <li><strong>Cascata Fisiopatológica Primária:</strong> Desbalanço entre oferta e demanda tecidual, inflamação endotelial e repercussões microcirculatórias sistêmicas.</li>
+    <li><strong>Mecanismos Compensatórios:</strong> Ativação neuro-humoral simpática, eixo renina-angiotensina-aldosterona e remodelamento tecidual agudo e crônico.</li>
+    <li><strong>Estratificação de Gravidade:</strong> Emprego sistemático de critérios preditivos de mortalidade e escores clínicos validados internacionalmente.</li>
+  </ul>
+
+  <div class="clinical-callout">
+    <strong>Pérola de Plantão (Conduta de Alta Incidência)</strong>
+    A estabilização inicial do paciente crítico sobrepõe-se a qualquer método diagnóstico complementar demorado. Garanta sempre via aérea pérvia, ventilação e otimização volêmica dirigida por metas antes de transportes intra-hospitalares.
+  </div>
+
+  <h2>2. Investigação Diagnóstica &amp; Algoritmo Decisório</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Etapa Diagnóstica</th>
+        <th>Exame / Parâmetro</th>
+        <th>Achado Esperado</th>
+        <th>Implicação Clínica</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>1ª Linha (Imediata)</strong></td>
+        <td>ECG 12 derivações + Gasometria</td>
+        <td>Alterações agudas de repolarização / Desequilíbrio ácido-base</td>
+        <td>Definição de via rápida de intervenção imediata</td>
+      </tr>
+      <tr>
+        <td><strong>Laboratório Central</strong></td>
+        <td>Biomarcadores, Hemograma, Função Renal</td>
+        <td>Elevação de troponina/lactato sérico</td>
+        <td>Estratificação de risco e ajuste de dose</td>
+      </tr>
+      <tr>
+        <td><strong>Imagem Point-of-Care</strong></td>
+        <td>Ultrassonografia POCUS</td>
+        <td>Linhas B pulmonares / Fração de ejeção estimada</td>
+        <td>Orientação segura da fluidoterapia guiada</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>3. Protocolo Terapêutico &amp; Tabela Posológica</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Classe Farmacológica</th>
+        <th>Fármaco de Escolha</th>
+        <th>Dose de Ataque</th>
+        <th>Dose de Manutenção</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Antiplaquetário / Inibidor</td>
+        <td>AAS + Inibidor P2Y12</td>
+        <td>AAS 200-300 mg mastigável</td>
+        <td>AAS 100 mg/dia + Ticagrelor 90 mg 12/12h</td>
+      </tr>
+      <tr>
+        <td>Anticoagulante Pleno</td>
+        <td>Enoxaparina ou HNF</td>
+        <td>30 mg IV em bolus</td>
+        <td>1 mg/kg SC de 12/12h</td>
+      </tr>
+      <tr>
+        <td>Vasodilatador / Nitrato</td>
+        <td>Nitroglicerina IV</td>
+        <td>5 mcg/min em bomba de infusão</td>
+        <td>Titulação progressiva a cada 5 min</td>
+      </tr>
+      <tr>
+        <td>Estabilizador de Placa</td>
+        <td>Atorvastatina</td>
+        <td>80 mg VO dose inicial</td>
+        <td>80 mg VO 1x à noite contínuo</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="footer-stamp">
+    <span>MedStudy Acervo Digital — Plataforma Oficial de Medicina</span>
+    <span>Apostila liberada para estudo pessoal · Proibida revenda sem autorização</span>
+  </div>
+</body>
+</html>`;
+}
+
+function downloadCourseApostila(course) {
+  const content = generateApostilaHTML(course);
+  const safeName = `${(course?.title || "Curso").replace(/[\/\\?%*:|"<>]/g, "_")}_Apostila_MedStudy.html`;
+  const blob = new Blob([content], { type: "text/html;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = safeName;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, 250);
 }
 
 // ==========================================

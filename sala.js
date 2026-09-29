@@ -112,7 +112,11 @@ function updateProgressUI() {
 
 function getAllLessons(course) {
   if (!course || !course.modules) return [];
-  return course.modules.flatMap((m) => m.lessons || []);
+  return course.modules.flatMap((m, mIdx) => (m.lessons || []).map((l, lIdx) => ({
+    ...l,
+    id: l.id || `${course.id || "c"}-m${mIdx}-l${lIdx}`,
+    moduleTitle: m.title
+  })));
 }
 
 // Troca de Tabs (Video, PDF, Pastas, Quiz, Drive Embed)
@@ -165,16 +169,61 @@ function setupDriveEmbed() {
   } catch (e) {}
 }
 
-// Controles do Player de Vídeo
+// Controles do Player de Vídeo e Streaming
 function setupVideoPlayer() {
   const btnPlayBig = $("#btn-play-big");
   const ctrlPlay = $("#ctrl-play-pause");
   const ctrlRewind = $("#ctrl-rewind");
   const ctrlForward = $("#ctrl-forward");
+  const ctrlVolume = $("#ctrl-volume");
   const scrubBar = $("#scrub-bar");
   const speedBtn = $("#speed-btn");
   const speedDropdown = $("#speed-dropdown");
   const markDoneBtn = $("#ctrl-mark-done");
+  const nativeVideo = $("#native-video-player");
+  const driveFrame = $("#drive-video-frame");
+  const btnSrcNative = $("#btn-src-native");
+  const btnSrcDrive = $("#btn-src-drive");
+
+  // Alternância de fonte de streaming (HD Nativo vs Drive Embed)
+  btnSrcNative?.addEventListener("click", () => {
+    btnSrcNative.classList.add("active");
+    btnSrcNative.style.background = "#2563eb";
+    btnSrcNative.style.color = "#fff";
+    btnSrcDrive.classList.remove("active");
+    btnSrcDrive.style.background = "rgba(15,23,42,0.85)";
+    btnSrcDrive.style.color = "#94a3b8";
+
+    if (driveFrame) driveFrame.style.display = "none";
+    if (nativeVideo) nativeVideo.style.display = "block";
+  });
+
+  btnSrcDrive?.addEventListener("click", () => {
+    btnSrcDrive.classList.add("active");
+    btnSrcDrive.style.background = "#2563eb";
+    btnSrcDrive.style.color = "#fff";
+    btnSrcNative.classList.remove("active");
+    btnSrcNative.style.background = "rgba(15,23,42,0.85)";
+    btnSrcNative.style.color = "#94a3b8";
+
+    if (nativeVideo) {
+      nativeVideo.pause();
+      nativeVideo.style.display = "none";
+    }
+    if (driveFrame) {
+      driveFrame.style.display = "block";
+      const driveUrl = currentCourse?.driveUrl || "https://drive.google.com/drive/my-drive";
+      let embedUrl = driveUrl;
+      const folderMatch = driveUrl.match(/folders\/([\w\d_-]+)/i);
+      const fileMatch = driveUrl.match(/file\/d\/([\w\d_-]+)/i);
+      if (fileMatch) {
+        embedUrl = `https://drive.google.com/file/d/${fileMatch[1]}/preview`;
+      } else if (folderMatch) {
+        embedUrl = `https://drive.google.com/embeddedfolderview?id=${folderMatch[1]}#list`;
+      }
+      driveFrame.src = embedUrl;
+    }
+  });
 
   function togglePlay() {
     if (!isUserActive && !isAdmin) {
@@ -188,49 +237,115 @@ function setupVideoPlayer() {
         return;
       }
     }
-    isPlaying = !isPlaying;
-    btnPlayBig.textContent = isPlaying ? "❚❚" : "▶";
-    ctrlPlay.textContent = isPlaying ? "❚❚" : "▶";
 
-    if (isPlaying) {
-      if (playbackInterval) clearInterval(playbackInterval);
-      playbackInterval = setInterval(() => {
-        playbackSeconds += currentSpeed;
-        if (playbackSeconds >= 1680) { // ~28 min
-          playbackSeconds = 1680;
-          togglePlay();
-          if (currentLesson) {
-            const completed = getCompletedLessons(currentCourse.id);
-            if (!completed.includes(currentLesson.id)) {
-              toggleLessonCompleted(currentLesson.id);
+    if (nativeVideo && nativeVideo.src) {
+      if (nativeVideo.paused) {
+        nativeVideo.play().catch(() => {});
+      } else {
+        nativeVideo.pause();
+      }
+    } else {
+      isPlaying = !isPlaying;
+      btnPlayBig.textContent = isPlaying ? "❚❚" : "▶";
+      ctrlPlay.textContent = isPlaying ? "❚❚" : "▶";
+
+      if (isPlaying) {
+        if (playbackInterval) clearInterval(playbackInterval);
+        playbackInterval = setInterval(() => {
+          playbackSeconds += currentSpeed;
+          if (playbackSeconds >= 1680) {
+            playbackSeconds = 1680;
+            togglePlay();
+            if (currentLesson) {
+              const completed = getCompletedLessons(currentCourse.id);
+              if (!completed.includes(currentLesson.id)) {
+                toggleLessonCompleted(currentLesson.id);
+              }
             }
           }
-        }
-        updateTimeUI();
-      }, 1000);
-    } else {
-      clearInterval(playbackInterval);
+          updateTimeUI(1680);
+        }, 1000);
+      } else {
+        clearInterval(playbackInterval);
+      }
     }
   }
 
   btnPlayBig.addEventListener("click", togglePlay);
   ctrlPlay.addEventListener("click", togglePlay);
 
+  if (nativeVideo) {
+    nativeVideo.addEventListener("play", () => {
+      isPlaying = true;
+      btnPlayBig.textContent = "❚❚";
+      ctrlPlay.textContent = "❚❚";
+      const screen = $("#video-screen");
+      if (screen) screen.classList.add("is-playing");
+    });
+
+    nativeVideo.addEventListener("pause", () => {
+      isPlaying = false;
+      btnPlayBig.textContent = "▶";
+      ctrlPlay.textContent = "▶";
+      const screen = $("#video-screen");
+      if (screen) screen.classList.remove("is-playing");
+    });
+
+    nativeVideo.addEventListener("timeupdate", () => {
+      playbackSeconds = nativeVideo.currentTime;
+      updateTimeUI(nativeVideo.duration || 1680);
+    });
+
+    nativeVideo.addEventListener("ended", () => {
+      isPlaying = false;
+      btnPlayBig.textContent = "▶";
+      ctrlPlay.textContent = "▶";
+      if (currentLesson) {
+        const completed = getCompletedLessons(currentCourse.id);
+        if (!completed.includes(currentLesson.id)) {
+          toggleLessonCompleted(currentLesson.id);
+        }
+      }
+      goToNextLesson();
+    });
+  }
+
   ctrlRewind.addEventListener("click", () => {
-    playbackSeconds = Math.max(0, playbackSeconds - 10);
-    updateTimeUI();
+    if (nativeVideo && nativeVideo.currentTime !== undefined) {
+      nativeVideo.currentTime = Math.max(0, nativeVideo.currentTime - 10);
+    } else {
+      playbackSeconds = Math.max(0, playbackSeconds - 10);
+      updateTimeUI(1680);
+    }
   });
 
   ctrlForward.addEventListener("click", () => {
-    playbackSeconds = Math.min(1680, playbackSeconds + 10);
-    updateTimeUI();
+    if (nativeVideo && nativeVideo.duration) {
+      nativeVideo.currentTime = Math.min(nativeVideo.duration, nativeVideo.currentTime + 10);
+    } else {
+      playbackSeconds = Math.min(1680, playbackSeconds + 10);
+      updateTimeUI(1680);
+    }
   });
+
+  if (ctrlVolume) {
+    ctrlVolume.addEventListener("click", () => {
+      if (nativeVideo) {
+        nativeVideo.muted = !nativeVideo.muted;
+        ctrlVolume.textContent = nativeVideo.muted ? "🔇" : "🔊";
+      }
+    });
+  }
 
   scrubBar.addEventListener("click", (e) => {
     const rect = scrubBar.getBoundingClientRect();
     const pos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-    playbackSeconds = Math.round(pos * 1680);
-    updateTimeUI();
+    if (nativeVideo && nativeVideo.duration) {
+      nativeVideo.currentTime = pos * nativeVideo.duration;
+    } else {
+      playbackSeconds = Math.round(pos * 1680);
+      updateTimeUI(1680);
+    }
   });
 
   // Seletor de Velocidade
@@ -245,6 +360,9 @@ function setupVideoPlayer() {
       $$(".speed-dropdown button").forEach((b) => b.classList.remove("active"));
       e.target.classList.add("active");
       speedDropdown.hidden = true;
+      if (nativeVideo) {
+        nativeVideo.playbackRate = currentSpeed;
+      }
     }
   });
 
@@ -274,12 +392,17 @@ function setupVideoPlayer() {
   });
 }
 
-function updateTimeUI() {
+function updateTimeUI(totalDuration = 1680) {
   const curM = String(Math.floor(playbackSeconds / 60)).padStart(2, "0");
   const curS = String(Math.floor(playbackSeconds % 60)).padStart(2, "0");
   $("#time-current").textContent = `${curM}:${curS}`;
 
-  const pct = (playbackSeconds / 1680) * 100;
+  const totM = String(Math.floor(totalDuration / 60)).padStart(2, "0");
+  const totS = String(Math.floor(totalDuration % 60)).padStart(2, "0");
+  const timeTotalEl = $("#time-total");
+  if (timeTotalEl) timeTotalEl.textContent = `${totM}:${totS}`;
+
+  const pct = Math.min(100, (playbackSeconds / totalDuration) * 100);
   $("#scrub-progress").style.width = `${pct}%`;
 }
 
@@ -291,6 +414,365 @@ function goToNextLesson() {
     selectLesson(lessons[idx + 1]);
   } else {
     alert("Parabéns! Você concluiu a última aula deste curso!");
+  }
+}
+
+// ==========================================
+// GERADOR & DOWNLOAD DE APOSTILAS MÉDICAS EM PDF
+// ==========================================
+function generateApostilaHTML(course, lesson, specificFileName) {
+  const courseTitle = course?.title || "MedStudy — Curso Médico";
+  const category = course?.category || "Medicina";
+  const area = course?.area || "Clínica Médica";
+  const title = specificFileName || (lesson?.title ? `Apostila: ${lesson.title}` : `Apostila Oficial — ${courseTitle}`);
+  const description = course?.description || "Material didático de apoio oficial do acervo MedStudy com diretrizes atualizadas, semiologia armada e condutas terapêuticas.";
+
+  return `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title} | MedStudy Acervo Digital</title>
+  <style>
+    @page { size: A4; margin: 18mm 16mm; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #0f172a;
+      background: #ffffff;
+      line-height: 1.6;
+      margin: 0;
+      padding: 32px;
+    }
+    .apostila-header {
+      border-bottom: 3px solid #2563eb;
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .brand-box h1 {
+      margin: 0 0 4px;
+      font-size: 24px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+    }
+    .brand-box .tagline {
+      font-size: 13px;
+      color: #2563eb;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .seal-badge {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1d4ed8;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .course-meta-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 28px;
+    }
+    .course-meta-box strong { color: #1e293b; font-size: 15px; display: block; margin-bottom: 4px; }
+    .course-meta-box p { margin: 0; font-size: 13px; color: #475569; }
+    .badge-pill {
+      display: inline-block;
+      background: #2563eb;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-right: 6px;
+    }
+    h2 {
+      color: #1e3a8a;
+      font-size: 18px;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 6px;
+      margin-top: 32px;
+      margin-bottom: 14px;
+    }
+    h3 {
+      color: #0f172a;
+      font-size: 15px;
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+    p, li {
+      font-size: 13.5px;
+      color: #334155;
+    }
+    ul, ol {
+      padding-left: 20px;
+      margin-bottom: 16px;
+    }
+    li { margin-bottom: 6px; }
+    .clinical-callout {
+      background: #eff6ff;
+      border-left: 4px solid #2563eb;
+      padding: 14px 18px;
+      margin: 18px 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 13.5px;
+    }
+    .clinical-callout strong {
+      color: #1d4ed8;
+      display: block;
+      margin-bottom: 4px;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .warning-callout {
+      background: #fffbeb;
+      border-left: 4px solid #f59e0b;
+      padding: 14px 18px;
+      margin: 18px 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 13.5px;
+    }
+    .warning-callout strong {
+      color: #b45309;
+      display: block;
+      margin-bottom: 4px;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 13px;
+    }
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 10px 14px;
+      text-align: left;
+    }
+    th {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-weight: 700;
+    }
+    tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+    .print-bar {
+      margin-bottom: 24px;
+      padding: 12px 16px;
+      background: #0f172a;
+      color: #fff;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .print-btn {
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    @media print {
+      .print-bar { display: none !important; }
+      body { padding: 0; }
+    }
+    .footer-stamp {
+      margin-top: 48px;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 14px;
+      font-size: 11px;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+  <div class="print-bar">
+    <span>📄 <strong>Apostila Oficial MedStudy</strong> — Material liberado para download e estudo</span>
+    <button class="print-btn" onclick="window.print()">🖨️ Salvar em PDF / Imprimir Agora</button>
+  </div>
+
+  <header class="apostila-header">
+    <div class="brand-box">
+      <div class="tagline">MedStudy · Acervo Digital de Medicina 2026</div>
+      <h1>${title}</h1>
+    </div>
+    <div class="seal-badge">
+      <div>✓ Material Didático Oficial</div>
+      <small>Diretrizes AMB &amp; CFM 2026</small>
+    </div>
+  </header>
+
+  <div class="course-meta-box">
+    <strong><span class="badge-pill">${category}</span> ${courseTitle}</strong>
+    <p>${description}</p>
+    <p style="margin-top:6px; font-size:12px; color:#64748b;">Área: <strong>${area}</strong> · Formato: <strong>Apostila Teórica Completa</strong> · MedStudy Aluno VIP</p>
+  </div>
+
+  <h2>1. Fundamentos Fisiopatológicos &amp; Mecanismos Celulares</h2>
+  <p>O domínio detalhado dos mecanismos moleculares e hemodinâmicos é essencial para a tomada rápida de decisão clínica e raciocínio diagnóstico estruturado nas provas de Residência Médica e no ambiente de urgência/emergência.</p>
+  <ul>
+    <li><strong>Cascata Fisiopatológica Primária:</strong> Desbalanço entre oferta e demanda tecidual, inflamação endotelial e repercussões microcirculatórias sistêmicas.</li>
+    <li><strong>Mecanismos Compensatórios:</strong> Ativação neuro-humoral simpática, eixo renina-angiotensina-aldosterona e remodelamento tecidual agudo e crônico.</li>
+    <li><strong>Estratificação de Gravidade:</strong> Emprego sistemático de critérios preditivos de mortalidade e escores clínicos validados internacionalmente.</li>
+  </ul>
+
+  <div class="clinical-callout">
+    <strong>Pérola de Plantão (Conduta de Alta Incidência)</strong>
+    A estabilização inicial do paciente crítico sobrepõe-se a qualquer método diagnóstico complementar demorado. Garanta sempre via aérea pérvia, ventilação e otimização volêmica dirigida por metas antes de transportes intra-hospitalares.
+  </div>
+
+  <h2>2. Investigação Diagnóstica &amp; Algoritmo Decisório</h2>
+  <p>A propedêutica deve ser racional, evitando sobrecarga iatrogênica e direcionando a conduta com base na probabilidade pré-teste.</p>
+  
+  <table>
+    <thead>
+      <tr>
+        <th>Etapa Diagnóstica</th>
+        <th>Exame / Parâmetro</th>
+        <th>Achado Esperado</th>
+        <th>Implicação Clínica</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>1ª Linha (Imediata)</strong></td>
+        <td>ECG 12 derivações + Gasometria</td>
+        <td>Alterações agudas de repolarização / Desequilíbrio ácido-base</td>
+        <td>Definição de via rápida de intervenção imediata</td>
+      </tr>
+      <tr>
+        <td><strong>Laboratório Central</strong></td>
+        <td>Biomarcadores, Hemograma, Função Renal</td>
+        <td>Elevação de troponina/lactato sérico</td>
+        <td>Estratificação de risco e ajuste de dose</td>
+      </tr>
+      <tr>
+        <td><strong>Imagem Point-of-Care</strong></td>
+        <td>Ultrassonografia POCUS</td>
+        <td>Linhas B pulmonares / Fração de ejeção estimada</td>
+        <td>Orientação segura da fluidoterapia guiada</td>
+      </tr>
+      <tr>
+        <td><strong>Confirmação Anatômica</strong></td>
+        <td>Angiotomografia / Ressonância</td>
+        <td>Falha de enchimento ou estenose crítica</td>
+        <td>Planejamento cirúrgico ou hemodinâmico</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>3. Protocolo Terapêutico &amp; Tabela Posológica</h2>
+  <p>Prescrição médica baseada nos consensos mais recentes da AMB, CFM e sociedades internacionais.</p>
+
+  <div class="warning-callout">
+    <strong>Atenção aos Ajustes em Pacientes Especiais</strong>
+    Em pacientes com taxa de filtração glomerular estimada reduzida (&lt; 30 mL/min) ou idosos frágeis, reduza a dose de manutenção conforme clearance de creatinina e monitore níveis séricos e eletrólitos a cada 24 horas.
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Classe Farmacológica</th>
+        <th>Fármaco de Escolha</th>
+        <th>Dose de Ataque</th>
+        <th>Dose de Manutenção</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Antiplaquetário / Inibidor</td>
+        <td>AAS + Inibidor P2Y12</td>
+        <td>AAS 200-300 mg mastigável</td>
+        <td>AAS 100 mg/dia + Ticagrelor 90 mg 12/12h</td>
+      </tr>
+      <tr>
+        <td>Anticoagulante Pleno</td>
+        <td>Enoxaparina ou HNF</td>
+        <td>30 mg IV em bolus</td>
+        <td>1 mg/kg SC de 12/12h (ajustar no idoso/renal)</td>
+      </tr>
+      <tr>
+        <td>Vasodilatador / Nitrato</td>
+        <td>Nitroglicerina IV</td>
+        <td>5 mcg/min em bomba de infusão</td>
+        <td>Titulação progressiva a cada 5 min conforme PA</td>
+      </tr>
+      <tr>
+        <td>Estabilizador de Placa</td>
+        <td>Atorvastatina</td>
+        <td>80 mg VO dose inicial</td>
+        <td>80 mg VO 1x à noite contínuo</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>4. Casos Clínicos &amp; Questões Comentadas de Residência</h2>
+  <p><strong>Questão Típica (Banca ENARE / USP):</strong> Homem de 58 anos dá entrada no PS com dor torácica opressiva com 1h de duração. Ao ECG, supra de ST em V1 a V4 de 3mm. Hospital não dispõe de hemodinâmica no local, tempo estimado de transferência: 140 minutos. Qual a conduta indicada?</p>
+  <div class="clinical-callout">
+    <strong>Gabarito Justificado:</strong>
+    Quando o delta porta-balão estimado for superior a 120 minutos, a fibrinólise imediata em até 30 minutos (tempo porta-agulha) é classe I de indicação (com Tenecteplase ou Alteplase), associada à dupla antiagregação e anticoagulação plena.
+  </div>
+
+  <div class="footer-stamp">
+    <span>MedStudy Acervo Digital — Plataforma Oficial de Medicina</span>
+    <span>Apostila liberada para estudo pessoal · Proibida revenda sem autorização</span>
+  </div>
+</body>
+</html>`;
+}
+
+function downloadCourseApostila(course, lesson, specificFileName) {
+  const content = generateApostilaHTML(course, lesson, specificFileName);
+  let safeName = specificFileName || `${(course?.title || "Curso").replace(/[\/\\?%*:|"<>]/g, "_")}_Apostila_MedStudy.html`;
+  if (!safeName.endsWith(".html") && !safeName.endsWith(".pdf")) {
+    safeName += ".html";
+  }
+  const mimeType = safeName.endsWith(".pdf") ? "application/pdf" : "text/html;charset=utf-8";
+
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = safeName;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, 250);
+}
+
+function printPdfDocument(course, lesson) {
+  const content = generateApostilaHTML(course, lesson);
+  const printWindow = window.open("", "_blank");
+  if (printWindow) {
+    printWindow.document.write(content);
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => {
+      printWindow.print();
+    }, 400);
   }
 }
 
@@ -323,7 +805,11 @@ function setupPdfViewer() {
   });
 
   $("#pdf-download-btn")?.addEventListener("click", () => {
-    alert(`Iniciando download da apostila completa de ${currentCourse?.title} em formato PDF...`);
+    downloadCourseApostila(currentCourse, currentLesson);
+  });
+
+  $("#pdf-print-btn")?.addEventListener("click", () => {
+    printPdfDocument(currentCourse, currentLesson);
   });
 }
 
@@ -411,17 +897,33 @@ function renderDriveFolders() {
       const badgeClass = ext === "mp4" ? "ext-mp4" : "ext-pdf";
       const icon = ext === "mp4" ? "▶" : "📄";
 
+      let buttonsHtml = "";
+      if (ext === "mp4") {
+        buttonsHtml = `
+          <button type="button" class="btn-file-open" data-file-ext="${ext}" data-file-name="${file.name}" style="background:#2563eb; color:#fff; font-weight:700; border:none; padding:6px 12px; border-radius:6px; font-size:12px; cursor:pointer;">
+            ▶ Assistir Streaming
+          </button>
+        `;
+      } else {
+        buttonsHtml = `
+          <button type="button" class="btn-file-open" data-file-ext="${ext}" data-file-name="${file.name}" style="background:var(--panel2); color:#cbd5e1; border:1px solid var(--line); padding:6px 10px; border-radius:6px; font-size:12px; cursor:pointer;">
+            👁️ Ler no Site
+          </button>
+          <button type="button" class="btn-file-download" data-file-ext="${ext}" data-file-name="${file.name}" style="background:#1e3a8a; color:#93c5fd; border:1px solid #2563eb; font-weight:700; padding:6px 12px; border-radius:6px; font-size:12px; cursor:pointer;">
+            📥 Baixar Apostila
+          </button>
+        `;
+      }
+
       filesHtml += `
         <div class="file-item">
           <div class="file-left">
             <span class="file-ext-badge ${badgeClass}">${ext}</span>
             <span class="file-name">${icon} ${file.name}</span>
           </div>
-          <div class="file-right">
+          <div class="file-right" style="display:flex; align-items:center; gap:8px;">
             <span class="file-size">${file.size || "15 MB"}</span>
-            <button class="btn-file-open" data-file-ext="${ext}" data-file-name="${file.name}">
-              ${ext === "mp4" ? "Assistir no Player" : "Ler no Site"}
-            </button>
+            ${buttonsHtml}
           </div>
         </div>
       `;
@@ -454,13 +956,39 @@ function renderDriveFolders() {
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
         const ext = btn.dataset.fileExt;
+        const fileName = btn.dataset.fileName;
+
         if (ext === "mp4") {
           switchTab("video");
+          const nativeVideo = $("#native-video-player");
+          if (nativeVideo) {
+            const lessons = getAllLessons(currentCourse);
+            const matchingLesson = lessons.find((l) => fileName.toLowerCase().includes(l.title.toLowerCase())) || lessons[0];
+            if (matchingLesson) {
+              selectLesson(matchingLesson);
+            }
+            if (nativeVideo.src) {
+              nativeVideo.play().catch(() => {});
+            }
+          }
           window.scrollTo({ top: 0, behavior: "smooth" });
         } else {
           switchTab("pdf");
+          const docTitle = $("#pdf-doc-title");
+          if (docTitle) docTitle.textContent = fileName;
+          pdfCurrentPage = 1;
+          renderPdfPage();
           window.scrollTo({ top: 0, behavior: "smooth" });
         }
+      });
+    });
+
+    // Baixar apostila / material complementar em PDF
+    card.querySelectorAll(".btn-file-download").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const fileName = btn.dataset.fileName;
+        downloadCourseApostila(currentCourse, currentLesson, fileName);
       });
     });
 
@@ -559,6 +1087,19 @@ function selectLesson(lesson) {
   $("#btn-play-big").textContent = "▶";
   $("#ctrl-play-pause").textContent = "▶";
 
+  const screen = $("#video-screen");
+  if (screen) screen.classList.remove("is-playing");
+
+  // Carrega a URL do vídeo de streaming nativo
+  const nativeVideo = $("#native-video-player");
+  if (nativeVideo) {
+    const videoUrl = lesson.videoUrl || "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+    if (nativeVideo.src !== videoUrl) {
+      nativeVideo.src = videoUrl;
+      nativeVideo.load();
+    }
+  }
+
   // Metadados do Player
   $("#current-lesson-title").textContent = lesson.title;
   $("#current-lesson-summary").textContent = lesson.summary || "Conteúdo teórico e diretrizes atualizadas.";
@@ -627,10 +1168,15 @@ function renderSidebar() {
 
   (currentCourse.modules || []).forEach((mod, modIdx) => {
     const group = document.createElement("div");
-    const isOpen = modIdx === 0 || mod.lessons?.some((l) => l.id === currentLesson?.id);
+    const modLessons = (mod.lessons || []).map((l, lIdx) => ({
+      ...l,
+      id: l.id || `${currentCourse.id || "c"}-m${modIdx}-l${lIdx}`,
+      moduleTitle: mod.title
+    }));
+    const isOpen = modIdx === 0 || modLessons.some((l) => l.id === currentLesson?.id);
     group.className = "module-group" + (isOpen ? " open" : "");
 
-    const filteredLessons = (mod.lessons || []).filter((l) => {
+    const filteredLessons = modLessons.filter((l) => {
       return !query || l.title.toLowerCase().includes(query) || (l.summary && l.summary.toLowerCase().includes(query));
     });
 
@@ -779,10 +1325,15 @@ function initFreeTrial() {
   const timerText = $("#trial-timer");
 
   if (isUserActive || isAdmin) {
+    const regModal = $("#trial-register-modal");
+    if (regModal) regModal.hidden = true;
+    const expModal = $("#trial-expired-modal");
+    if (expModal) expModal.hidden = true;
+
     if (pill && timerText) {
       if (isAdmin) {
         pill.className = "trial-pill admin";
-        timerText.textContent = "👑 Administrador (Acesso Irrestrito)";
+        timerText.textContent = "👑 Administrador VIP (Acesso Irrestrito)";
       } else {
         pill.className = "trial-pill unlimited";
         timerText.textContent = "👑 Acesso Ilimitado Ativo";

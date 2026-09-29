@@ -87,17 +87,29 @@
       <!-- PAINEL 1: PLAYER DE VÍDEO INTEGRADO -->
       <div class="tab-panel active" id="panel-video">
         <div class="video-container" id="video-container">
-          <div class="video-screen" id="video-screen">
+          <div class="video-screen" id="video-screen" style="position:relative; background:#000; overflow:hidden;">
+            <!-- Elemento de Streaming de Vídeo HTML5 (Protegido contra download) -->
+            <video id="native-video-player" playsinline preload="metadata" controlslist="nodownload noplaybackrate" disablepictureinpicture oncontextmenu="return false;" style="width:100%; height:100%; object-fit:contain; background:#000; position:absolute; inset:0; z-index:1; display:block;"></video>
+            
+            <!-- Iframe para Stream Direto do Google Drive -->
+            <iframe id="drive-video-frame" style="width:100%; height:100%; border:none; display:none; position:absolute; inset:0; z-index:2; background:#000;" allow="autoplay; fullscreen"></iframe>
+
+            <!-- Seletor de Fonte de Streaming (HD Nativo vs Drive Embed) -->
+            <div class="stream-source-pills" style="position:absolute; top:12px; left:12px; z-index:10; display:flex; gap:6px;">
+              <button type="button" class="btn-stream-source active" id="btn-src-native" style="background:#2563eb; color:#fff; border:1px solid #3b82f6; border-radius:6px; font-size:11px; font-weight:700; padding:4px 10px; cursor:pointer;">📺 Streaming HD</button>
+              <button type="button" class="btn-stream-source" id="btn-src-drive" style="background:rgba(15,23,42,0.85); color:#94a3b8; border:1px solid rgba(255,255,255,0.15); border-radius:6px; font-size:11px; font-weight:600; padding:4px 10px; cursor:pointer;">☁️ Stream Drive</button>
+            </div>
+
             <!-- Canvas / Visualização simulada da aula médica -->
-            <div class="video-overlay" id="video-overlay">
-              <div class="video-badge-live">HD 1080p</div>
-              <div class="video-watermark">MEDSTUDY · CONTEÚDO EXCLUSIVO</div>
+            <div class="video-overlay" id="video-overlay" style="z-index:3; pointer-events:none;">
+              <div class="video-badge-live" style="pointer-events:auto;">HD 1080p · DRM Ativo</div>
+              <div class="video-watermark">MEDSTUDY · STREAMING PROTEGIDO</div>
               
-              <div class="video-center-controls">
+              <div class="video-center-controls" style="pointer-events:auto;">
                 <button class="btn-play-pause-big" id="btn-play-big" aria-label="Reproduzir">▶</button>
               </div>
 
-              <div class="video-slide-preview">
+              <div class="video-slide-preview" id="video-slide-box" style="pointer-events:auto;">
                 <div class="slide-tag" id="slide-tag">SLIDE DA AULA</div>
                 <h3 id="video-slide-title">Carregando aula...</h3>
                 <p id="video-slide-subtitle">Aguarde o carregamento do conteúdo programático.</p>
@@ -106,7 +118,7 @@
             </div>
 
             <!-- Barra de Controles do Player -->
-            <div class="video-bottom-bar">
+            <div class="video-bottom-bar" style="z-index:10;">
               <div class="scrub-bar" id="scrub-bar">
                 <div class="scrub-progress" id="scrub-progress" style="width: 0%"></div>
               </div>
@@ -115,8 +127,9 @@
                   <button class="ctrl-btn" id="ctrl-play-pause" title="Play/Pause">▶</button>
                   <button class="ctrl-btn" id="ctrl-rewind" title="Voltar 10s">↺ 10s</button>
                   <button class="ctrl-btn" id="ctrl-forward" title="Avançar 10s">10s ↻</button>
+                  <button class="ctrl-btn" id="ctrl-volume" title="Mudo/Volume">🔊</button>
                   <div class="time-display">
-                    <span id="time-current">00:00</span> / <span id="time-total">28:00</span>
+                    <span id="time-current">00:00</span> / <span id="time-total">00:00</span>
                   </div>
                 </div>
                 <div class="controls-right">
@@ -184,7 +197,8 @@
               <span class="pdf-zoom-text" id="pdf-zoom-level">100%</span>
               <button class="pdf-btn" id="pdf-zoom-out" title="Reduzir zoom">-</button>
               <button class="pdf-btn" id="pdf-zoom-in" title="Aumentar zoom">+</button>
-              <span class="drm-download-locked" id="pdf-drm-badge">🔒 Leitura Protegida (Download Bloqueado no Teste Grátis)</span>
+              <button type="button" class="pdf-btn" id="pdf-download-btn" style="background:#2563eb; color:#fff; font-weight:700; border:1px solid #3b82f6; border-radius:6px; padding:6px 14px; cursor:pointer;" title="Baixar Apostila Completa">📥 Baixar Apostila (PDF)</button>
+              <button type="button" class="pdf-btn" id="pdf-print-btn" style="background:var(--panel2); color:#cbd5e1; border:1px solid var(--line); border-radius:6px; padding:6px 12px; cursor:pointer;" title="Imprimir / Salvar em PDF">🖨️ Imprimir</button>
             </div>
           </div>
 

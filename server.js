@@ -428,8 +428,9 @@ app.post("/api/checkout", async (req, res) => {
 app.get("/api/courses", async (req, res) => {
   const token = req.headers.authorization?.match(/^Bearer (.+)$/i)?.[1];
   const isAdmin = verifyAdminToken(token);
+  const creds = await getAdminCredentials();
   let userActive = isAdmin;
-  let user = isAdmin ? { id: "admin-master", email: ADMIN_EMAIL, role: "admin" } : null;
+  let user = isAdmin ? { id: "admin-master", email: creds.email, role: "admin" } : null;
 
   if (!isAdmin && token && supabaseAdmin) {
     try {
@@ -483,8 +484,9 @@ app.get("/api/courses", async (req, res) => {
 app.get("/api/courses/:id", async (req, res) => {
   const token = req.headers.authorization?.match(/^Bearer (.+)$/i)?.[1];
   const isAdmin = verifyAdminToken(token);
+  const creds = await getAdminCredentials();
   let userActive = isAdmin;
-  let user = isAdmin ? { id: "admin-master", email: ADMIN_EMAIL, role: "admin" } : null;
+  let user = isAdmin ? { id: "admin-master", email: creds.email, role: "admin" } : null;
 
   if (!isAdmin && token && supabaseAdmin) {
     try {

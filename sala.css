@@ -376,6 +376,37 @@ body {
   border-radius: 10px;
   padding: 16px 20px;
   max-width: 600px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.video-screen.is-playing .video-overlay {
+  background: transparent !important;
+  pointer-events: none;
+}
+
+.video-screen.is-playing .btn-play-pause-big {
+  display: none !important;
+}
+
+.video-screen.is-playing .video-slide-preview {
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+}
+
+.video-screen.is-playing:hover .video-overlay {
+  background: rgba(0, 0, 0, 0.35) !important;
+}
+
+.video-screen.is-playing:hover .video-slide-preview {
+  opacity: 0.9;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.video-screen.is-playing:hover .btn-play-pause-big {
+  display: grid !important;
+  opacity: 0.85;
 }
 
 .slide-tag {
