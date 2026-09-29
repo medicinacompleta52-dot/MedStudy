@@ -29,3 +29,5 @@ services:
         value: R$ 500/ano
       - key: PLAN_LIFETIME_DISPLAY
         value: R$ 750, pagamento único
+      - key: PLAN_VIP_DISPLAY
+        value: R$ 1.000, vitalício com download de vídeos
