@@ -20,7 +20,8 @@ const bucket = process.env.SUPABASE_STORAGE_BUCKET || "medstudy-private";
 const plans = {
   monthly: { name: process.env.PLAN_MONTHLY_NAME || "MedStudy Mensal", price: 80, display: process.env.PLAN_MONTHLY_DISPLAY || "R$ 80/mês", frequency: 1, frequencyType: "months" },
   annual: { name: process.env.PLAN_ANNUAL_NAME || "MedStudy Anual", price: 500, display: process.env.PLAN_ANNUAL_DISPLAY || "R$ 500/ano", frequency: 12, frequencyType: "months" },
-  lifetime: { name: process.env.PLAN_LIFETIME_NAME || "MedStudy Vitalício", price: 750, display: process.env.PLAN_LIFETIME_DISPLAY || "R$ 750, pagamento único" }
+  lifetime: { name: process.env.PLAN_LIFETIME_NAME || "MedStudy Vitalício", price: 750, display: process.env.PLAN_LIFETIME_DISPLAY || "R$ 750, pagamento único" },
+  vip: { name: process.env.PLAN_VIP_NAME || "MedStudy VIP + Backup em Nuvem", price: 1000, display: process.env.PLAN_VIP_DISPLAY || "R$ 1.000, vitalício com download de vídeos", canDownloadVideos: true }
 };
 
 const coursesFilePath = path.join(root, "courses.json");
@@ -84,7 +85,7 @@ function isManualSubscriberActive(email, subscribers) {
   if (!email || !Array.isArray(subscribers)) return false;
   const found = subscribers.find(s => s.email?.toLowerCase() === email.toLowerCase());
   if (!found || found.status !== "active") return false;
-  if (found.planId === "lifetime") return true;
+  if (found.planId === "lifetime" || found.planId === "vip") return true;
   if (found.current_period_end && new Date(found.current_period_end) > new Date()) return true;
   return false;
 }
@@ -457,9 +458,19 @@ app.get("/api/courses", async (req, res) => {
 
   // Verifica se o e-mail foi liberado manualmente pelo Administrador
   const manualSubs = await loadManualSubscribers();
-  if (user?.email && !userActive) {
-    userActive = isManualSubscriberActive(user.email, manualSubs);
+  let userPlan = null;
+  if (user?.email) {
+    const manualFound = manualSubs.find(s => s.email?.toLowerCase() === user.email.toLowerCase());
+    if (manualFound && manualFound.status === "active") {
+      userPlan = manualFound.planId;
+      if (userPlan === "lifetime" || userPlan === "vip" || (manualFound.current_period_end && new Date(manualFound.current_period_end) > new Date())) {
+        userActive = true;
+      }
+    }
   }
+
+  const isVip = Boolean(isAdmin || userPlan === "vip");
+  const canDownloadVideos = Boolean(isAdmin || isVip);
 
   const allCourses = await loadCourses();
 
@@ -477,7 +488,9 @@ app.get("/api/courses", async (req, res) => {
     courses,
     userActive,
     user,
-    isAdmin
+    isAdmin,
+    isVip,
+    canDownloadVideos
   });
 });
 
@@ -487,6 +500,7 @@ app.get("/api/courses/:id", async (req, res) => {
   const creds = await getAdminCredentials();
   let userActive = isAdmin;
   let user = isAdmin ? { id: "admin-master", email: creds.email, role: "admin" } : null;
+  let userPlan = null;
 
   if (!isAdmin && token && supabaseAdmin) {
     try {
@@ -499,12 +513,14 @@ app.get("/api/courses/:id", async (req, res) => {
           .eq("user_id", user.id)
           .maybeSingle();
 
-        userActive = Boolean(
-          subData?.status === "active" && (
+        if (subData?.status === "active") {
+          userPlan = subData.plan_id;
+          userActive = Boolean(
             subData.plan_id === "lifetime" ||
+            subData.plan_id === "vip" ||
             (subData.current_period_end && new Date(subData.current_period_end) > new Date())
-          )
-        );
+          );
+        }
       }
     } catch (e) {
       console.error("Error validating auth in /api/courses/:id:", e.message);
@@ -513,9 +529,18 @@ app.get("/api/courses/:id", async (req, res) => {
 
   // Verifica liberação manual
   const manualSubs = await loadManualSubscribers();
-  if (user?.email && !userActive) {
-    userActive = isManualSubscriberActive(user.email, manualSubs);
+  if (user?.email) {
+    const manualFound = manualSubs.find(s => s.email?.toLowerCase() === user.email.toLowerCase());
+    if (manualFound && manualFound.status === "active") {
+      userPlan = manualFound.planId;
+      if (userPlan === "lifetime" || userPlan === "vip" || (manualFound.current_period_end && new Date(manualFound.current_period_end) > new Date())) {
+        userActive = true;
+      }
+    }
   }
+
+  const isVip = Boolean(isAdmin || userPlan === "vip");
+  const canDownloadVideos = Boolean(isAdmin || isVip);
 
   const allCourses = await loadCourses();
   const found = allCourses.find((c) => c.id === req.params.id);
@@ -524,7 +549,7 @@ app.get("/api/courses/:id", async (req, res) => {
   }
 
   const course = userActive ? { ...found, locked: false } : { ...found, driveUrl: null, locked: true };
-  res.json({ course, userActive, user, isAdmin });
+  res.json({ course, userActive, user, isAdmin, isVip, canDownloadVideos });
 });
 
 app.post("/api/courses", requireUser, async (req, res) => {

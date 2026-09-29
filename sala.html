@@ -66,6 +66,10 @@
           <span class="tab-icon">📺</span>
           <span>Videoaula</span>
         </button>
+        <button class="tab-btn" data-tab="lessons-grid" id="tab-btn-lessons">
+          <span class="tab-icon">📑</span>
+          <span id="tab-lessons-title">Grade de Aulas</span>
+        </button>
         <button class="tab-btn" data-tab="pdf">
           <span class="tab-icon">📄</span>
           <span>Apostila &amp; PDF</span>
@@ -152,6 +156,30 @@
           </div>
         </div>
 
+        <!-- BARRA RÁPIDA DE SELEÇÃO E CONTROLE DE AULAS -->
+        <div class="lesson-quick-selector-bar" style="background:var(--panel); border:1px solid var(--line-strong); border-radius:10px; padding:12px 18px; margin: 16px 0; display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;">
+          <div style="display:flex; align-items:center; gap:10px; flex:1; min-width:280px;">
+            <span style="font-size:12px; font-weight:800; color:#60a5fa; background:rgba(37,99,235,0.18); border:1px solid rgba(59,130,246,0.3); padding:4px 8px; border-radius:4px; white-space:nowrap;">📚 AULA ATUAL:</span>
+            <select id="select-lesson-dropdown" style="flex:1; height:42px; background:var(--bg); border:1px solid var(--line-strong); color:#fff; border-radius:8px; padding:0 12px; font-size:13px; font-weight:600; outline:none; cursor:pointer;">
+              <!-- Preenchido via sala.js com todas as aulas do curso -->
+            </select>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <button type="button" class="btn-action-outline" id="btn-trigger-play" style="background:#2563eb; border-color:#3b82f6; color:#fff; font-weight:700; height:42px; padding:0 18px; cursor:pointer;">
+              ▶ Assistir Aula
+            </button>
+            <button type="button" class="btn-action-outline" id="btn-open-lessons-tab" style="background:#0f172a; border-color:#1e3a8a; color:#60a5fa; font-weight:700; height:42px; padding:0 14px; cursor:pointer;">
+              📑 Ver Grade Completa
+            </button>
+            <button type="button" class="btn-action-outline" id="btn-video-download" style="background:rgba(37,99,235,0.15); border-color:#2563eb; color:#93c5fd; font-weight:700; height:42px; padding:0 14px; cursor:pointer;" title="Download de Videoaula em MP4 (Plano VIP)">
+              📥 Baixar Vídeo (MP4)
+            </button>
+            <button type="button" class="btn-action-outline" id="btn-cloud-backup-cta" style="background:#1e293b; border-color:#334155; color:#cbd5e1; height:42px; padding:0 12px; cursor:pointer;" title="Backup em Nuvem MedStudy (Plano VIP)">
+              ☁️ Backup em Nuvem
+            </button>
+          </div>
+        </div>
+
         <!-- DETALHES DA AULA ATUAL & ANOTAÇÕES DO ALUNO -->
         <div class="lesson-meta-bar">
           <div class="meta-left">
@@ -178,6 +206,25 @@
               <span class="save-status" id="notes-save-status">Salvo automaticamente</span>
             </div>
             <textarea id="student-notes" placeholder="Digite suas notas sobre esta aula, diagnósticos diferenciais, doses e condutas... As anotações ficam salvas no seu navegador."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAINEL DA GRADE COMPLETA DE AULAS DO CURSO (NO PALCO) -->
+      <div class="tab-panel" id="panel-lessons-grid" hidden>
+        <div class="lessons-grid-container" style="background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:24px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:14px; border-bottom:1px solid var(--line); padding-bottom:16px;">
+            <div>
+              <span class="badge-cycle" id="grid-course-cycle">Ciclo Clínico</span>
+              <h2 style="margin:4px 0 6px; font-size:22px; color:#fff;" id="grid-course-title">Grade Completa de Aulas</h2>
+              <p style="margin:0; font-size:13px; color:var(--muted);" id="grid-lessons-subtitle">Clique em qualquer aula para iniciar o streaming de alta resolução ou fazer download.</p>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center;">
+              <input type="search" id="grid-search-input" placeholder="🔍 Filtrar aula por nome ou tema..." style="height:42px; background:var(--bg); border:1px solid var(--line-strong); color:#fff; border-radius:8px; padding:0 14px; font-size:13px; width:300px; outline:none;">
+            </div>
+          </div>
+          <div id="full-lessons-grid-content">
+            <!-- Renderizado dinamicamente via sala.js com todos os módulos e aulas -->
           </div>
         </div>
       </div>
@@ -404,6 +451,38 @@
 
       <div class="trial-modal-footer">
         <a href="conta.html" class="btn-modal-login">Já sou assinante / Fazer login ➔</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL EXCLUSIVO DO PLANO VIP (DOWNLOAD DE VÍDEOS & BACKUP EM NUVEM) -->
+  <div class="trial-modal-overlay" id="vip-modal" hidden>
+    <div class="trial-modal-card" style="max-width: 520px; border-color: rgba(59,130,246,0.6); background: linear-gradient(180deg, #0b1120 0%, #06080c 100%); position: relative;">
+      <button type="button" class="btn-close-modal" id="btn-close-vip-modal" style="position:absolute; top:16px; right:16px; background:transparent; border:none; color:#94a3b8; font-size:20px; cursor:pointer;">✕</button>
+      <div style="display:inline-block; background:#2563eb; color:#fff; font-size:11px; font-weight:800; padding:4px 10px; border-radius:4px; margin-bottom:12px;">👑 PLANO VIP MEDSTUDY</div>
+      <h2 style="margin:0 0 8px; font-size:22px; color:#fff;">Download de Videoaulas &amp; Backup em Nuvem</h2>
+      <p style="color:var(--muted); font-size:13px; line-height:1.6; margin:0 0 16px;">
+        O download de arquivos de videoaula (.mp4 em HD) para estudo offline e o backup permanente em nuvem são recursos exclusivos do <strong>Plano VIP MedStudy</strong>.
+      </p>
+      <div style="background:rgba(37,99,235,0.1); border:1px solid rgba(59,130,246,0.3); border-radius:10px; padding:16px; margin-bottom:20px; text-align: left;">
+        <div style="font-size:13px; color:#93c5fd; font-weight:700; margin-bottom:10px;">VANTAGENS EXCLUSIVAS DO PLANO VIP:</div>
+        <ul style="margin:0; padding-left:18px; font-size:13px; color:#e2e8f0; line-height:1.8;">
+          <li><strong>Download de todas as 1.403 videoaulas em MP4</strong> para assistir offline sem internet;</li>
+          <li><strong>Backup permanente em nuvem</strong> com acesso vitalício sem mensalidades futuras;</li>
+          <li><strong>Download ilimitado de apostilas</strong> e cadernos de questões em PDF;</li>
+          <li>Acesso total aos 36 cursos completos.</li>
+        </ul>
+        <div style="margin-top:14px; font-size:22px; font-weight:800; color:#fff;">
+          R$ 1.000 <span style="font-size:12px; font-weight:600; color:#94a3b8;">/ pagamento único</span>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <a href="conta.html" class="btn-primary" style="text-decoration:none; text-align:center; padding:12px; font-weight:800; border-radius:8px; background:#2563eb; color:#fff;">
+          💳 Assinar Plano VIP (R$ 1.000) ➔
+        </a>
+        <a href="https://wa.me/5554996318816?text=Ol%C3%A1!%20Quero%20assinar%20o%20Plano%20VIP%20de%20R%24%201.000%20com%20download%20de%20v%C3%ADdeos%20e%20backup%20em%20nuvem." target="_blank" rel="noopener noreferrer" style="text-decoration:none; text-align:center; padding:12px; font-weight:800; border-radius:8px; background:#25d366; color:#042610;">
+          💬 Assinar via Pix / WhatsApp (Liberação Imediata)
+        </a>
       </div>
     </div>
   </div>

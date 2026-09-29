@@ -601,10 +601,11 @@ async function loadManualSubscribers() {
 
       let planLabel = "Anual (365 dias)";
       if (sub.planId === "monthly") planLabel = "Mensal (30 dias)";
-      else if (sub.planId === "lifetime") planLabel = "Vitalício (Permanente)";
+      else if (sub.planId === "lifetime") planLabel = "Vitalício (R$ 750)";
+      else if (sub.planId === "vip") planLabel = "👑 VIP + Backup & Vídeos (R$ 1.000)";
 
-      const expiryText = sub.planId === "lifetime"
-        ? "<strong style='color:#68d391;'>Sem expiração</strong>"
+      const expiryText = (sub.planId === "lifetime" || sub.planId === "vip")
+        ? "<strong style='color:#68d391;'>Sem expiração (Vitalício)</strong>"
         : (sub.current_period_end ? new Date(sub.current_period_end).toLocaleDateString("pt-BR") : "Indeterminado");
 
       const grantedDate = sub.granted_at ? new Date(sub.granted_at).toLocaleDateString("pt-BR") : "Hoje";
