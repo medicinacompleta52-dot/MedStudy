@@ -147,7 +147,8 @@ function switchTab(tabName) {
     pdf: $("#panel-pdf"),
     folders: $("#panel-folders"),
     quiz: $("#panel-quiz"),
-    "drive-embed": $("#panel-drive-embed")
+    "drive-embed": $("#panel-drive-embed"),
+    "ai-preceptor": $("#panel-ai-preceptor")
   };
 
   Object.entries(panels).forEach(([name, panel]) => {
@@ -158,6 +159,8 @@ function switchTab(tabName) {
     setupDriveEmbed();
   } else if (tabName === "lessons-grid") {
     renderFullLessonsGrid();
+  } else if (tabName === "ai-preceptor") {
+    renderAiPreceptorUI();
   }
 }
 
@@ -175,177 +178,6 @@ function setupDriveEmbed() {
   } catch (e) {}
 }
 
-// ==========================================
-// MONITOR CARDÍACO MULTIPARAMÉTRICO & ECG (CANVAS)
-// ==========================================
-function initMedicalEcg() {
-  const canvas = $("#medical-ecg-canvas");
-  if (!canvas) return;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return;
-
-  let width = 0;
-  let height = 0;
-
-  function resize() {
-    const rect = canvas.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
-    width = rect.width;
-    height = rect.height;
-    if (width === 0 || height === 0) {
-      width = canvas.parentElement ? canvas.parentElement.clientWidth : 800;
-      height = canvas.parentElement ? canvas.parentElement.clientHeight : 450;
-    }
-    canvas.width = Math.floor(width * dpr);
-    canvas.height = Math.floor(height * dpr);
-    ctx.scale(dpr, dpr);
-  }
-
-  window.addEventListener("resize", resize);
-  resize();
-
-  let sweepX = 0;
-  const sweepSpeed = 2.4;
-  let lastY = height / 2;
-  const waveLength = 220;
-
-  function getEcgY(x, baseY, amplitude) {
-    const phase = (x % waveLength) / waveLength;
-    let offset = 0;
-
-    if (phase >= 0.10 && phase < 0.20) {
-      const p = (phase - 0.10) / 0.10;
-      offset = -Math.sin(p * Math.PI) * (amplitude * 0.18);
-    } else if (phase >= 0.30 && phase < 0.33) {
-      const q = (phase - 0.30) / 0.03;
-      offset = Math.sin(q * Math.PI) * (amplitude * 0.15);
-    } else if (phase >= 0.33 && phase < 0.38) {
-      const r = (phase - 0.33) / 0.05;
-      offset = -Math.sin(r * Math.PI) * amplitude;
-    } else if (phase >= 0.38 && phase < 0.42) {
-      const s = (phase - 0.38) / 0.04;
-      offset = Math.sin(s * Math.PI) * (amplitude * 0.35);
-    } else if (phase >= 0.50 && phase < 0.68) {
-      const t = (phase - 0.50) / 0.18;
-      offset = -Math.sin(t * Math.PI) * (amplitude * 0.28);
-    } else {
-      offset = (Math.sin(x * 0.05) + Math.cos(x * 0.03)) * 0.5;
-    }
-
-    return baseY + offset;
-  }
-
-  function drawGrid() {
-    ctx.save();
-    ctx.strokeStyle = "rgba(16, 185, 129, 0.06)";
-    ctx.lineWidth = 0.5;
-
-    const gridSize = 24;
-    for (let x = 0; x < width; x += gridSize) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, height);
-      ctx.stroke();
-    }
-    for (let y = 0; y < height; y += gridSize) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(width, y);
-      ctx.stroke();
-    }
-
-    ctx.strokeStyle = "rgba(16, 185, 129, 0.14)";
-    ctx.lineWidth = 1;
-    for (let x = 0; x < width; x += gridSize * 5) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, height);
-      ctx.stroke();
-    }
-    for (let y = 0; y < height; y += gridSize * 5) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(width, y);
-      ctx.stroke();
-    }
-    ctx.restore();
-  }
-
-  let frameCount = 0;
-  const hrEl = $("#vital-hr");
-  const bpEl = $("#vital-bp");
-  const spo2El = $("#vital-spo2");
-
-  function draw() {
-    if (width === 0 || height === 0) resize();
-
-    frameCount++;
-
-    const clearWidth = 34;
-    ctx.fillStyle = "#06080c";
-    ctx.fillRect(sweepX, 0, clearWidth, height);
-
-    ctx.save();
-    ctx.beginPath();
-    ctx.rect(sweepX, 0, clearWidth, height);
-    ctx.clip();
-    drawGrid();
-    ctx.restore();
-
-    const baseY = height * 0.52;
-    const amplitude = Math.min(height * 0.35, 95);
-    const newY = getEcgY(sweepX, baseY, amplitude);
-
-    ctx.save();
-    ctx.strokeStyle = "#10b981";
-    ctx.lineWidth = 2.2;
-    ctx.shadowColor = "#10b981";
-    ctx.shadowBlur = 8;
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-
-    ctx.beginPath();
-    const prevX = (sweepX - sweepSpeed + width) % width;
-    if (sweepX >= sweepSpeed) {
-      ctx.moveTo(prevX, lastY);
-      ctx.lineTo(sweepX, newY);
-      ctx.stroke();
-    }
-    ctx.restore();
-
-    ctx.save();
-    ctx.fillStyle = "#6ee7b7";
-    ctx.shadowColor = "#34d399";
-    ctx.shadowBlur = 12;
-    ctx.beginPath();
-    ctx.arc(sweepX, newY, 3, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-
-    lastY = newY;
-    sweepX += sweepSpeed;
-    if (sweepX >= width) {
-      sweepX = 0;
-      lastY = baseY;
-    }
-
-    if (frameCount % 120 === 0) {
-      const hr = 74 + Math.floor(Math.sin(frameCount * 0.01) * 3);
-      if (hrEl) hrEl.textContent = hr;
-      if (bpEl) bpEl.textContent = `${120 + Math.floor(Math.sin(frameCount * 0.02) * 5)}/${80 + Math.floor(Math.cos(frameCount * 0.02) * 3)}`;
-      if (spo2El) spo2El.textContent = `${98 + (frameCount % 240 === 0 ? 1 : 0)}%`;
-    }
-
-    requestAnimationFrame(draw);
-  }
-
-  ctx.fillStyle = "#06080c";
-  ctx.fillRect(0, 0, width, height);
-  drawGrid();
-
-  requestAnimationFrame(draw);
-}
-
 function updatePlayButtonsState(playing) {
   const btnMedical = $("#btn-play-medical-big");
   const btnBig = $("#btn-play-big");
@@ -356,6 +188,21 @@ function updatePlayButtonsState(playing) {
   if (btnBig) btnBig.textContent = playing ? "❚❚" : "▶";
   if (ctrlP) ctrlP.textContent = playing ? "❚❚" : "▶";
   if (trigger) trigger.textContent = playing ? "❚❚ Pausar Aula" : "▶ Assistir Aula";
+
+  // Esconde 100% o card central (#video-slide-box) e o overlay quando o vídeo estiver reproduzindo
+  const slideBox = $("#video-slide-box");
+  const overlay = $("#video-overlay");
+  const screen = $("#video-screen");
+
+  if (playing) {
+    if (slideBox) slideBox.style.display = "none";
+    if (overlay) overlay.style.display = "none";
+    if (screen) screen.classList.add("is-playing");
+  } else {
+    if (slideBox) slideBox.style.display = "block";
+    if (overlay) overlay.style.display = "flex";
+    if (screen) screen.classList.remove("is-playing");
+  }
 }
 
 const LECTURE_PHASES = [
@@ -465,8 +312,6 @@ function updateLectureProgressUI() {
 
 // Controles do Player de Vídeo e Streaming
 function setupVideoPlayer() {
-  initMedicalEcg();
-
   const btnPlayMedicalBig = $("#btn-play-medical-big");
   const btnPlayBig = $("#btn-play-big");
   const ctrlPlay = $("#ctrl-play-pause");
@@ -479,16 +324,14 @@ function setupVideoPlayer() {
   const markDoneBtn = $("#ctrl-mark-done");
   const nativeVideo = $("#native-video-player");
   const driveFrame = $("#drive-video-frame");
-  const ecgCanvas = $("#medical-ecg-canvas");
   const btnSrcNative = $("#btn-src-native");
-  const btnSrcClinical = $("#btn-src-clinical");
   const btnSrcDrive = $("#btn-src-drive");
   const btnOpenDriveDirect = $("#btn-open-drive-direct");
   const btnDownloadPdfStage = $("#btn-download-pdf-stage");
 
-  // Alternância de fonte de streaming (Videoaula HD / Monitor Clínico / Google Drive)
+  // Alternância de fonte de streaming (Google Drive Oficial vs Videoaula HD Web)
   function setStreamMode(mode) {
-    [btnSrcNative, btnSrcClinical, btnSrcDrive].forEach((b) => {
+    [btnSrcNative, btnSrcDrive].forEach((b) => {
       if (b) {
         b.classList.remove("active");
         b.style.background = "rgba(15,23,42,0.85)";
@@ -496,35 +339,19 @@ function setupVideoPlayer() {
       }
     });
 
-    if (mode === "native") {
-      if (btnSrcNative) {
-        btnSrcNative.classList.add("active");
-        btnSrcNative.style.background = "#2563eb";
-        btnSrcNative.style.color = "#fff";
-      }
-      if (nativeVideo) nativeVideo.style.display = "block";
-      if (driveFrame) driveFrame.style.display = "none";
-      if (ecgCanvas) ecgCanvas.style.display = "none";
-    } else if (mode === "clinical") {
-      if (btnSrcClinical) {
-        btnSrcClinical.classList.add("active");
-        btnSrcClinical.style.background = "#2563eb";
-        btnSrcClinical.style.color = "#fff";
-      }
-      if (nativeVideo) nativeVideo.style.display = "none";
-      if (driveFrame) driveFrame.style.display = "none";
-      if (ecgCanvas) ecgCanvas.style.display = "block";
-    } else if (mode === "drive") {
+    if (mode === "drive") {
       if (btnSrcDrive) {
         btnSrcDrive.classList.add("active");
         btnSrcDrive.style.background = "#2563eb";
         btnSrcDrive.style.color = "#fff";
       }
-      if (nativeVideo) nativeVideo.style.display = "none";
-      if (ecgCanvas) ecgCanvas.style.display = "none";
+      if (nativeVideo) {
+        nativeVideo.style.display = "none";
+        try { nativeVideo.pause(); } catch (e) {}
+      }
       if (driveFrame) {
         driveFrame.style.display = "block";
-        const driveUrl = currentCourse?.driveUrl || "https://drive.google.com/drive/my-drive";
+        const driveUrl = currentCourse?.driveUrl || "https://drive.google.com/drive/u/0/my-drive";
         let embedUrl = driveUrl;
         const folderMatch = driveUrl.match(/folders\/([\w\d_-]+)/i);
         const fileMatch = driveUrl.match(/file\/d\/([\w\d_-]+)/i);
@@ -535,17 +362,25 @@ function setupVideoPlayer() {
         }
         driveFrame.src = embedUrl;
       }
+    } else if (mode === "native") {
+      if (btnSrcNative) {
+        btnSrcNative.classList.add("active");
+        btnSrcNative.style.background = "#2563eb";
+        btnSrcNative.style.color = "#fff";
+      }
+      if (nativeVideo) nativeVideo.style.display = "block";
+      if (driveFrame) driveFrame.style.display = "none";
     }
   }
 
   btnSrcNative?.addEventListener("click", () => setStreamMode("native"));
-  btnSrcClinical?.addEventListener("click", () => setStreamMode("clinical"));
   btnSrcDrive?.addEventListener("click", () => setStreamMode("drive"));
 
   btnOpenDriveDirect?.addEventListener("click", () => {
-    const driveUrl = currentCourse?.driveUrl || "https://drive.google.com/drive/my-drive";
-    if (btnSrcDrive) btnSrcDrive.click();
-    window.open(driveUrl, "_blank");
+    const driveUrl = currentCourse?.driveUrl || "https://drive.google.com/drive/u/0/my-drive";
+    const driveAccountUrl = `${driveUrl}${driveUrl.includes("?") ? "&" : "?"}authuser=medicinerlivia@gmail.com`;
+    setStreamMode("drive");
+    window.open(driveAccountUrl, "_blank");
   });
 
   btnDownloadPdfStage?.addEventListener("click", () => {
@@ -569,9 +404,26 @@ function setupVideoPlayer() {
       }
     }
 
+    const isDriveActive = btnSrcDrive?.classList.contains("active");
+
+    // Modo Google Drive Oficial
+    if (isDriveActive) {
+      isPlaying = !isPlaying;
+      updatePlayButtonsState(isPlaying);
+      if (driveFrame) driveFrame.style.display = "block";
+      if (nativeVideo) {
+        nativeVideo.style.display = "none";
+        try { nativeVideo.pause(); } catch (e) {}
+      }
+      updateLectureProgressUI();
+      return;
+    }
+
+    // Modo Videoaula Web (HTML5)
     if (nativeVideo) {
       if (nativeVideo.paused) {
         setStreamMode("native");
+        updatePlayButtonsState(true);
         const playPromise = nativeVideo.play();
         if (playPromise !== undefined) {
           playPromise.catch((err) => {
@@ -588,16 +440,9 @@ function setupVideoPlayer() {
       return;
     }
 
-    // Modo Alternativo
+    // Fallback de reprodução
     isPlaying = !isPlaying;
     updatePlayButtonsState(isPlaying);
-
-    const screen = $("#video-screen");
-    if (screen) {
-      if (isPlaying) screen.classList.add("is-playing");
-      else screen.classList.remove("is-playing");
-    }
-
     updateLectureProgressUI();
   }
 
@@ -1572,7 +1417,40 @@ function selectLesson(lesson, autoPlay = false) {
     switchTab("video");
     const videoBox = $("#video-container") || document.body;
     videoBox.scrollIntoView({ behavior: "smooth", block: "start" });
-    if (nativeVideo) {
+
+    // Oculta imediatamente o quadrado azul (#video-slide-box)
+    const slideBox = $("#video-slide-box");
+    const overlay = $("#video-overlay");
+    const screen = $("#video-screen");
+    if (slideBox) slideBox.style.display = "none";
+    if (overlay) overlay.style.display = "none";
+    if (screen) screen.classList.add("is-playing");
+    isPlaying = true;
+    updatePlayButtonsState(true);
+
+    const btnSrcDrive = $("#btn-src-drive");
+    const isDriveActive = btnSrcDrive?.classList.contains("active");
+
+    if (isDriveActive) {
+      const driveFrame = $("#drive-video-frame");
+      if (driveFrame) {
+        driveFrame.style.display = "block";
+        const driveUrl = currentCourse?.driveUrl || "https://drive.google.com/drive/u/0/my-drive";
+        let embedUrl = driveUrl;
+        const folderMatch = driveUrl.match(/folders\/([\w\d_-]+)/i);
+        const fileMatch = driveUrl.match(/file\/d\/([\w\d_-]+)/i);
+        if (fileMatch) {
+          embedUrl = `https://drive.google.com/file/d/${fileMatch[1]}/preview`;
+        } else if (folderMatch) {
+          embedUrl = `https://drive.google.com/embeddedfolderview?id=${folderMatch[1]}#list`;
+        }
+        driveFrame.src = embedUrl;
+      }
+      if (nativeVideo) {
+        nativeVideo.style.display = "none";
+        try { nativeVideo.pause(); } catch (e) {}
+      }
+    } else if (nativeVideo) {
       nativeVideo.currentTime = 0;
       const playPromise = nativeVideo.play();
       if (playPromise !== undefined) {
@@ -2252,12 +2130,203 @@ function updateUserBadge() {
   }
 }
 
+// ==========================================
+// PRECEPTORA IA MÉDICA ESPECIALIZADA (VIP)
+// ==========================================
+function renderAiPreceptorUI() {
+  const lockedView = $("#ai-preceptor-locked");
+  const activeView = $("#ai-preceptor-active");
+  const badgeStatus = $("#ai-vip-badge-status");
+
+  const hasVipAccess = Boolean(isVip || isAdmin);
+
+  if (!hasVipAccess) {
+    if (lockedView) lockedView.hidden = false;
+    if (activeView) activeView.style.display = "none";
+    if (badgeStatus) {
+      badgeStatus.textContent = "🔒 Acesso Restrito (Exclusivo Plano VIP)";
+      badgeStatus.style.color = "#fca5a5";
+      badgeStatus.style.borderColor = "#ef4444";
+    }
+    return;
+  }
+
+  if (lockedView) lockedView.hidden = true;
+  if (activeView) activeView.style.display = "block";
+  if (badgeStatus) {
+    badgeStatus.textContent = isAdmin ? "👑 Administrador Master (Acesso Total)" : "👑 Aluno VIP (Preceptoria Liberada)";
+    badgeStatus.style.color = "#fbbf24";
+    badgeStatus.style.borderColor = "#f59e0b";
+  }
+
+  const messagesContainer = $("#ai-chat-messages");
+  if (messagesContainer && messagesContainer.children.length === 0) {
+    appendAiMessage("assistant", `### 🩺 Olá, colega! Sou a Dra. Sofia MedStudy
+Sou sua **Preceptora de Clínica Médica, Terapia Intensiva e Provas de Residência Médica**.
+Estou conectada 24 horas para apoiar sua prática clínica e seus estudos com:
+* **Condutas em sala de emergência e UTI** baseadas nos consensos mais atuais (SBC, AHA, GINA, GOLD, Sepsis-3 2026);
+* **Prescrições armadas completas** com doses de ataque, diluições e ajustes para função renal e peso;
+* **Critérios diagnósticos e escores de risco** (TIMI, GRACE, CURB-65, KDIGO, SOFA);
+* **Resolução comentada de questões de Residência** padrão ENARE, USP e SUS-SP.
+
+*Selecione um dos temas rápidos acima ou digite sua pergunta clínica abaixo!*`);
+  }
+}
+
+function formatMarkdownToHtml(md) {
+  if (!md) return "";
+  let html = md
+    .replace(/^### (.*$)/gim, '<h3 style="color:#60a5fa; margin:0 0 10px; font-size:16px;">$1</h3>')
+    .replace(/^#### (.*$)/gim, '<h4 style="color:#fbbf24; margin:14px 0 6px; font-size:13.5px;">$1</h4>')
+    .replace(/\*\*(.*?)\*\*/gim, '<strong style="color:#fff;">$1</strong>')
+    .replace(/\*(.*?)\*/gim, '<em>$1</em>')
+    .replace(/^\* (.*$)/gim, '<li style="margin-bottom:4px; font-size:13.5px; color:#cbd5e1;">$1</li>')
+    .replace(/^- (.*$)/gim, '<li style="margin-bottom:4px; font-size:13.5px; color:#cbd5e1;">$1</li>');
+
+  html = html.replace(/(<li.*<\/li>)/s, '<ul style="padding-left:20px; margin:8px 0;">$1</ul>');
+  html = html.replace(/\n\n/g, '<div style="height:10px;"></div>');
+  html = html.replace(/\n/g, '<br>');
+  return html;
+}
+
+function appendAiMessage(role, text) {
+  const container = $("#ai-chat-messages");
+  if (!container) return;
+
+  const msgDiv = document.createElement("div");
+  msgDiv.className = `ai-message ${role}`;
+
+  const headerDiv = document.createElement("div");
+  headerDiv.style.cssText = "display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:11px; font-weight:700;";
+
+  if (role === "user") {
+    headerDiv.innerHTML = `<span style="color:#93c5fd;">👨‍⚕️ Você (Aluno VIP)</span> <span style="color:#64748b;">${new Date().toLocaleTimeString().slice(0,5)}</span>`;
+    const bodyDiv = document.createElement("div");
+    bodyDiv.textContent = text;
+    msgDiv.appendChild(headerDiv);
+    msgDiv.appendChild(bodyDiv);
+  } else {
+    headerDiv.innerHTML = `
+      <span style="color:#fbbf24;">🤖 Dra. Sofia MedStudy · Preceptora</span>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <button type="button" class="btn-copy-ai-msg" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:#94a3b8; border-radius:4px; padding:2px 6px; font-size:10px; cursor:pointer;" title="Copiar conduta">📋 Copiar</button>
+        <button type="button" class="btn-speak-ai-msg" style="background:rgba(37,99,235,0.2); border:1px solid #2563eb; color:#93c5fd; border-radius:4px; padding:2px 6px; font-size:10px; cursor:pointer;" title="Ouvir áudio">🔊 Ouvir</button>
+      </div>
+    `;
+    const bodyDiv = document.createElement("div");
+    bodyDiv.innerHTML = formatMarkdownToHtml(text);
+
+    msgDiv.appendChild(headerDiv);
+    msgDiv.appendChild(bodyDiv);
+
+    msgDiv.querySelector(".btn-copy-ai-msg")?.addEventListener("click", () => {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text);
+        alert("Conduta clínica copiada para a área de transferência!");
+      }
+    });
+
+    msgDiv.querySelector(".btn-speak-ai-msg")?.addEventListener("click", () => {
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+        const plainText = text.replace(/[#*`_]/g, "");
+        const utterance = new SpeechSynthesisUtterance(plainText);
+        utterance.lang = "pt-BR";
+        utterance.rate = 1.05;
+        window.speechSynthesis.speak(utterance);
+      }
+    });
+  }
+
+  container.appendChild(msgDiv);
+  container.scrollTop = container.scrollHeight;
+}
+
+function setupAiPreceptor() {
+  // Chips de perguntas rápidas
+  $$(".btn-ai-chip").forEach((chip) => {
+    chip.addEventListener("click", () => {
+      const q = chip.dataset.query;
+      const input = $("#ai-chat-input");
+      if (input) {
+        input.value = q;
+        $("#ai-chat-form")?.dispatchEvent(new Event("submit"));
+      }
+    });
+  });
+
+  // Limpar chat
+  $("#btn-clear-ai-chat")?.addEventListener("click", () => {
+    const container = $("#ai-chat-messages");
+    if (container) {
+      container.replaceChildren();
+      renderAiPreceptorUI();
+    }
+  });
+
+  // Envio de pergunta
+  const form = $("#ai-chat-form");
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const input = $("#ai-chat-input");
+    const question = (input?.value || "").trim();
+    if (!question) return;
+
+    if (input) input.value = "";
+    appendAiMessage("user", question);
+
+    // Indicador de digitação
+    const container = $("#ai-chat-messages");
+    const typingIndicator = document.createElement("div");
+    typingIndicator.className = "ai-typing-indicator";
+    typingIndicator.id = "ai-typing-indicator";
+    typingIndicator.innerHTML = `
+      <span style="font-size:12px; color:#94a3b8; margin-right:4px;">Dra. Sofia está estruturando a conduta...</span>
+      <span class="ai-typing-dot"></span>
+      <span class="ai-typing-dot"></span>
+      <span class="ai-typing-dot"></span>
+    `;
+    container?.appendChild(typingIndicator);
+    if (container) container.scrollTop = container.scrollHeight;
+
+    const btnSubmit = $("#btn-submit-ai-query");
+    if (btnSubmit) btnSubmit.disabled = true;
+
+    try {
+      const res = await api("/api/ai/clinical-query", {
+        method: "POST",
+        body: JSON.stringify({
+          question,
+          context: {
+            courseId: currentCourse?.id,
+            lessonTitle: currentLesson?.title
+          }
+        })
+      });
+
+      document.getElementById("ai-typing-indicator")?.remove();
+      appendAiMessage("assistant", res.answer || "Resposta processada.");
+    } catch (err) {
+      document.getElementById("ai-typing-indicator")?.remove();
+      if (err.status === 403 || err.message?.includes("VIP")) {
+        openVipModal();
+        appendAiMessage("assistant", "⚠️ **Acesso Restrito:** A Preceptora IA Médica é um recurso exclusivo para alunos do **Plano VIP (R$ 1.000)**. Faça o upgrade para ter acesso ilimitado a condutas de plantão e provas de residência.");
+      } else {
+        appendAiMessage("assistant", `❌ Erro ao consultar a Preceptora: ${err.message || "Tente novamente em instantes."}`);
+      }
+    } finally {
+      if (btnSubmit) btnSubmit.disabled = false;
+    }
+  });
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   setupTabs();
   setupVideoPlayer();
   setupPdfViewer();
   setupNotes();
   setupTrialRegister();
+  setupAiPreceptor();
 
   // Busca na sidebar tradicional
   $("#lesson-search")?.addEventListener("input", () => {
