@@ -92,35 +92,70 @@
       <div class="tab-panel active" id="panel-video">
         <div class="video-container" id="video-container">
           <div class="video-screen" id="video-screen" style="position:relative; background:#000; overflow:hidden;">
-            <!-- Elemento de Streaming de Vídeo HTML5 com Controles Nativos e Responsivos -->
-            <video id="native-video-player" playsinline controls preload="auto" controlslist="nodownload" oncontextmenu="return false;" style="width:100%; height:100%; object-fit:contain; background:#000; position:absolute; inset:0; z-index:10; pointer-events:auto; display:block;"></video>
-            
-            <!-- Notificação para ativar o som se autoplay iniciou mutado -->
+            <!-- Canvas de Monitorização Médica e ECG em Tempo Real -->
+            <canvas id="medical-ecg-canvas" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:1; background:#06080c; display:block;"></canvas>
+
+            <!-- Elemento de Vídeo HTML5 (quando houver arquivo direto de streaming) -->
+            <video id="native-video-player" playsinline preload="auto" controlslist="nodownload" oncontextmenu="return false;" style="width:100%; height:100%; object-fit:contain; background:#000; position:absolute; inset:0; z-index:2; display:none;"></video>
+
+            <!-- Iframe para Stream Oficial e Imediato do Google Drive -->
+            <iframe id="drive-video-frame" style="width:100%; height:100%; border:none; display:none; position:absolute; inset:0; z-index:8; background:#000;" allow="autoplay; fullscreen"></iframe>
+
+            <!-- Notificação para ativar o som -->
             <button type="button" id="video-unmute-tip" style="display:none; position:absolute; top:18px; right:18px; z-index:25; background:#2563eb; color:#fff; border:none; font-size:12px; font-weight:800; padding:8px 16px; border-radius:30px; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,0.6);">🔊 Clique para Ativar Áudio</button>
 
-            <!-- Iframe para Stream Direto do Google Drive -->
-            <iframe id="drive-video-frame" style="width:100%; height:100%; border:none; display:none; position:absolute; inset:0; z-index:3; background:#000;" allow="autoplay; fullscreen"></iframe>
-
-            <!-- Seletor de Fonte de Streaming (HD Nativo vs Drive Embed) -->
-            <div class="stream-source-pills" style="position:absolute; top:12px; left:12px; z-index:20; display:flex; gap:6px;">
-              <button type="button" class="btn-stream-source active" id="btn-src-native" style="background:#2563eb; color:#fff; border:1px solid #3b82f6; border-radius:6px; font-size:11px; font-weight:700; padding:4px 10px; cursor:pointer;">📺 Streaming HD</button>
-              <button type="button" class="btn-stream-source" id="btn-src-drive" style="background:rgba(15,23,42,0.85); color:#94a3b8; border:1px solid rgba(255,255,255,0.15); border-radius:6px; font-size:11px; font-weight:600; padding:4px 10px; cursor:pointer;">☁️ Stream Drive</button>
+            <!-- Seletor de Modo de Exibição (Palco Médico HD vs Google Drive Integrado) -->
+            <div class="stream-source-pills" style="position:absolute; top:14px; left:16px; z-index:20; display:flex; gap:8px;">
+              <button type="button" class="btn-stream-source active" id="btn-src-native" style="background:#2563eb; color:#fff; border:1px solid #3b82f6; border-radius:6px; font-size:11px; font-weight:700; padding:6px 12px; cursor:pointer;">📺 Palco Médico HD</button>
+              <button type="button" class="btn-stream-source" id="btn-src-drive" style="background:rgba(15,23,42,0.9); color:#93c5fd; border:1px solid rgba(59,130,246,0.4); border-radius:6px; font-size:11px; font-weight:700; padding:6px 12px; cursor:pointer;">☁️ Stream Google Drive</button>
             </div>
 
-            <!-- Canvas / Visualização simulada da aula médica -->
-            <div class="video-overlay" id="video-overlay" style="z-index:3; pointer-events:none;">
-              <div class="video-badge-live" style="pointer-events:auto;">HD 1080p · DRM Ativo</div>
-              <div class="video-watermark">MEDSTUDY · STREAMING PROTEGIDO</div>
-              
-              <div class="video-center-controls" style="pointer-events:auto;">
-                <button class="btn-play-pause-big" id="btn-play-big" aria-label="Reproduzir">▶</button>
+            <!-- Monitor Cardíaco Multiparamétrico (ECG / PA / SatO2) no Canto Superior Direito -->
+            <div class="vital-signs-monitor" style="position:absolute; top:14px; right:16px; z-index:20; background:rgba(6,8,12,0.85); border:1px solid rgba(16,185,129,0.4); border-radius:8px; padding:6px 12px; display:flex; gap:14px; align-items:center; font-family:monospace;">
+              <div>
+                <span style="font-size:10px; color:#94a3b8; display:block;">FC (BPM)</span>
+                <strong style="font-size:16px; color:#10b981;" id="vital-hr">75</strong>
               </div>
+              <div style="border-left:1px solid rgba(255,255,255,0.1); padding-left:10px;">
+                <span style="font-size:10px; color:#94a3b8; display:block;">PA (mmHg)</span>
+                <strong style="font-size:14px; color:#60a5fa;" id="vital-bp">130/80</strong>
+              </div>
+              <div style="border-left:1px solid rgba(255,255,255,0.1); padding-left:10px;">
+                <span style="font-size:10px; color:#94a3b8; display:block;">SpO2</span>
+                <strong style="font-size:14px; color:#34d399;" id="vital-spo2">98%</strong>
+              </div>
+            </div>
 
-              <div class="video-slide-preview" id="video-slide-box" style="pointer-events:auto;">
-                <div class="slide-tag" id="slide-tag">SLIDE DA AULA</div>
-                <h3 id="video-slide-title">Carregando aula...</h3>
-                <p id="video-slide-subtitle">Aguarde o carregamento do conteúdo programático.</p>
-                <div class="slide-keypoints" id="slide-keypoints"></div>
+            <!-- Palco Médico com Apresentação da Aula & Controles -->
+            <div class="video-overlay" id="video-overlay" style="z-index:5;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div class="video-badge-live">HD 1080p · AULA MÉDICA OFICIAL</div>
+              </div>
+              
+              <!-- Card Principal da Aula com Ações Imediatas -->
+              <div class="video-slide-preview" id="video-slide-box" style="margin: auto; max-width: 680px; width: 92%; background: rgba(11,17,32,0.92); border: 1px solid rgba(59,130,246,0.3); border-radius: 12px; padding: 22px 26px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                  <span class="slide-tag" id="slide-tag" style="color:#60a5fa; font-size:11px; font-weight:800; letter-spacing:1px;">DIRETRIZES CLÍNICAS &amp; RESIDÊNCIA MÉDICA</span>
+                  <span style="font-size:12px; color:#94a3b8;" id="slide-course-badge">MedStudy Oficial</span>
+                </div>
+                <h3 id="video-slide-title" style="font-size:20px; font-weight:800; color:#fff; margin:0 0 8px; line-height:1.3;">Carregando aula...</h3>
+                <p id="video-slide-subtitle" style="font-size:13px; color:#cbd5e1; margin:0 0 14px; line-height:1.5;">Conteúdo estruturado com fisiopatologia, critérios diagnósticos e tabela terapêutica.</p>
+                
+                <div class="slide-keypoints" id="slide-keypoints" style="margin-bottom:18px;">
+                  <!-- Pontos-chave médicos dinâmicos -->
+                </div>
+
+                <div style="display:flex; gap:10px; flex-wrap:wrap; border-top:1px solid rgba(255,255,255,0.08); padding-top:14px;">
+                  <button type="button" id="btn-play-medical-big" style="flex:1; min-width:180px; background:#2563eb; color:#fff; border:none; border-radius:8px; padding:12px 18px; font-size:13px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+                    ▶ Iniciar Reprodução da Aula
+                  </button>
+                  <button type="button" id="btn-open-drive-direct" style="background:#0f172a; color:#93c5fd; border:1px solid #1e3a8a; border-radius:8px; padding:12px 18px; font-size:13px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px;">
+                    ☁️ Assistir no Google Drive Oficial
+                  </button>
+                  <button type="button" id="btn-download-pdf-stage" style="background:rgba(37,99,235,0.12); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); border-radius:8px; padding:12px 14px; font-size:13px; font-weight:700; cursor:pointer;">
+                    📥 Baixar Apostila (PDF)
+                  </button>
+                </div>
               </div>
             </div>
 

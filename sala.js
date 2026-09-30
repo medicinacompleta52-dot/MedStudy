@@ -174,8 +174,194 @@ function setupDriveEmbed() {
   } catch (e) {}
 }
 
+// ==========================================
+// MONITOR CARDÍACO MULTIPARAMÉTRICO & ECG (CANVAS)
+// ==========================================
+function initMedicalEcg() {
+  const canvas = $("#medical-ecg-canvas");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  let width = 0;
+  let height = 0;
+
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    width = rect.width;
+    height = rect.height;
+    if (width === 0 || height === 0) {
+      width = canvas.parentElement ? canvas.parentElement.clientWidth : 800;
+      height = canvas.parentElement ? canvas.parentElement.clientHeight : 450;
+    }
+    canvas.width = Math.floor(width * dpr);
+    canvas.height = Math.floor(height * dpr);
+    ctx.scale(dpr, dpr);
+  }
+
+  window.addEventListener("resize", resize);
+  resize();
+
+  let sweepX = 0;
+  const sweepSpeed = 2.4;
+  let lastY = height / 2;
+  const waveLength = 220;
+
+  function getEcgY(x, baseY, amplitude) {
+    const phase = (x % waveLength) / waveLength;
+    let offset = 0;
+
+    if (phase >= 0.10 && phase < 0.20) {
+      const p = (phase - 0.10) / 0.10;
+      offset = -Math.sin(p * Math.PI) * (amplitude * 0.18);
+    } else if (phase >= 0.30 && phase < 0.33) {
+      const q = (phase - 0.30) / 0.03;
+      offset = Math.sin(q * Math.PI) * (amplitude * 0.15);
+    } else if (phase >= 0.33 && phase < 0.38) {
+      const r = (phase - 0.33) / 0.05;
+      offset = -Math.sin(r * Math.PI) * amplitude;
+    } else if (phase >= 0.38 && phase < 0.42) {
+      const s = (phase - 0.38) / 0.04;
+      offset = Math.sin(s * Math.PI) * (amplitude * 0.35);
+    } else if (phase >= 0.50 && phase < 0.68) {
+      const t = (phase - 0.50) / 0.18;
+      offset = -Math.sin(t * Math.PI) * (amplitude * 0.28);
+    } else {
+      offset = (Math.sin(x * 0.05) + Math.cos(x * 0.03)) * 0.5;
+    }
+
+    return baseY + offset;
+  }
+
+  function drawGrid() {
+    ctx.save();
+    ctx.strokeStyle = "rgba(16, 185, 129, 0.06)";
+    ctx.lineWidth = 0.5;
+
+    const gridSize = 24;
+    for (let x = 0; x < width; x += gridSize) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, height);
+      ctx.stroke();
+    }
+    for (let y = 0; y < height; y += gridSize) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(width, y);
+      ctx.stroke();
+    }
+
+    ctx.strokeStyle = "rgba(16, 185, 129, 0.14)";
+    ctx.lineWidth = 1;
+    for (let x = 0; x < width; x += gridSize * 5) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, height);
+      ctx.stroke();
+    }
+    for (let y = 0; y < height; y += gridSize * 5) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(width, y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  let frameCount = 0;
+  const hrEl = $("#vital-hr");
+  const bpEl = $("#vital-bp");
+  const spo2El = $("#vital-spo2");
+
+  function draw() {
+    if (width === 0 || height === 0) resize();
+
+    frameCount++;
+
+    const clearWidth = 34;
+    ctx.fillStyle = "#06080c";
+    ctx.fillRect(sweepX, 0, clearWidth, height);
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(sweepX, 0, clearWidth, height);
+    ctx.clip();
+    drawGrid();
+    ctx.restore();
+
+    const baseY = height * 0.52;
+    const amplitude = Math.min(height * 0.35, 95);
+    const newY = getEcgY(sweepX, baseY, amplitude);
+
+    ctx.save();
+    ctx.strokeStyle = "#10b981";
+    ctx.lineWidth = 2.2;
+    ctx.shadowColor = "#10b981";
+    ctx.shadowBlur = 8;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    ctx.beginPath();
+    const prevX = (sweepX - sweepSpeed + width) % width;
+    if (sweepX >= sweepSpeed) {
+      ctx.moveTo(prevX, lastY);
+      ctx.lineTo(sweepX, newY);
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    ctx.save();
+    ctx.fillStyle = "#6ee7b7";
+    ctx.shadowColor = "#34d399";
+    ctx.shadowBlur = 12;
+    ctx.beginPath();
+    ctx.arc(sweepX, newY, 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    lastY = newY;
+    sweepX += sweepSpeed;
+    if (sweepX >= width) {
+      sweepX = 0;
+      lastY = baseY;
+    }
+
+    if (frameCount % 120 === 0) {
+      const hr = 74 + Math.floor(Math.sin(frameCount * 0.01) * 3);
+      if (hrEl) hrEl.textContent = hr;
+      if (bpEl) bpEl.textContent = `${120 + Math.floor(Math.sin(frameCount * 0.02) * 5)}/${80 + Math.floor(Math.cos(frameCount * 0.02) * 3)}`;
+      if (spo2El) spo2El.textContent = `${98 + (frameCount % 240 === 0 ? 1 : 0)}%`;
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  ctx.fillStyle = "#06080c";
+  ctx.fillRect(0, 0, width, height);
+  drawGrid();
+
+  requestAnimationFrame(draw);
+}
+
+function updatePlayButtonsState(playing) {
+  const btnMedical = $("#btn-play-medical-big");
+  const btnBig = $("#btn-play-big");
+  const ctrlP = $("#ctrl-play-pause");
+  const trigger = $("#btn-trigger-play");
+
+  if (btnMedical) btnMedical.textContent = playing ? "❚❚ Pausar Aula" : "▶ Iniciar Reprodução da Aula";
+  if (btnBig) btnBig.textContent = playing ? "❚❚" : "▶";
+  if (ctrlP) ctrlP.textContent = playing ? "❚❚" : "▶";
+  if (trigger) trigger.textContent = playing ? "❚❚ Pausar Aula" : "▶ Assistir Aula";
+}
+
 // Controles do Player de Vídeo e Streaming
 function setupVideoPlayer() {
+  initMedicalEcg();
+
+  const btnPlayMedicalBig = $("#btn-play-medical-big");
   const btnPlayBig = $("#btn-play-big");
   const ctrlPlay = $("#ctrl-play-pause");
   const ctrlRewind = $("#ctrl-rewind");
@@ -189,32 +375,39 @@ function setupVideoPlayer() {
   const driveFrame = $("#drive-video-frame");
   const btnSrcNative = $("#btn-src-native");
   const btnSrcDrive = $("#btn-src-drive");
+  const btnOpenDriveDirect = $("#btn-open-drive-direct");
+  const btnDownloadPdfStage = $("#btn-download-pdf-stage");
 
-  // Alternância de fonte de streaming (HD Nativo vs Drive Embed)
+  // Alternância de fonte de streaming (HD Nativo / ECG vs Drive Embed)
   btnSrcNative?.addEventListener("click", () => {
     btnSrcNative.classList.add("active");
     btnSrcNative.style.background = "#2563eb";
     btnSrcNative.style.color = "#fff";
-    btnSrcDrive.classList.remove("active");
-    btnSrcDrive.style.background = "rgba(15,23,42,0.85)";
-    btnSrcDrive.style.color = "#94a3b8";
+    btnSrcDrive?.classList.remove("active");
+    if (btnSrcDrive) {
+      btnSrcDrive.style.background = "rgba(15,23,42,0.85)";
+      btnSrcDrive.style.color = "#94a3b8";
+    }
 
     if (driveFrame) driveFrame.style.display = "none";
-    if (nativeVideo) nativeVideo.style.display = "block";
+    const ecgCanvas = $("#medical-ecg-canvas");
+    if (ecgCanvas) ecgCanvas.style.display = "block";
+    const overlay = $("#video-overlay");
+    if (overlay) overlay.style.display = "flex";
   });
 
   btnSrcDrive?.addEventListener("click", () => {
     btnSrcDrive.classList.add("active");
     btnSrcDrive.style.background = "#2563eb";
     btnSrcDrive.style.color = "#fff";
-    btnSrcNative.classList.remove("active");
-    btnSrcNative.style.background = "rgba(15,23,42,0.85)";
-    btnSrcNative.style.color = "#94a3b8";
-
-    if (nativeVideo) {
-      nativeVideo.pause();
-      nativeVideo.style.display = "none";
+    btnSrcNative?.classList.remove("active");
+    if (btnSrcNative) {
+      btnSrcNative.style.background = "rgba(15,23,42,0.85)";
+      btnSrcNative.style.color = "#94a3b8";
     }
+
+    const ecgCanvas = $("#medical-ecg-canvas");
+    if (ecgCanvas) ecgCanvas.style.display = "none";
     if (driveFrame) {
       driveFrame.style.display = "block";
       const driveUrl = currentCourse?.driveUrl || "https://drive.google.com/drive/my-drive";
@@ -230,11 +423,20 @@ function setupVideoPlayer() {
     }
   });
 
+  btnOpenDriveDirect?.addEventListener("click", () => {
+    const driveUrl = currentCourse?.driveUrl || "https://drive.google.com/drive/my-drive";
+    if (btnSrcDrive) btnSrcDrive.click();
+    window.open(driveUrl, "_blank");
+  });
+
+  btnDownloadPdfStage?.addEventListener("click", () => {
+    downloadCourseApostila(currentCourse, currentLesson);
+  });
+
   function togglePlay() {
     if (!isUserActive && !isAdmin) {
       let trialUser = getTrialUser();
       if (!trialUser) {
-        // Inicializa sessão de teste grátis automática para o visitante poder testar na hora sem travas
         trialUser = { name: "Aluno Visitante", email: "visitante@medstudy.com", whatsapp: "0000000000" };
         try {
           localStorage.setItem(TRIAL_USER_KEY, JSON.stringify(trialUser));
@@ -248,51 +450,50 @@ function setupVideoPlayer() {
       }
     }
 
-    if (nativeVideo && nativeVideo.src) {
+    if (nativeVideo && nativeVideo.src && !nativeVideo.src.includes("/api/stream/sample.mp4") && nativeVideo.readyState >= 2) {
       if (nativeVideo.paused) {
-        const p = nativeVideo.play();
-        if (p !== undefined) {
-          p.catch(() => {
-            nativeVideo.muted = true;
-            nativeVideo.play().catch(() => {});
-            const unmuteTip = $("#video-unmute-tip");
-            if (unmuteTip) unmuteTip.style.display = "block";
-          });
-        }
+        nativeVideo.play().catch(() => {});
       } else {
         nativeVideo.pause();
       }
-    } else {
-      isPlaying = !isPlaying;
-      btnPlayBig.textContent = isPlaying ? "❚❚" : "▶";
-      ctrlPlay.textContent = isPlaying ? "❚❚" : "▶";
+      return;
+    }
 
-      if (isPlaying) {
-        if (playbackInterval) clearInterval(playbackInterval);
-        playbackInterval = setInterval(() => {
-          playbackSeconds += currentSpeed;
-          if (playbackSeconds >= 1680) {
-            playbackSeconds = 1680;
-            togglePlay();
-            if (currentLesson) {
-              const completed = getCompletedLessons(currentCourse.id);
-              if (!completed.includes(currentLesson.id)) {
-                toggleLessonCompleted(currentLesson.id);
-              }
+    // Modo Palco Médico Oficial (ECG em tempo real + Apresentação Clínica Dinâmica)
+    isPlaying = !isPlaying;
+    updatePlayButtonsState(isPlaying);
+
+    const screen = $("#video-screen");
+    if (screen) {
+      if (isPlaying) screen.classList.add("is-playing");
+      else screen.classList.remove("is-playing");
+    }
+
+    if (isPlaying) {
+      if (playbackInterval) clearInterval(playbackInterval);
+      playbackInterval = setInterval(() => {
+        playbackSeconds += currentSpeed;
+        if (playbackSeconds >= 1680) {
+          playbackSeconds = 1680;
+          togglePlay();
+          if (currentLesson && currentCourse) {
+            const completed = getCompletedLessons(currentCourse.id);
+            if (!completed.includes(currentLesson.id)) {
+              toggleLessonCompleted(currentLesson.id);
             }
           }
-          updateTimeUI(1680);
-        }, 1000);
-      } else {
-        clearInterval(playbackInterval);
-      }
+        }
+        updateTimeUI(1680);
+      }, 1000);
+    } else {
+      if (playbackInterval) clearInterval(playbackInterval);
     }
   }
 
-  btnPlayBig.addEventListener("click", togglePlay);
-  ctrlPlay.addEventListener("click", togglePlay);
+  btnPlayMedicalBig?.addEventListener("click", togglePlay);
+  btnPlayBig?.addEventListener("click", togglePlay);
+  ctrlPlay?.addEventListener("click", togglePlay);
 
-  // Botão flutuante para desmutar
   const unmuteTip = $("#video-unmute-tip");
   unmuteTip?.addEventListener("click", () => {
     if (nativeVideo) {
@@ -304,12 +505,12 @@ function setupVideoPlayer() {
   if (nativeVideo) {
     nativeVideo.addEventListener("play", () => {
       isPlaying = true;
-      btnPlayBig.textContent = "❚❚";
-      ctrlPlay.textContent = "❚❚";
+      updatePlayButtonsState(true);
       const screen = $("#video-screen");
-      if (screen) screen.classList.add("is-playing");
-      const slideBox = $("#video-slide-box");
-      if (slideBox) slideBox.style.display = "none";
+      if (screen) {
+        screen.classList.add("is-playing");
+        screen.classList.add("native-mode");
+      }
       if (!nativeVideo.muted && unmuteTip) {
         unmuteTip.style.display = "none";
       }
@@ -317,19 +518,11 @@ function setupVideoPlayer() {
 
     nativeVideo.addEventListener("pause", () => {
       isPlaying = false;
-      btnPlayBig.textContent = "▶";
-      ctrlPlay.textContent = "▶";
+      updatePlayButtonsState(false);
       const screen = $("#video-screen");
-      if (screen) screen.classList.remove("is-playing");
-    });
-
-    nativeVideo.addEventListener("error", () => {
-      console.warn("Vídeo source com erro de rede, aplicando fallback resiliente...");
-      const fallbackUrl = "/api/stream/sample.mp4";
-      if (nativeVideo.src && !nativeVideo.src.endsWith(fallbackUrl)) {
-        nativeVideo.src = fallbackUrl;
-        nativeVideo.load();
-        nativeVideo.play().catch(() => {});
+      if (screen) {
+        screen.classList.remove("is-playing");
+        screen.classList.remove("native-mode");
       }
     });
 
@@ -340,9 +533,8 @@ function setupVideoPlayer() {
 
     nativeVideo.addEventListener("ended", () => {
       isPlaying = false;
-      btnPlayBig.textContent = "▶";
-      ctrlPlay.textContent = "▶";
-      if (currentLesson) {
+      updatePlayButtonsState(false);
+      if (currentLesson && currentCourse) {
         const completed = getCompletedLessons(currentCourse.id);
         if (!completed.includes(currentLesson.id)) {
           toggleLessonCompleted(currentLesson.id);
@@ -352,8 +544,8 @@ function setupVideoPlayer() {
     });
   }
 
-  ctrlRewind.addEventListener("click", () => {
-    if (nativeVideo && nativeVideo.currentTime !== undefined) {
+  ctrlRewind?.addEventListener("click", () => {
+    if (nativeVideo && nativeVideo.currentTime !== undefined && nativeVideo.readyState >= 2) {
       nativeVideo.currentTime = Math.max(0, nativeVideo.currentTime - 10);
     } else {
       playbackSeconds = Math.max(0, playbackSeconds - 10);
@@ -361,8 +553,8 @@ function setupVideoPlayer() {
     }
   });
 
-  ctrlForward.addEventListener("click", () => {
-    if (nativeVideo && nativeVideo.duration) {
+  ctrlForward?.addEventListener("click", () => {
+    if (nativeVideo && nativeVideo.duration && nativeVideo.readyState >= 2) {
       nativeVideo.currentTime = Math.min(nativeVideo.duration, nativeVideo.currentTime + 10);
     } else {
       playbackSeconds = Math.min(1680, playbackSeconds + 10);
@@ -370,19 +562,17 @@ function setupVideoPlayer() {
     }
   });
 
-  if (ctrlVolume) {
-    ctrlVolume.addEventListener("click", () => {
-      if (nativeVideo) {
-        nativeVideo.muted = !nativeVideo.muted;
-        ctrlVolume.textContent = nativeVideo.muted ? "🔇" : "🔊";
-      }
-    });
-  }
+  ctrlVolume?.addEventListener("click", () => {
+    if (nativeVideo) {
+      nativeVideo.muted = !nativeVideo.muted;
+      ctrlVolume.textContent = nativeVideo.muted ? "🔇" : "🔊";
+    }
+  });
 
-  scrubBar.addEventListener("click", (e) => {
+  scrubBar?.addEventListener("click", (e) => {
     const rect = scrubBar.getBoundingClientRect();
     const pos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-    if (nativeVideo && nativeVideo.duration) {
+    if (nativeVideo && nativeVideo.duration && nativeVideo.readyState >= 2) {
       nativeVideo.currentTime = pos * nativeVideo.duration;
     } else {
       playbackSeconds = Math.round(pos * 1680);
@@ -390,15 +580,14 @@ function setupVideoPlayer() {
     }
   });
 
-  // Seletor de Velocidade
-  speedBtn.addEventListener("click", () => {
-    speedDropdown.hidden = !speedDropdown.hidden;
+  speedBtn?.addEventListener("click", () => {
+    if (speedDropdown) speedDropdown.hidden = !speedDropdown.hidden;
   });
 
-  speedDropdown.addEventListener("click", (e) => {
-    if (e.target.dataset.speed) {
+  speedDropdown?.addEventListener("click", (e) => {
+    if (e.target.dataset && e.target.dataset.speed) {
       currentSpeed = Number(e.target.dataset.speed);
-      speedBtn.textContent = `${currentSpeed.toFixed(1)}x`;
+      if (speedBtn) speedBtn.textContent = `${currentSpeed.toFixed(1)}x`;
       $$(".speed-dropdown button").forEach((b) => b.classList.remove("active"));
       e.target.classList.add("active");
       speedDropdown.hidden = true;
@@ -409,12 +598,12 @@ function setupVideoPlayer() {
   });
 
   document.addEventListener("click", (e) => {
-    if (!speedBtn.contains(e.target) && !speedDropdown.contains(e.target)) {
+    if (speedBtn && speedDropdown && !speedBtn.contains(e.target) && !speedDropdown.contains(e.target)) {
       speedDropdown.hidden = true;
     }
   });
 
-  markDoneBtn.addEventListener("click", () => {
+  markDoneBtn?.addEventListener("click", () => {
     if (currentLesson) {
       toggleLessonCompleted(currentLesson.id);
     }
@@ -422,6 +611,7 @@ function setupVideoPlayer() {
 
   $("#ctrl-fullscreen")?.addEventListener("click", () => {
     const container = $("#video-container");
+    if (!container) return;
     if (!document.fullscreenElement) {
       container.requestFullscreen().catch(() => {});
     } else {
@@ -1201,11 +1391,12 @@ function selectLesson(lesson, autoPlay = false) {
         const [m, s] = ch.time.split(":").map(Number);
         playbackSeconds = m * 60 + s;
         updateTimeUI();
-        if (nativeVideo) {
+        if (nativeVideo && nativeVideo.src && !nativeVideo.src.includes("/api/stream/sample.mp4") && nativeVideo.readyState >= 2) {
           nativeVideo.currentTime = playbackSeconds;
           nativeVideo.play().catch(() => {});
         } else if (!isPlaying) {
-          $("#btn-play-big")?.click();
+          const btnPlay = $("#btn-play-medical-big") || $("#btn-play-big");
+          if (btnPlay) btnPlay.click();
         }
       });
       chaptersList.appendChild(li);
@@ -1219,56 +1410,18 @@ function selectLesson(lesson, autoPlay = false) {
   updateProgressUI();
   updateActiveLessonInSidebar(lesson.id);
 
-  // Executa o streaming imediatamente ao selecionar aula
-  if (autoPlay && nativeVideo) {
+  // Executa a aula imediatamente se selecionada com autoPlay
+  if (autoPlay) {
     switchTab("video");
-    const slideBox = $("#video-slide-box");
-    if (slideBox) slideBox.style.display = "none";
-    const screen = $("#video-screen");
-    if (screen) screen.classList.add("is-playing");
-
     const videoBox = $("#video-container") || document.body;
     videoBox.scrollIntoView({ behavior: "smooth", block: "start" });
-
-    const playPromise = nativeVideo.play();
-    if (playPromise !== undefined) {
-      playPromise
-        .then(() => {
-          isPlaying = true;
-          const btnBig = $("#btn-play-big");
-          const ctrlP = $("#ctrl-play-pause");
-          if (btnBig) btnBig.textContent = "❚❚";
-          if (ctrlP) ctrlP.textContent = "❚❚";
-          const unmuteTip = $("#video-unmute-tip");
-          if (unmuteTip) unmuteTip.style.display = "none";
-        })
-        .catch(() => {
-          // Autoplay bloqueado pelo navegador com som: inicia mutado e exibe botão para ativar áudio
-          nativeVideo.muted = true;
-          nativeVideo.play().then(() => {
-            isPlaying = true;
-            const btnBig = $("#btn-play-big");
-            const ctrlP = $("#ctrl-play-pause");
-            if (btnBig) btnBig.textContent = "❚❚";
-            if (ctrlP) ctrlP.textContent = "❚❚";
-            const unmuteTip = $("#video-unmute-tip");
-            if (unmuteTip) unmuteTip.style.display = "block";
-          }).catch((err) => {
-            console.warn("Autoplay bloqueado pelo navegador:", err);
-            isPlaying = false;
-            const btnBig = $("#btn-play-big");
-            const ctrlP = $("#ctrl-play-pause");
-            if (btnBig) btnBig.textContent = "▶";
-            if (ctrlP) ctrlP.textContent = "▶";
-          });
-        });
+    if (!isPlaying) {
+      const btnPlay = $("#btn-play-medical-big") || $("#btn-play-big");
+      if (btnPlay) btnPlay.click();
     }
   } else {
     isPlaying = false;
-    const btnBig = $("#btn-play-big");
-    const ctrlP = $("#ctrl-play-pause");
-    if (btnBig) btnBig.textContent = "▶";
-    if (ctrlP) ctrlP.textContent = "▶";
+    updatePlayButtonsState(false);
     const screen = $("#video-screen");
     if (screen) screen.classList.remove("is-playing");
   }
@@ -1421,26 +1574,15 @@ function renderFullLessonsGrid(filterQuery = "") {
   });
 }
 
-// Download de Videoaulas em MP4 (Exclusivo VIP)
+// Download de Videoaulas & Materiais Oficiais (Exclusivo VIP)
 function handleVideoDownload(lesson) {
   const targetLesson = lesson || currentLesson;
   if (!targetLesson) return;
 
   if (canDownloadVideos || isAdmin) {
-    const videoUrl = targetLesson.videoUrl || "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
-    const filename = `${(currentCourse?.title || "MedStudy").replace(/[\/\\?%*:|"<>]/g, "_")}_${(targetLesson.title || "Aula").replace(/[\/\\?%*:|"<>]/g, "_")}.mp4`;
-    
-    const a = document.createElement("a");
-    a.href = videoUrl;
-    a.download = filename;
-    a.target = "_blank";
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => {
-      if (document.body.contains(a)) document.body.removeChild(a);
-    }, 300);
-
-    alert(`👑 Download VIP Liberado!\n\nIniciando o download de: "${targetLesson.title}" (${targetLesson.duration || "HD 1080p"}).\nArquivo MP4 disponível para estudo offline!`);
+    const driveUrl = currentCourse?.driveUrl || "https://drive.google.com/drive/my-drive";
+    window.open(driveUrl, "_blank");
+    alert(`👑 Download VIP Liberado!\n\nAbrindo repositório oficial no Google Drive de "${currentCourse?.title || 'Curso'}".\nVocê tem acesso vitalício a todas as videoaulas em HD 1080p e apostilas para download e estudo offline.`);
   } else {
     openVipModal();
   }
@@ -1946,25 +2088,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Botões da Barra Rápida de Seleção de Aulas
   $("#btn-trigger-play")?.addEventListener("click", () => {
-    const nativeVideo = $("#native-video-player");
-    const lesson = currentLesson || (currentCourse ? getAllLessons(currentCourse)[0] : null);
-    if (!lesson) return;
-
-    if (nativeVideo && !nativeVideo.paused) {
-      nativeVideo.pause();
-      isPlaying = false;
-      const btnBig = $("#btn-play-big");
-      const ctrlP = $("#ctrl-play-pause");
-      if (btnBig) btnBig.textContent = "▶";
-      if (ctrlP) ctrlP.textContent = "▶";
-      const trigger = $("#btn-trigger-play");
-      if (trigger) trigger.textContent = "▶ Assistir Aula";
-      const screen = $("#video-screen");
-      if (screen) screen.classList.remove("is-playing");
+    const btnPlay = $("#btn-play-medical-big") || $("#btn-play-big");
+    if (btnPlay) {
+      btnPlay.click();
     } else {
-      selectLesson(lesson, true);
-      const trigger = $("#btn-trigger-play");
-      if (trigger) trigger.textContent = "❚❚ Pausar Aula";
+      const lesson = currentLesson || (currentCourse ? getAllLessons(currentCourse)[0] : null);
+      if (lesson) selectLesson(lesson, true);
     }
   });
 
