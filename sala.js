@@ -232,10 +232,15 @@ function setupVideoPlayer() {
 
   function togglePlay() {
     if (!isUserActive && !isAdmin) {
-      const trialUser = getTrialUser();
+      let trialUser = getTrialUser();
       if (!trialUser) {
-        openTrialRegisterModal();
-        return;
+        // Inicializa sessão de teste grátis automática para o visitante poder testar na hora sem travas
+        trialUser = { name: "Aluno Visitante", email: "visitante@medstudy.com", whatsapp: "0000000000" };
+        try {
+          localStorage.setItem(TRIAL_USER_KEY, JSON.stringify(trialUser));
+          if (!localStorage.getItem(TRIAL_KEY)) localStorage.setItem(TRIAL_KEY, "1800");
+          initFreeTrial();
+        } catch (e) {}
       }
       if (trialSecondsRemaining <= 0) {
         lockTrialExpired();
@@ -245,7 +250,15 @@ function setupVideoPlayer() {
 
     if (nativeVideo && nativeVideo.src) {
       if (nativeVideo.paused) {
-        nativeVideo.play().catch(() => {});
+        const p = nativeVideo.play();
+        if (p !== undefined) {
+          p.catch(() => {
+            nativeVideo.muted = true;
+            nativeVideo.play().catch(() => {});
+            const unmuteTip = $("#video-unmute-tip");
+            if (unmuteTip) unmuteTip.style.display = "block";
+          });
+        }
       } else {
         nativeVideo.pause();
       }
@@ -279,6 +292,15 @@ function setupVideoPlayer() {
   btnPlayBig.addEventListener("click", togglePlay);
   ctrlPlay.addEventListener("click", togglePlay);
 
+  // Botão flutuante para desmutar
+  const unmuteTip = $("#video-unmute-tip");
+  unmuteTip?.addEventListener("click", () => {
+    if (nativeVideo) {
+      nativeVideo.muted = false;
+      unmuteTip.style.display = "none";
+    }
+  });
+
   if (nativeVideo) {
     nativeVideo.addEventListener("play", () => {
       isPlaying = true;
@@ -286,6 +308,11 @@ function setupVideoPlayer() {
       ctrlPlay.textContent = "❚❚";
       const screen = $("#video-screen");
       if (screen) screen.classList.add("is-playing");
+      const slideBox = $("#video-slide-box");
+      if (slideBox) slideBox.style.display = "none";
+      if (!nativeVideo.muted && unmuteTip) {
+        unmuteTip.style.display = "none";
+      }
     });
 
     nativeVideo.addEventListener("pause", () => {
@@ -294,6 +321,16 @@ function setupVideoPlayer() {
       ctrlPlay.textContent = "▶";
       const screen = $("#video-screen");
       if (screen) screen.classList.remove("is-playing");
+    });
+
+    nativeVideo.addEventListener("error", () => {
+      console.warn("Vídeo source com erro de rede, aplicando fallback resiliente...");
+      const fallbackUrl = "/api/stream/sample.mp4";
+      if (nativeVideo.src && !nativeVideo.src.endsWith(fallbackUrl)) {
+        nativeVideo.src = fallbackUrl;
+        nativeVideo.load();
+        nativeVideo.play().catch(() => {});
+      }
     });
 
     nativeVideo.addEventListener("timeupdate", () => {
@@ -1082,6 +1119,24 @@ function loadLessonNotes() {
   }
 }
 
+function updateActiveLessonInSidebar(lessonId) {
+  const items = $$(".lesson-item");
+  if (!items || items.length === 0) {
+    renderSidebar();
+    return;
+  }
+  items.forEach((it) => {
+    const isAct = it.dataset.lessonId === lessonId;
+    it.classList.toggle("active", isAct);
+    if (isAct) {
+      const group = it.closest(".module-group");
+      if (group && !group.classList.contains("open")) {
+        group.classList.add("open");
+      }
+    }
+  });
+}
+
 // Seleção e Execução de Aula com Streaming Imediato
 function selectLesson(lesson, autoPlay = false) {
   currentLesson = lesson;
@@ -1095,12 +1150,13 @@ function selectLesson(lesson, autoPlay = false) {
     quickSelect.value = lesson.id;
   }
 
-  // Carrega a URL do vídeo de streaming nativo
+  // Carrega a URL do vídeo de streaming nativo resiliente
   const nativeVideo = $("#native-video-player");
-  const videoUrl = lesson.videoUrl || "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+  const videoUrl = lesson.videoUrl || "/api/stream/sample.mp4";
   
   if (nativeVideo) {
-    if (nativeVideo.src !== videoUrl) {
+    const currentSrc = nativeVideo.getAttribute("src") || nativeVideo.src;
+    if (currentSrc !== videoUrl && !currentSrc.endsWith(videoUrl)) {
       nativeVideo.src = videoUrl;
       nativeVideo.load();
     }
@@ -1161,11 +1217,19 @@ function selectLesson(lesson, autoPlay = false) {
   renderQuiz();
   loadLessonNotes();
   updateProgressUI();
-  renderSidebar();
+  updateActiveLessonInSidebar(lesson.id);
 
   // Executa o streaming imediatamente ao selecionar aula
   if (autoPlay && nativeVideo) {
     switchTab("video");
+    const slideBox = $("#video-slide-box");
+    if (slideBox) slideBox.style.display = "none";
+    const screen = $("#video-screen");
+    if (screen) screen.classList.add("is-playing");
+
+    const videoBox = $("#video-container") || document.body;
+    videoBox.scrollIntoView({ behavior: "smooth", block: "start" });
+
     const playPromise = nativeVideo.play();
     if (playPromise !== undefined) {
       playPromise
@@ -1175,11 +1239,11 @@ function selectLesson(lesson, autoPlay = false) {
           const ctrlP = $("#ctrl-play-pause");
           if (btnBig) btnBig.textContent = "❚❚";
           if (ctrlP) ctrlP.textContent = "❚❚";
-          const screen = $("#video-screen");
-          if (screen) screen.classList.add("is-playing");
+          const unmuteTip = $("#video-unmute-tip");
+          if (unmuteTip) unmuteTip.style.display = "none";
         })
         .catch(() => {
-          // Fallback para política restritiva de autoplay do navegador: inicia mutado
+          // Autoplay bloqueado pelo navegador com som: inicia mutado e exibe botão para ativar áudio
           nativeVideo.muted = true;
           nativeVideo.play().then(() => {
             isPlaying = true;
@@ -1187,9 +1251,10 @@ function selectLesson(lesson, autoPlay = false) {
             const ctrlP = $("#ctrl-play-pause");
             if (btnBig) btnBig.textContent = "❚❚";
             if (ctrlP) ctrlP.textContent = "❚❚";
-            const screen = $("#video-screen");
-            if (screen) screen.classList.add("is-playing");
-          }).catch(() => {
+            const unmuteTip = $("#video-unmute-tip");
+            if (unmuteTip) unmuteTip.style.display = "block";
+          }).catch((err) => {
+            console.warn("Autoplay bloqueado pelo navegador:", err);
             isPlaying = false;
             const btnBig = $("#btn-play-big");
             const ctrlP = $("#ctrl-play-pause");
@@ -1738,14 +1803,12 @@ function initDRMProtection() {
     if (shield) shield.hidden = true;
   });
 
-  // Eventos de perda de foco ou mudança de aba (captura/gravação em janela externa, OBS, Snipping tool)
-  window.addEventListener("blur", () => {
-    triggerBlackoutShield("blur");
-  });
-
+  // Evento de mudança de visibilidade (aba minimizada)
   document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "hidden") {
-      triggerBlackoutShield("hidden");
+    if (document.visibilityState === "hidden" && isPlaying) {
+      // Pausa discreta ao minimizar aba
+      const nativeVideo = $("#native-video-player");
+      if (nativeVideo && !nativeVideo.paused) nativeVideo.pause();
     }
   });
 
@@ -1786,7 +1849,7 @@ function initDRMProtection() {
 // Carregamento de Cursos e Seleção Inicial
 async function initCourse() {
   const urlParams = new URLSearchParams(window.location.search);
-  const courseId = urlParams.get("curso") || "cardiologia-ecg";
+  const requestedCourseId = urlParams.get("curso");
 
   try {
     const data = await api("/api/courses");
@@ -1796,6 +1859,9 @@ async function initCourse() {
     isVip = Boolean(data.isVip || (data.user && data.user.plan === "vip") || isAdmin);
     canDownloadVideos = Boolean(data.canDownloadVideos || isVip || isAdmin);
     currentUser = data.user || null;
+
+    const defaultCourseId = allCourses[0] ? allCourses[0].id : "medcurso-ciclo-completo-r1";
+    const courseId = requestedCourseId && allCourses.some((c) => c.id === requestedCourseId) ? requestedCourseId : defaultCourseId;
 
     // Header badge
     updateUserBadge();

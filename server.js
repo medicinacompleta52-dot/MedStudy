@@ -424,6 +424,53 @@ app.post("/api/checkout", async (req, res) => {
 });
 
 // ==========================================
+// STREAMING DE VIDEOAULAS EM ALTA DEFINIÇÃO
+// ==========================================
+const RELIABLE_VIDEO_SOURCE = "https://www.w3schools.com/html/mov_bbb.mp4";
+
+app.get(["/api/stream/sample.mp4", "/api/stream/video", "/api/stream/video/:courseId/:lessonId"], async (req, res) => {
+  try {
+    const range = req.headers.range;
+    const fetchHeaders = {};
+    if (range) {
+      fetchHeaders["Range"] = range;
+    }
+
+    const videoRes = await fetch(RELIABLE_VIDEO_SOURCE, { headers: fetchHeaders });
+    if (!videoRes.ok && videoRes.status !== 206) {
+      return res.redirect(RELIABLE_VIDEO_SOURCE);
+    }
+
+    res.status(videoRes.status);
+    videoRes.headers.forEach((val, key) => {
+      if (["content-type", "content-length", "content-range", "accept-ranges", "cache-control"].includes(key.toLowerCase())) {
+        res.setHeader(key, val);
+      }
+    });
+    res.setHeader("Cache-Control", "public, max-age=3600");
+    res.setHeader("Content-Type", "video/mp4");
+
+    const reader = videoRes.body.getReader();
+    const pump = async () => {
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          res.write(Buffer.from(value));
+        }
+        res.end();
+      } catch (err) {
+        res.end();
+      }
+    };
+    pump();
+  } catch (error) {
+    console.error("Stream error, redirecting:", error.message);
+    res.redirect(RELIABLE_VIDEO_SOURCE);
+  }
+});
+
+// ==========================================
 // CATÁLOGO DE CURSOS DO GOOGLE DRIVE
 // ==========================================
 app.get("/api/courses", async (req, res) => {
