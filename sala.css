@@ -379,15 +379,30 @@ body {
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-/* Quando o player estiver reproduzindo: oculta 100% o card estático pré-play (#video-slide-box) e o overlay pré-play */
-.video-screen.is-playing .video-overlay,
-.video-screen.is-playing #video-slide-box,
-.video-screen.is-playing:hover .video-overlay,
-.video-screen.is-playing:hover #video-slide-box {
+/* Elimina 100% qualquer resquício do card estático ou overlay pré-play em qualquer estado */
+.video-overlay,
+#video-slide-box,
+.video-slide-preview {
   display: none !important;
   opacity: 0 !important;
   pointer-events: none !important;
   visibility: hidden !important;
+}
+
+.netflix-episode-card:hover {
+  transform: translateY(-3px) scale(1.02);
+  border-color: #3b82f6 !important;
+  box-shadow: 0 8px 24px rgba(37,99,235,0.25);
+}
+
+.netflix-episode-card.active-episode {
+  border-color: #3b82f6 !important;
+  background: rgba(37, 99, 235, 0.22) !important;
+}
+
+.btn-speed-pill:hover {
+  background: rgba(37, 99, 235, 0.3) !important;
+  color: #fff !important;
 }
 
 /* Transmissão da aula médica ao vivo fica 100% visível durante a reprodução */

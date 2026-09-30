@@ -119,12 +119,13 @@
             </div>
 
             <!-- PALCO DA VIDEOAULA MÉDICA (TRANSMISSÃO AO VIVO HD & CONTEÚDO ATIVO) -->
-            <div id="live-lecture-screen" style="display:none; position:absolute; inset:0 0 54px 0; z-index:9; background:linear-gradient(145deg, #090e17 0%, #0d1527 50%, #080d1a 100%); flex-direction:column; justify-content:space-between; padding:20px 24px; overflow:hidden;">
+            <!-- PALCO DA VIDEOAULA MÉDICA (NETFLIX PLAYER DE ALTA DEFINIÇÃO) -->
+            <div id="live-lecture-screen" style="display:flex; position:absolute; inset:0 0 54px 0; z-index:9; background:linear-gradient(145deg, #090e17 0%, #0d1527 50%, #080d1a 100%); flex-direction:column; justify-content:space-between; padding:20px 24px; overflow:hidden;">
               <!-- Background Canvas Dinâmico de Ondas Médicas / Frequência -->
-              <canvas id="lecture-visual-canvas" style="position:absolute; inset:0; width:100%; height:100%; opacity:0.18; pointer-events:none; z-index:1;"></canvas>
+              <canvas id="lecture-visual-canvas" style="position:absolute; inset:0; width:100%; height:100%; opacity:0.22; pointer-events:none; z-index:1;"></canvas>
 
               <!-- Topo da Transmissão da Aula -->
-              <div style="position:relative; z-index:2; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; border-bottom:1px solid rgba(59,130,246,0.2); padding-bottom:12px;">
+              <div style="position:relative; z-index:2; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; border-bottom:1px solid rgba(59,130,246,0.2); padding-bottom:10px;">
                 <div style="display:flex; align-items:center; gap:10px;">
                   <span style="display:inline-flex; align-items:center; gap:6px; background:rgba(239,68,68,0.2); border:1px solid #ef4444; color:#fca5a5; font-size:11px; font-weight:800; padding:4px 10px; border-radius:20px;">
                     <span style="width:8px; height:8px; background:#ef4444; border-radius:50%; box-shadow:0 0 8px #ef4444;"></span>
@@ -135,7 +136,7 @@
                   </span>
                 </div>
                 
-                <div style="display:flex; align-items:center; gap:12px;">
+                <div style="display:flex; align-items:center; gap:10px;">
                   <!-- Equalizador de Áudio da Aula -->
                   <div id="live-audio-eq" style="display:flex; align-items:flex-end; gap:3px; height:20px; padding:0 4px; background:rgba(15,23,42,0.6); border-radius:4px; border:1px solid rgba(59,130,246,0.2);">
                     <span class="eq-bar" style="width:3px; height:8px; background:#10b981; border-radius:2px;"></span>
@@ -150,22 +151,35 @@
                 </div>
               </div>
 
-              <!-- Centro: Slide de Alta Definição da Aula Atual -->
-              <div style="position:relative; z-index:2; margin:auto 0; padding:10px 0;">
-                <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+              <!-- Centro: Conteúdo da Aula & Ações Imediatas -->
+              <div style="position:relative; z-index:2; margin:auto 0; padding:8px 0;">
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
                   <span style="font-size:10px; font-weight:800; letter-spacing:1px; color:#60a5fa; text-transform:uppercase;" id="live-lecture-category">
                     DIRETRIZES MÉDICAS OFICIAIS &amp; PROVA DE RESIDÊNCIA
                   </span>
                 </div>
-                <h2 id="live-lecture-title" style="font-size:22px; font-weight:800; color:#fff; margin:0 0 6px; line-height:1.2; letter-spacing:-0.5px;">
+                <h2 id="live-lecture-title" style="font-size:24px; font-weight:800; color:#fff; margin:0 0 4px; line-height:1.2; letter-spacing:-0.5px;">
                   Aula Médica Oficial
                 </h2>
-                <h4 id="live-lecture-subtitle" style="font-size:13px; font-weight:600; color:#93c5fd; margin:0 0 14px;">
+                <h4 id="live-lecture-subtitle" style="font-size:13px; font-weight:600; color:#93c5fd; margin:0 0 12px;">
                   Fisiopatologia, Critérios Diagnósticos &amp; Condutas Terapêuticas
                 </h4>
 
+                <!-- Botões de Ação Pré-Play / Durante a Aula (Sempre Limpos e sem Pop-up) -->
+                <div id="lecture-actions-bar" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;">
+                  <button type="button" id="btn-play-medical-big" style="background:#2563eb; color:#fff; border:none; border-radius:8px; padding:10px 20px; font-size:13px; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; gap:8px; box-shadow:0 4px 14px rgba(37,99,235,0.4);">
+                    ▶ Iniciar Reprodução da Aula
+                  </button>
+                  <button type="button" id="btn-open-drive-direct" style="background:#0f172a; color:#93c5fd; border:1px solid #1e3a8a; border-radius:8px; padding:10px 16px; font-size:12px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+                    ☁️ Pasta no Google Drive (medicinerlivia@gmail.com) ↗
+                  </button>
+                  <button type="button" id="btn-download-pdf-stage" style="background:rgba(37,99,235,0.12); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); border-radius:8px; padding:10px 14px; font-size:12px; font-weight:700; cursor:pointer;">
+                    📥 Baixar Apostila (PDF)
+                  </button>
+                </div>
+
                 <!-- Grade de Tópicos Clínicos Chave -->
-                <div id="live-lecture-keypoints" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:8px; margin-bottom:14px;">
+                <div id="live-lecture-keypoints" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:8px; margin-bottom:12px;">
                   <!-- Tópicos dinâmicos inseridos via JS de acordo com a fase -->
                 </div>
 
@@ -184,7 +198,7 @@
               </div>
 
               <!-- Rodapé da Transmissão da Aula -->
-              <div style="position:relative; z-index:2; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; border-top:1px solid rgba(255,255,255,0.08); padding-top:10px;">
+              <div style="position:relative; z-index:2; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; border-top:1px solid rgba(255,255,255,0.08); padding-top:8px;">
                 <div style="display:flex; align-items:center; gap:8px;">
                   <span style="font-size:16px;">👩‍⚕️</span>
                   <span style="font-size:12px; font-weight:700; color:#cbd5e1;">Professora Especialista MedStudy</span>
@@ -196,7 +210,7 @@
 
                 <div style="display:flex; align-items:center; gap:8px;">
                   <button type="button" id="btn-live-open-drive" style="background:#0f172a; color:#93c5fd; border:1px solid #1e3a8a; border-radius:6px; padding:6px 12px; font-size:11px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px;">
-                    ☁️ Pasta no Drive (medicinerlivia@gmail.com) ↗
+                    ☁️ Pasta no Drive ↗
                   </button>
                 </div>
               </div>
@@ -222,80 +236,65 @@
               </div>
             </div>
 
-            <!-- Palco Médico com Apresentação da Aula & Controles (Modo Inicial Antes do Play) -->
-            <div class="video-overlay" id="video-overlay" style="z-index:5;">
-              <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
-                <div style="display:flex; align-items:center; gap:8px;">
-                  <div class="video-badge-live">HD 1080p · AULA MÉDICA OFICIAL</div>
-                  <div id="lecture-live-indicator" style="display:none; align-items:center; gap:6px; background:rgba(220,38,38,0.2); border:1px solid #ef4444; color:#fca5a5; font-size:11px; font-weight:800; padding:4px 8px; border-radius:4px;">
-                    <span style="display:inline-block; width:8px; height:8px; background:#ef4444; border-radius:50%;"></span>
-                    TRANSMISSÃO DA AULA ATIVA
-                  </div>
-                </div>
-                <div style="display:flex; align-items:center; gap:8px;">
-                  <span id="lecture-phase-badge" style="background:rgba(37,99,235,0.25); border:1px solid #3b82f6; color:#93c5fd; font-size:11px; font-weight:700; padding:4px 8px; border-radius:4px;">Fase 1 / 5</span>
-                </div>
-              </div>
-              
-              <!-- Card Principal da Aula com Ações Imediatas -->
-              <div class="video-slide-preview" id="video-slide-box" style="margin: auto; max-width: 680px; width: 92%; background: rgba(11,17,32,0.92); border: 1px solid rgba(59,130,246,0.3); border-radius: 12px; padding: 22px 26px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                  <span class="slide-tag" id="slide-tag" style="color:#60a5fa; font-size:11px; font-weight:800; letter-spacing:1px;">DIRETRIZES CLÍNICAS &amp; RESIDÊNCIA MÉDICA</span>
-                  <span style="font-size:12px; color:#93c5fd;" id="slide-course-badge">☁️ medicinerlivia@gmail.com</span>
-                </div>
-                <h3 id="video-slide-title" style="font-size:20px; font-weight:800; color:#fff; margin:0 0 8px; line-height:1.3;">Carregando aula...</h3>
-                <p id="video-slide-subtitle" style="font-size:13px; color:#cbd5e1; margin:0 0 14px; line-height:1.5;">Conteúdo estruturado com fisiopatologia, critérios diagnósticos e tabela terapêutica.</p>
-                
-                <div class="slide-keypoints" id="slide-keypoints" style="margin-bottom:18px;">
-                  <!-- Pontos-chave médicos dinâmicos -->
-                </div>
-
-                <div style="display:flex; gap:10px; flex-wrap:wrap; border-top:1px solid rgba(255,255,255,0.08); padding-top:14px;">
-                  <button type="button" id="btn-play-medical-big" style="flex:1; min-width:180px; background:#2563eb; color:#fff; border:none; border-radius:8px; padding:12px 18px; font-size:13px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
-                    ▶ Iniciar Reprodução da Aula
-                  </button>
-                  <button type="button" id="btn-open-drive-direct" style="background:#0f172a; color:#93c5fd; border:1px solid #1e3a8a; border-radius:8px; padding:12px 18px; font-size:13px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px;">
-                    ☁️ Assistir no Drive Oficial (medicinerlivia@gmail.com)
-                  </button>
-                  <button type="button" id="btn-download-pdf-stage" style="background:rgba(37,99,235,0.12); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); border-radius:8px; padding:12px 14px; font-size:13px; font-weight:700; cursor:pointer;">
-                    📥 Baixar Apostila (PDF)
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Barra de Controles do Player -->
-            <div class="video-bottom-bar" style="z-index:10;">
-              <div class="scrub-bar" id="scrub-bar">
+            <!-- Barra de Controles Estilo Netflix (Controles de Cinema) -->
+            <div class="video-bottom-bar" style="z-index:30;">
+              <!-- Linha do Tempo / Scrub Bar com Indicador de Progresso -->
+              <div class="scrub-bar" id="scrub-bar" title="Clique para avançar ou retroceder a aula">
                 <div class="scrub-progress" id="scrub-progress" style="width: 0%"></div>
               </div>
+
               <div class="controls-row">
-                <div class="controls-left">
-                  <button class="ctrl-btn" id="ctrl-play-pause" title="Play/Pause">▶</button>
-                  <button class="ctrl-btn" id="ctrl-rewind" title="Voltar 10s">↺ 10s</button>
-                  <button class="ctrl-btn" id="ctrl-forward" title="Avançar 10s">10s ↻</button>
-                  <button class="ctrl-btn" id="ctrl-volume" title="Mudo/Volume">🔊</button>
-                  <div class="time-display">
-                    <span id="time-current">00:00</span> / <span id="time-total">00:00</span>
+                <!-- Controles da Esquerda: Navegação e Reprodução -->
+                <div class="controls-left" style="display:flex; align-items:center; gap:8px;">
+                  <button type="button" class="ctrl-btn" id="ctrl-prev-lesson" title="Aula Anterior (Episódio Anterior)" style="font-size:12px; font-weight:700;">⏮ Anterior</button>
+                  <button type="button" class="ctrl-btn ctrl-btn-play" id="ctrl-play-pause" title="Play/Pause" style="background:#2563eb; color:#fff; font-size:15px; font-weight:900; width:36px; height:36px; border-radius:50%; display:grid; place-items:center;">▶</button>
+                  <button type="button" class="ctrl-btn" id="ctrl-next-lesson" title="Próxima Aula (Próximo Episódio)" style="background:#1d4ed8; color:#fff; font-size:12px; font-weight:800; padding:6px 12px; border-radius:6px; cursor:pointer;">Próxima ⏭</button>
+                  <button type="button" class="ctrl-btn" id="ctrl-rewind" title="Voltar 10 segundos">↺ 10s</button>
+                  <button type="button" class="ctrl-btn" id="ctrl-forward" title="Avançar 10 segundos">10s ↻</button>
+                  <button type="button" class="ctrl-btn" id="ctrl-volume" title="Mudo/Volume">🔊</button>
+                  <div class="time-display" style="font-family:monospace; font-size:12px; font-weight:700; color:#cbd5e1; margin-left:4px;">
+                    <span id="time-current">00:00</span> / <span id="time-total">45:00</span>
                   </div>
                 </div>
-                <div class="controls-right">
-                  <div class="speed-selector">
-                    <button class="speed-btn" id="speed-btn" title="Velocidade de reprodução">1.0x</button>
-                    <div class="speed-dropdown" id="speed-dropdown" hidden>
-                      <button data-speed="0.75">0.75x</button>
-                      <button data-speed="1.0" class="active">1.0x</button>
-                      <button data-speed="1.25">1.25x</button>
-                      <button data-speed="1.5">1.5x</button>
-                      <button data-speed="1.75">1.75x</button>
-                      <button data-speed="2.0">2.0x</button>
-                    </div>
+
+                <!-- Controles da Direita: Velocidade Direta e Tela Cheia -->
+                <div class="controls-right" style="display:flex; align-items:center; gap:8px;">
+                  <!-- Seletor Direto de Velocidade Estilo Netflix (Botões Visíveis Imediatos) -->
+                  <div class="speed-pills-bar" style="display:flex; align-items:center; gap:3px; background:rgba(15,23,42,0.85); padding:2px 6px; border-radius:6px; border:1px solid rgba(59,130,246,0.25);">
+                    <span style="font-size:10px; font-weight:800; color:#93c5fd; margin-right:2px;">VEL:</span>
+                    <button type="button" class="btn-speed-pill" data-speed="0.75" style="background:transparent; border:none; color:#94a3b8; font-size:11px; font-weight:700; padding:2px 5px; border-radius:4px; cursor:pointer;">0.75x</button>
+                    <button type="button" class="btn-speed-pill active" data-speed="1.0" style="background:#2563eb; border:none; color:#fff; font-size:11px; font-weight:800; padding:2px 5px; border-radius:4px; cursor:pointer;">1.0x</button>
+                    <button type="button" class="btn-speed-pill" data-speed="1.25" style="background:transparent; border:none; color:#94a3b8; font-size:11px; font-weight:700; padding:2px 5px; border-radius:4px; cursor:pointer;">1.25x</button>
+                    <button type="button" class="btn-speed-pill" data-speed="1.5" style="background:transparent; border:none; color:#94a3b8; font-size:11px; font-weight:700; padding:2px 5px; border-radius:4px; cursor:pointer;">1.5x</button>
+                    <button type="button" class="btn-speed-pill" data-speed="2.0" style="background:transparent; border:none; color:#94a3b8; font-size:11px; font-weight:700; padding:2px 5px; border-radius:4px; cursor:pointer;">2.0x</button>
                   </div>
-                  <button class="ctrl-btn" id="ctrl-mark-done" title="Marcar aula como concluída">✓ Concluir Aula</button>
-                  <button class="ctrl-btn" id="ctrl-fullscreen" title="Tela Cheia">⛶</button>
+                  <button type="button" class="ctrl-btn" id="ctrl-mark-done" title="Marcar aula como concluída" style="font-size:11px; font-weight:700; padding:6px 10px;">✓ Concluir</button>
+                  <button type="button" class="ctrl-btn" id="ctrl-fullscreen" title="Tela Cheia" style="font-size:15px;">⛶</button>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- NETFLIX DOS CURSOS DO DRIVE: CARROSSEL DE EPISÓDIOS DA ESPECIALIDADE -->
+        <div class="netflix-episodes-section" style="margin: 20px 0; background:rgba(15,23,42,0.65); border:1px solid rgba(59,130,246,0.25); border-radius:12px; padding:18px 20px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:20px;">🎬</span>
+              <h3 style="font-size:17px; font-weight:800; color:#fff; margin:0;" id="netflix-shelf-title">Minhas Videoaulas do Drive — Episódios</h3>
+              <span id="netflix-episodes-count" style="background:#2563eb; color:#fff; font-size:11px; font-weight:800; padding:2px 8px; border-radius:12px;">12 Aulas</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:12px; color:#93c5fd; font-weight:700;">☁️ Google Drive Oficial:</span>
+              <strong style="font-size:12px; color:#fff; background:#1e3a8a; padding:4px 10px; border-radius:6px; border:1px solid #2563eb;">medicinerlivia@gmail.com</strong>
+            </div>
+          </div>
+
+          <!-- Grade de Cards de Episódios Estilo Netflix -->
+          <div id="netflix-episodes-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:12px;">
+            <!-- Preenchido dinamicamente via sala.js com todas as videoaulas do curso -->
+          </div>
+        </div>
           </div>
         </div>
 

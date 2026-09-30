@@ -675,6 +675,31 @@ function setupVideoPlayer() {
     }
   });
 
+  $("#ctrl-next-lesson")?.addEventListener("click", () => {
+    goToNextLesson();
+  });
+
+  $("#ctrl-prev-lesson")?.addEventListener("click", () => {
+    goToPrevLesson();
+  });
+
+  $$(".btn-speed-pill").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const spd = Number(btn.dataset.speed || 1.0);
+      currentSpeed = spd;
+      $$(".btn-speed-pill").forEach((b) => {
+        b.classList.remove("active");
+        b.style.background = "transparent";
+        b.style.color = "#94a3b8";
+        b.style.fontWeight = "700";
+      });
+      btn.classList.add("active");
+      btn.style.background = "#2563eb";
+      btn.style.color = "#fff";
+      btn.style.fontWeight = "800";
+    });
+  });
+
   $("#btn-next-lesson")?.addEventListener("click", () => {
     goToNextLesson();
   });
@@ -696,15 +721,92 @@ function updateTimeUI(totalDuration = 2700) {
   if (scrubProgress) scrubProgress.style.width = `${pct}%`;
 }
 
+function goToPrevLesson() {
+  if (!currentCourse) return;
+  const lessons = getAllLessons(currentCourse);
+  const idx = lessons.findIndex((l) => l.id === currentLesson?.id);
+  if (idx > 0) {
+    selectLesson(lessons[idx - 1], true);
+  }
+}
+
 function goToNextLesson() {
   if (!currentCourse) return;
   const lessons = getAllLessons(currentCourse);
   const idx = lessons.findIndex((l) => l.id === currentLesson?.id);
   if (idx >= 0 && idx + 1 < lessons.length) {
-    selectLesson(lessons[idx + 1]);
+    selectLesson(lessons[idx + 1], true);
   } else {
     alert("Parabéns! Você concluiu a última aula deste curso!");
   }
+}
+
+// Renderizador da Prateleira de Episódios Estilo Netflix
+function renderNetflixEpisodesGrid() {
+  const grid = $("#netflix-episodes-grid");
+  if (!grid || !currentCourse) return;
+  grid.replaceChildren();
+
+  const lessons = getAllLessons(currentCourse);
+  const completed = getCompletedLessons(currentCourse.id);
+
+  const countEl = $("#netflix-episodes-count");
+  if (countEl) countEl.textContent = `${lessons.length} Aulas`;
+
+  const shelfTitle = $("#netflix-shelf-title");
+  if (shelfTitle) shelfTitle.textContent = `${currentCourse.title} — Videoaulas`;
+
+  lessons.forEach((lesson, index) => {
+    const isCurrent = currentLesson?.id === lesson.id;
+    const isDone = completed.includes(lesson.id);
+    const epNum = String(index + 1).padStart(2, "0");
+
+    const card = document.createElement("div");
+    card.className = `netflix-episode-card ${isCurrent ? "active-episode" : ""}`;
+    card.style.cssText = `
+      background: ${isCurrent ? "rgba(37,99,235,0.22)" : "rgba(15,23,42,0.85)"};
+      border: 1px solid ${isCurrent ? "#3b82f6" : "rgba(59,130,246,0.25)"};
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s;
+    `;
+
+    card.innerHTML = `
+      <div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <span style="font-size:10px; font-weight:800; background:${isCurrent ? "#2563eb" : "rgba(255,255,255,0.08)"}; color:#fff; padding:2px 8px; border-radius:4px;">
+            EPISÓDIO ${epNum}
+          </span>
+          <span style="font-size:11px; color:#93c5fd; font-weight:600;">
+            ⏱ ${lesson.duration || "45 min"}
+          </span>
+        </div>
+        <h4 style="font-size:13px; font-weight:700; color:#fff; margin:0 0 6px; line-height:1.3;">
+          ${lesson.title}
+        </h4>
+        <p style="font-size:11px; color:#94a3b8; margin:0; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">
+          ${lesson.summary || "Conteúdo oficial com diretrizes e raciocínio clínico."}
+        </p>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.06); padding-top:8px;">
+        <span style="font-size:11px; color:${isDone ? "#10b981" : "#60a5fa"}; font-weight:700;">
+          ${isDone ? "✓ Concluída" : isCurrent ? "▶ Em reprodução" : "▶ Assistir Aula"}
+        </span>
+        <span style="font-size:10px; color:#64748b;">Drive Oficial</span>
+      </div>
+    `;
+
+    card.addEventListener("click", () => {
+      selectLesson(lesson, true);
+    });
+
+    grid.appendChild(card);
+  });
 }
 
 // ==========================================
@@ -1508,6 +1610,7 @@ function selectLesson(lesson, autoPlay = false) {
   loadLessonNotes();
   updateProgressUI();
   updateActiveLessonInSidebar(lesson.id);
+  renderNetflixEpisodesGrid();
 
   // Executa a aula imediatamente se selecionada com autoPlay
   if (autoPlay) {
@@ -2152,6 +2255,7 @@ async function initCourse() {
       renderSidebar();
       renderAllDriveFolders();
       renderFullLessonsGrid();
+      renderNetflixEpisodesGrid();
       if (currentLesson) selectLesson(currentLesson, false);
     }
   } catch (err) {
