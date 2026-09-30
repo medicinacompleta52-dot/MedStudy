@@ -51,6 +51,7 @@ async function api(path, options = {}) {
   const token = getToken();
   const headers = {
     "Content-Type": "application/json",
+    "x-user-email": localStorage.getItem("medstudy_user_email") || "medicinerlivia@gmail.com",
     ...(token ? { Authorization: "Bearer " + token } : {}),
     ...(options.headers || {})
   };
@@ -178,6 +179,89 @@ function setupDriveEmbed() {
   } catch (e) {}
 }
 
+let isAudioNarrating = true;
+let animFrameId = null;
+let lastSpokenPhase = -1;
+
+function getLessonPhases(lesson, course) {
+  const title = lesson?.title || "Aula Médica Oficial";
+  const area = course?.area || course?.category || "Medicina";
+  const courseTitle = course?.title || "MedStudy";
+
+  return [
+    {
+      phase: 1,
+      badge: "EPIDEMIOLOGIA & ETIOPATOGENIA",
+      tag: `FASE 1 / 5 · ${area.toUpperCase()} · BASES FISIOPATOLÓGICAS`,
+      title: `1. Introdução & Mecanismos Celulares: ${title}`,
+      subtitle: `${courseTitle} · Semiologia Armada e Mecanismos de Lesão Primária`,
+      keypoints: [
+        `Mecanismo etiopatogênico primário e cascata de lesão celular em ${title}`,
+        "Epidemiologia nacional e fatores de risco cardiovasculares e metabólicos associados",
+        "Fisiopatologia da resposta inflamatória e cinética dos biomarcadores precoces",
+        "Critérios de triagem inicial e identificação de pacientes com alto risco de descompensação"
+      ],
+      protocol: "Conduta Inicial: Aferição sistemática de sinais vitais, acesso venoso calibroso e exames admissionais prioritários."
+    },
+    {
+      phase: 2,
+      badge: "SEMIOLOGIA ARMADA & PROPEDÊUTICA",
+      tag: `FASE 2 / 5 · SEMIOLOGIA ARMADA & CRITÉRIOS DIAGNÓSTICOS`,
+      title: `2. Apresentação Clínica & Propedêutica Armada`,
+      subtitle: `${courseTitle} · Exame Físico Focado, Biomarcadores e Exames de Imagem`,
+      keypoints: [
+        "Sinais e sintomas patognomônicos ao exame físico direcionado à queixa principal",
+        "Interpretação e leitura sistemática dos exames de imagem e gráficos de urgência",
+        "Diagnósticos diferenciais críticos a descartar nas primeiras horas de admissão",
+        "Escores validados para estratificação rápida de gravidade clínica à beira do leito"
+      ],
+      protocol: "Propedêutica Armada: Exames laboratoriais de urgência e imagem prioritária em até 30 minutos."
+    },
+    {
+      phase: 3,
+      badge: "DIRETRIZES 2026 & FARMACOTERAPIA",
+      tag: `FASE 3 / 5 · CONDUTAS TERAPÊUTICAS & PRESCRIÇÃO`,
+      title: `3. Manejo Terapêutico & Prescrição Baseada em Evidências`,
+      subtitle: `${courseTitle} · Fármacos de 1ª Linha, Posologias Corretas e Metas Clínicas`,
+      keypoints: [
+        "Drogas de primeira linha: indicações formais, posologias corretas e vias de infusão",
+        "Contraindicações absolutas e relativas aos fármacos mais utilizados no protocolo",
+        "Metas hemodinâmicas, oxigenatórias e metabólicas para as primeiras 6 horas",
+        "Critérios de transferência precoce para Unidade de Terapia Intensiva (UTI)"
+      ],
+      protocol: "Diretriz 2026: Prescrição imediata de fármacos de classe IA com monitoramento hemodinâmico estrito."
+    },
+    {
+      phase: 4,
+      badge: "CASO CLÍNICO REAL & PLANTÃO",
+      tag: `FASE 4 / 5 · CASO CLÍNICO REAL & MANEJO DE CRISE`,
+      title: `4. Discussão de Caso Real & Manejo de Complicações`,
+      subtitle: `${courseTitle} · Tomada de Decisão sob Pressão no Pronto-Socorro`,
+      keypoints: [
+        "Apresentação de paciente típico de pronto-socorro com evolução desfavorável",
+        "Tomada de decisão sob pressão: quando escalonar a terapia para suporte avançado",
+        "Prevenção e controle imediato de arritmias, hipotensão refratária e falência de órgãos",
+        "Manejo farmacológico de resgate em caso de falha da abordagem inicial"
+      ],
+      protocol: "Manejo de Crise: Reavaliação seriada e escalonamento de drogas vasoativas conforme PAM alvo."
+    },
+    {
+      phase: 5,
+      badge: "PADRÃO ENARE · USP · BANCA R1",
+      tag: `FASE 5 / 5 · FIXAÇÃO DE PROVA DE RESIDÊNCIA MÉDICA`,
+      title: `5. Armadilhas de Bancas e Questões Comentadas de R1`,
+      subtitle: `${courseTitle} · Pontos de Corte Cronológicos e Síntese de Prova`,
+      keypoints: [
+        "Pegadinhas frequentes de bancas examinadoras sobre critérios e pontos de corte",
+        "Resolução passo a passo de questões comentadas dos maiores concursos R1",
+        "Dicas mnemônicas de memorização rápida para condutas terapêuticas de emergência",
+        "Checklist final de alta hospitalar segura e prescrição de prevenção secundária"
+      ],
+      protocol: "Revisão R1: Síntese de pontos de corte cronológicos e condutas incontestáveis de prova."
+    }
+  ];
+}
+
 function updatePlayButtonsState(playing) {
   const btnMedical = $("#btn-play-medical-big");
   const btnBig = $("#btn-play-big");
@@ -189,124 +273,246 @@ function updatePlayButtonsState(playing) {
   if (ctrlP) ctrlP.textContent = playing ? "❚❚" : "▶";
   if (trigger) trigger.textContent = playing ? "❚❚ Pausar Aula" : "▶ Assistir Aula";
 
-  // Esconde 100% o card central (#video-slide-box) e o overlay quando o vídeo estiver reproduzindo
   const slideBox = $("#video-slide-box");
   const overlay = $("#video-overlay");
   const screen = $("#video-screen");
+  const liveScreen = $("#live-lecture-screen");
 
   if (playing) {
     if (slideBox) slideBox.style.display = "none";
     if (overlay) overlay.style.display = "none";
-    if (screen) screen.classList.add("is-playing");
+    if (liveScreen) liveScreen.style.display = "flex";
+    if (screen) {
+      screen.classList.add("is-playing");
+      screen.classList.add("native-mode");
+    }
   } else {
-    if (slideBox) slideBox.style.display = "block";
-    if (overlay) overlay.style.display = "flex";
     if (screen) screen.classList.remove("is-playing");
+    if (playbackSeconds === 0) {
+      if (slideBox) slideBox.style.display = "block";
+      if (overlay) overlay.style.display = "flex";
+      if (liveScreen) liveScreen.style.display = "none";
+    }
   }
 }
 
-const LECTURE_PHASES = [
-  {
-    phase: 1,
-    tag: "FASE 1 / 5 · CONCEITOS INICIAIS & EPIDEMIOLOGIA",
-    title: "1. Fisiopatologia Celular & Cascata Isquêmica Aguda",
-    badge: "DIRETRIZES SBC / AHA 2026",
-    keypoints: [
-      "Ruptura de placa vulnerável com agregação plaquetária e trombose luminal oclusiva",
-      "Onda de necrose miocárdica transmural a partir de 20 minutos de isquemia total",
-      "Cinética de liberação dos biomarcadores: Troponina ultrassensível e CK-MB",
-      "Identificação precoce de equivalentes isquêmicos em idosos, diabéticos e mulheres"
-    ]
-  },
-  {
-    phase: 2,
-    tag: "FASE 2 / 5 · PROPEDÊUTICA ARMADA & ECG",
-    title: "2. Eletrocardiograma de 12 Derivações & Paredes Miocárdicas",
-    badge: "TEMPO PORTA-ECG < 10 MINUTOS",
-    keypoints: [
-      "Critérios de Supra de ST no ponto J: ≥1mm em periféricas e ≥1.5-2.5mm em V2-V3",
-      "Parede Anterior (DA): V1-V4 | Inferior (CD): DII, DIII, aVF | Lateral (Cx): DI, aVL, V5-V6",
-      "Busca ativa de espelho recíproco e derivações direitas (V3R/V4R) se parede inferior",
-      "Diagnósticos diferenciais de emergência: Pericardite aguda, Takotsubo e Dissecção de Aorta"
-    ]
-  },
-  {
-    phase: 3,
-    tag: "FASE 3 / 5 · ESTRATÉGIAS DE REPERFUSÃO",
-    title: "3. Reperfusão Miocárdica: Angioplastia Primária vs Trombolítico",
-    badge: "JANELA TERAPÊUTICA CRÍTICA",
-    keypoints: [
-      "Angioplastia Primária (ICP): Padrão-ouro se tempo porta-balão < 90 min (ou < 120 min se transferido)",
-      "Fibrinólise Química (Tenecteplase / Alteplase): Indicar em até 30 min se ICP indisponível em 120 min",
-      "Contraindicações absolutas: AVE hemorrágico prévio, AVE isquêmico < 6m, sangramento gastrointestinal ativo",
-      "Critérios de sucesso de reperfusão: Redução do supra de ST > 50% aos 90 minutos"
-    ]
-  },
-  {
-    phase: 4,
-    tag: "FASE 4 / 5 · FARMACOLOGIA DE SALA VERMELHA",
-    title: "4. Prescrição Hospitalar & Terapia Farmacológica Inicial",
-    badge: "PRESCRIÇÃO ARMADA HOSPITALAR",
-    keypoints: [
-      "Dupla Antiagregação Plaquetária (DAPT): AAS 200-300mg + Ticagrelor 180mg (ou Clopidogrel 300/600mg)",
-      "Anticoagulação Plena: Enoxaparina 1mg/kg SC 12/12h ou Heparina Não Fracionada (HNF)",
-      "Estatina de alta potência precoce: Atorvastatina 80mg VO em dose máxima",
-      "Vasodilatadores e analgesia: Nitrato SL se dor refratária sem hipotensão ou infarto de VD"
-    ]
-  },
-  {
-    phase: 5,
-    tag: "FASE 5 / 5 · FIXAÇÃO DE PROVA DE RESIDÊNCIA",
-    title: "5. Resolução Comentada de Questões de Bancas R1",
-    badge: "PADRÃO USP · ENARE · SUS-SP",
-    keypoints: [
-      "Armadilha clássica: Proibido nitrato ou morfina se houver suspeita de acometimento de VD",
-      "Conduta na falha da trombólise: Encaminhamento imediato para Angioplastia de Resgate",
-      "Estratificação pós-evento e prevenção secundária com Betabloqueador e IECA/BRA",
-      "Resumo dos pontos de corte cronológicos mais cobrados nas provas de 2026"
-    ]
+function updateLectureProgressUI(forcePhaseChange = false) {
+  const totalDuration = currentLesson?.durationSeconds || 2700;
+  const phases = getLessonPhases(currentLesson, currentCourse);
+  const phaseIndex = Math.min(4, Math.max(0, Math.floor((playbackSeconds / totalDuration) * 5)));
+  const phase = phases[phaseIndex];
+
+  // Atualiza indicadores do palco ao vivo
+  const livePhaseBadge = $("#live-phase-badge");
+  if (livePhaseBadge) {
+    livePhaseBadge.textContent = `Fase ${phase.phase} / 5 · ${phase.badge}`;
   }
-];
 
-function updateLectureProgressUI() {
-  const totalDuration = 2700;
-  const phaseIndex = Math.min(4, Math.floor((playbackSeconds / totalDuration) * 5));
-  const phase = LECTURE_PHASES[phaseIndex];
+  const liveCategory = $("#live-lecture-category");
+  if (liveCategory) {
+    liveCategory.textContent = phase.tag;
+  }
 
-  const liveIndicator = $("#lecture-live-indicator");
-  if (liveIndicator) liveIndicator.style.display = isPlaying ? "flex" : "none";
+  const liveTitle = $("#live-lecture-title");
+  if (liveTitle) {
+    liveTitle.textContent = currentLesson?.title || "Aula Médica Oficial";
+  }
 
-  const phaseBadge = $("#lecture-phase-badge");
-  if (phaseBadge) phaseBadge.textContent = `Fase ${phase.phase} / 5 · ${phase.badge}`;
+  const liveSubtitle = $("#live-lecture-subtitle");
+  if (liveSubtitle) {
+    liveSubtitle.textContent = phase.subtitle;
+  }
 
-  const audioViz = $("#lecture-audio-visualizer");
-  if (audioViz) {
-    audioViz.style.display = isPlaying ? "flex" : "none";
-    if (isPlaying) {
-      audioViz.querySelectorAll(".eq-bar").forEach((bar) => {
-        bar.style.height = `${Math.floor(Math.random() * 16) + 6}px`;
-      });
+  const protocolText = $("#live-lecture-protocol-text");
+  if (protocolText) {
+    protocolText.textContent = phase.protocol;
+  }
+
+  // Atualiza os pontos-chave dinâmicos
+  const keypointsContainer = $("#live-lecture-keypoints");
+  if (keypointsContainer) {
+    keypointsContainer.replaceChildren();
+    phase.keypoints.forEach((kp) => {
+      const card = document.createElement("div");
+      card.className = "live-keypoint-card";
+      card.innerHTML = `<span style="color:#10b981; font-weight:800; font-size:14px;">●</span><span>${kp}</span>`;
+      keypointsContainer.appendChild(card);
+    });
+  }
+
+  // Dispara narração em áudio quando muda de fase
+  if (isPlaying && (forcePhaseChange || phaseIndex !== lastSpokenPhase)) {
+    lastSpokenPhase = phaseIndex;
+    speakPhaseNarration(phaseIndex === 0 && playbackSeconds < 10);
+  }
+}
+
+function speakPhaseNarration(isStart = false) {
+  if (!isAudioNarrating) return;
+  if (!("speechSynthesis" in window)) return;
+
+  try {
+    window.speechSynthesis.cancel();
+
+    const phases = getLessonPhases(currentLesson, currentCourse);
+    const totalDuration = currentLesson?.durationSeconds || 2700;
+    const phaseIndex = Math.min(4, Math.max(0, Math.floor((playbackSeconds / totalDuration) * 5)));
+    const phase = phases[phaseIndex];
+
+    let textToSpeak = "";
+    if (isStart) {
+      textToSpeak = `Iniciando aula: ${currentLesson?.title || "Aula Oficial"}. Fase um: ${phase.badge}. ${phase.keypoints[0]}. ${phase.protocol}`;
+    } else {
+      textToSpeak = `Avançando para Fase ${phase.phase}: ${phase.badge}. ${phase.keypoints[0]}. ${phase.protocol}`;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(textToSpeak);
+    utterance.lang = "pt-BR";
+    utterance.rate = Math.min(1.4, Math.max(0.9, currentSpeed));
+    utterance.pitch = 1.0;
+
+    const voices = window.speechSynthesis.getVoices();
+    const ptVoice = voices.find((v) => v.lang.includes("pt") || v.lang.includes("BR"));
+    if (ptVoice) utterance.voice = ptVoice;
+
+    window.speechSynthesis.speak(utterance);
+  } catch (e) {
+    console.warn("Speech synthesis notice:", e);
+  }
+}
+
+function stopSpeechNarration() {
+  if ("speechSynthesis" in window) {
+    try { window.speechSynthesis.cancel(); } catch (e) {}
+  }
+}
+
+function startVisualCanvasAnimation() {
+  const canvas = $("#lecture-visual-canvas");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  let width = (canvas.width = canvas.offsetWidth || 800);
+  let height = (canvas.height = canvas.offsetHeight || 450);
+  let t = 0;
+
+  function renderWave() {
+    if (!isPlaying) return;
+    t += 0.04 * currentSpeed;
+    ctx.clearRect(0, 0, width, height);
+
+    // Linha de grade sutil
+    ctx.strokeStyle = "rgba(59, 130, 246, 0.05)";
+    ctx.lineWidth = 1;
+    const gridStep = 32;
+    for (let x = 0; x < width; x += gridStep) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, height);
+      ctx.stroke();
+    }
+    for (let y = 0; y < height; y += gridStep) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(width, y);
+      ctx.stroke();
+    }
+
+    // Traçado rítmico dinâmico
+    ctx.beginPath();
+    ctx.strokeStyle = "rgba(59, 130, 246, 0.45)";
+    ctx.lineWidth = 2.5;
+    for (let x = 0; x < width; x += 4) {
+      const freq = (x * 0.015) - t;
+      let yOffset = Math.sin(freq) * 16;
+      
+      const cycle = (x - (t * 90) % (width + 250) + width + 250) % 320;
+      if (cycle > 150 && cycle < 160) yOffset -= 50; // Onda R
+      else if (cycle >= 160 && cycle < 170) yOffset += 22; // Onda S
+      
+      const y = height * 0.82 + yOffset;
+      if (x === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    animFrameId = requestAnimationFrame(renderWave);
+  }
+
+  if (animFrameId) cancelAnimationFrame(animFrameId);
+  animFrameId = requestAnimationFrame(renderWave);
+}
+
+function stopVisualCanvasAnimation() {
+  if (animFrameId) {
+    cancelAnimationFrame(animFrameId);
+    animFrameId = null;
+  }
+}
+
+function startPlayback() {
+  if (!isUserActive && !isAdmin) {
+    let trialUser = getTrialUser();
+    if (!trialUser) {
+      trialUser = { name: "Dra. Lívia (Visitante)", email: "medicinerlivia@gmail.com", whatsapp: "0000000000" };
+      try {
+        localStorage.setItem(TRIAL_USER_KEY, JSON.stringify(trialUser));
+        if (!localStorage.getItem(TRIAL_KEY)) localStorage.setItem(TRIAL_KEY, "1800");
+        initFreeTrial();
+      } catch (e) {}
+    }
+    if (trialSecondsRemaining <= 0) {
+      lockTrialExpired();
+      return;
     }
   }
 
-  const slideTag = $("#slide-tag");
-  if (slideTag) slideTag.textContent = isPlaying ? phase.tag : "DIRETRIZES CLÍNICAS & RESIDÊNCIA MÉDICA";
+  isPlaying = true;
+  updatePlayButtonsState(true);
 
-  const slideTitle = $("#video-slide-title");
-  if (slideTitle) {
-    const baseTitle = currentLesson?.title || "Aula Médica Oficial";
-    slideTitle.textContent = isPlaying ? `${baseTitle} — ${phase.title}` : baseTitle;
+  const liveScreen = $("#live-lecture-screen");
+  if (liveScreen) liveScreen.style.display = "flex";
+
+  const driveSync = $("#drive-sync-screen");
+  if (driveSync) driveSync.style.display = "none";
+
+  const totalDuration = currentLesson?.durationSeconds || 2700;
+
+  if (playbackInterval) clearInterval(playbackInterval);
+  playbackInterval = setInterval(() => {
+    playbackSeconds += 1 * currentSpeed;
+    if (playbackSeconds >= totalDuration) {
+      playbackSeconds = totalDuration;
+      pausePlayback();
+      goToNextLesson();
+      return;
+    }
+    updateTimeUI(totalDuration);
+    updateLectureProgressUI();
+  }, 1000);
+
+  updateTimeUI(totalDuration);
+  updateLectureProgressUI(true);
+  startVisualCanvasAnimation();
+}
+
+function pausePlayback() {
+  isPlaying = false;
+  if (playbackInterval) {
+    clearInterval(playbackInterval);
+    playbackInterval = null;
   }
+  updatePlayButtonsState(false);
+  stopSpeechNarration();
+  stopVisualCanvasAnimation();
+}
 
-  const keypointsContainer = $("#slide-keypoints");
-  if (keypointsContainer && isPlaying) {
-    keypointsContainer.replaceChildren();
-    phase.keypoints.forEach((kp) => {
-      const item = document.createElement("div");
-      item.className = "slide-keypoint-item";
-      item.innerHTML = `<span style="color:#10b981; font-weight:800;">●</span> <span>${kp}</span>`;
-      keypointsContainer.appendChild(item);
-    });
+function togglePlay() {
+  if (isPlaying) {
+    pausePlayback();
+  } else {
+    startPlayback();
   }
 }
 
@@ -322,15 +528,26 @@ function setupVideoPlayer() {
   const speedBtn = $("#speed-btn");
   const speedDropdown = $("#speed-dropdown");
   const markDoneBtn = $("#ctrl-mark-done");
-  const nativeVideo = $("#native-video-player");
-  const driveFrame = $("#drive-video-frame");
   const btnSrcNative = $("#btn-src-native");
   const btnSrcDrive = $("#btn-src-drive");
   const btnOpenDriveDirect = $("#btn-open-drive-direct");
   const btnDownloadPdfStage = $("#btn-download-pdf-stage");
+  const btnDriveLaunchOfficial = $("#btn-drive-launch-official");
+  const btnBackToWebPlayer = $("#btn-back-to-web-player");
+  const btnLiveOpenDrive = $("#btn-live-open-drive");
+  const btnToggleVoice = $("#btn-toggle-lecture-voice");
 
-  // Alternância de fonte de streaming (Google Drive Oficial vs Videoaula HD Web)
+  function openGoogleDriveExternal() {
+    const driveUrl = currentCourse?.driveUrl || "https://drive.google.com/drive/u/0/my-drive";
+    const driveAccountUrl = `${driveUrl}${driveUrl.includes("?") ? "&" : "?"}authuser=medicinerlivia@gmail.com`;
+    window.open(driveAccountUrl, "_blank");
+  }
+
   function setStreamMode(mode) {
+    const liveScreen = $("#live-lecture-screen");
+    const driveSync = $("#drive-sync-screen");
+    const overlay = $("#video-overlay");
+
     [btnSrcNative, btnSrcDrive].forEach((b) => {
       if (b) {
         b.classList.remove("active");
@@ -345,198 +562,81 @@ function setupVideoPlayer() {
         btnSrcDrive.style.background = "#2563eb";
         btnSrcDrive.style.color = "#fff";
       }
-      if (nativeVideo) {
-        nativeVideo.style.display = "none";
-        try { nativeVideo.pause(); } catch (e) {}
-      }
-      if (driveFrame) {
-        driveFrame.style.display = "block";
-        const driveUrl = currentCourse?.driveUrl || "https://drive.google.com/drive/u/0/my-drive";
-        let embedUrl = driveUrl;
-        const folderMatch = driveUrl.match(/folders\/([\w\d_-]+)/i);
-        const fileMatch = driveUrl.match(/file\/d\/([\w\d_-]+)/i);
-        if (fileMatch) {
-          embedUrl = `https://drive.google.com/file/d/${fileMatch[1]}/preview`;
-        } else if (folderMatch) {
-          embedUrl = `https://drive.google.com/embeddedfolderview?id=${folderMatch[1]}#list`;
-        }
-        driveFrame.src = embedUrl;
-      }
-    } else if (mode === "native") {
+      pausePlayback();
+      if (liveScreen) liveScreen.style.display = "none";
+      if (overlay) overlay.style.display = "none";
+      if (driveSync) driveSync.style.display = "flex";
+    } else {
       if (btnSrcNative) {
         btnSrcNative.classList.add("active");
         btnSrcNative.style.background = "#2563eb";
         btnSrcNative.style.color = "#fff";
       }
-      if (nativeVideo) nativeVideo.style.display = "block";
-      if (driveFrame) driveFrame.style.display = "none";
+      if (driveSync) driveSync.style.display = "none";
+      startPlayback();
     }
   }
 
   btnSrcNative?.addEventListener("click", () => setStreamMode("native"));
   btnSrcDrive?.addEventListener("click", () => setStreamMode("drive"));
+  btnDriveLaunchOfficial?.addEventListener("click", openGoogleDriveExternal);
+  btnOpenDriveDirect?.addEventListener("click", openGoogleDriveExternal);
+  btnLiveOpenDrive?.addEventListener("click", openGoogleDriveExternal);
 
-  btnOpenDriveDirect?.addEventListener("click", () => {
-    const driveUrl = currentCourse?.driveUrl || "https://drive.google.com/drive/u/0/my-drive";
-    const driveAccountUrl = `${driveUrl}${driveUrl.includes("?") ? "&" : "?"}authuser=medicinerlivia@gmail.com`;
-    setStreamMode("drive");
-    window.open(driveAccountUrl, "_blank");
+  btnBackToWebPlayer?.addEventListener("click", () => setStreamMode("native"));
+
+  btnToggleVoice?.addEventListener("click", () => {
+    isAudioNarrating = !isAudioNarrating;
+    if (isAudioNarrating) {
+      btnToggleVoice.textContent = "🔊 Narração Ativa (pt-BR)";
+      btnToggleVoice.style.color = "#93c5fd";
+      speakPhaseNarration(true);
+    } else {
+      btnToggleVoice.textContent = "🔇 Narração Pausada";
+      btnToggleVoice.style.color = "#94a3b8";
+      stopSpeechNarration();
+    }
   });
+
+  btnPlayMedicalBig?.addEventListener("click", startPlayback);
+  btnPlayBig?.addEventListener("click", togglePlay);
+  ctrlPlay?.addEventListener("click", togglePlay);
 
   btnDownloadPdfStage?.addEventListener("click", () => {
     downloadCourseApostila(currentCourse, currentLesson);
   });
 
-  function togglePlay() {
-    if (!isUserActive && !isAdmin) {
-      let trialUser = getTrialUser();
-      if (!trialUser) {
-        trialUser = { name: "Aluno Visitante", email: "visitante@medstudy.com", whatsapp: "0000000000" };
-        try {
-          localStorage.setItem(TRIAL_USER_KEY, JSON.stringify(trialUser));
-          if (!localStorage.getItem(TRIAL_KEY)) localStorage.setItem(TRIAL_KEY, "1800");
-          initFreeTrial();
-        } catch (e) {}
-      }
-      if (trialSecondsRemaining <= 0) {
-        lockTrialExpired();
-        return;
-      }
-    }
-
-    const isDriveActive = btnSrcDrive?.classList.contains("active");
-
-    // Modo Google Drive Oficial
-    if (isDriveActive) {
-      isPlaying = !isPlaying;
-      updatePlayButtonsState(isPlaying);
-      if (driveFrame) driveFrame.style.display = "block";
-      if (nativeVideo) {
-        nativeVideo.style.display = "none";
-        try { nativeVideo.pause(); } catch (e) {}
-      }
-      updateLectureProgressUI();
-      return;
-    }
-
-    // Modo Videoaula Web (HTML5)
-    if (nativeVideo) {
-      if (nativeVideo.paused) {
-        setStreamMode("native");
-        updatePlayButtonsState(true);
-        const playPromise = nativeVideo.play();
-        if (playPromise !== undefined) {
-          playPromise.catch((err) => {
-            console.warn("Autoplay bloqueado pelo navegador, tentando mutado:", err);
-            nativeVideo.muted = true;
-            nativeVideo.play().catch(() => {});
-            const unmuteTip = $("#video-unmute-tip");
-            if (unmuteTip) unmuteTip.style.display = "block";
-          });
-        }
-      } else {
-        nativeVideo.pause();
-      }
-      return;
-    }
-
-    // Fallback de reprodução
-    isPlaying = !isPlaying;
-    updatePlayButtonsState(isPlaying);
-    updateLectureProgressUI();
-  }
-
-  btnPlayMedicalBig?.addEventListener("click", togglePlay);
-  btnPlayBig?.addEventListener("click", togglePlay);
-  ctrlPlay?.addEventListener("click", togglePlay);
-
-  const unmuteTip = $("#video-unmute-tip");
-  unmuteTip?.addEventListener("click", () => {
-    if (nativeVideo) {
-      nativeVideo.muted = false;
-      unmuteTip.style.display = "none";
-    }
-  });
-
-  if (nativeVideo) {
-    nativeVideo.addEventListener("play", () => {
-      isPlaying = true;
-      updatePlayButtonsState(true);
-      const screen = $("#video-screen");
-      if (screen) {
-        screen.classList.add("is-playing");
-        screen.classList.add("native-mode");
-      }
-      if (!nativeVideo.muted && unmuteTip) {
-        unmuteTip.style.display = "none";
-      }
-    });
-
-    nativeVideo.addEventListener("pause", () => {
-      isPlaying = false;
-      updatePlayButtonsState(false);
-      const screen = $("#video-screen");
-      if (screen) {
-        screen.classList.remove("is-playing");
-        screen.classList.remove("native-mode");
-      }
-    });
-
-    nativeVideo.addEventListener("timeupdate", () => {
-      playbackSeconds = nativeVideo.currentTime;
-      updateTimeUI(nativeVideo.duration || 1680);
-    });
-
-    nativeVideo.addEventListener("ended", () => {
-      isPlaying = false;
-      updatePlayButtonsState(false);
-      if (currentLesson && currentCourse) {
-        const completed = getCompletedLessons(currentCourse.id);
-        if (!completed.includes(currentLesson.id)) {
-          toggleLessonCompleted(currentLesson.id);
-        }
-      }
-      goToNextLesson();
-    });
-  }
-
   ctrlRewind?.addEventListener("click", () => {
-    if (nativeVideo && nativeVideo.currentTime !== undefined && nativeVideo.readyState >= 2) {
-      nativeVideo.currentTime = Math.max(0, nativeVideo.currentTime - 10);
-    } else {
-      playbackSeconds = Math.max(0, playbackSeconds - 10);
-      updateLectureProgressUI();
-      updateTimeUI(2700);
-    }
+    const totalDuration = currentLesson?.durationSeconds || 2700;
+    playbackSeconds = Math.max(0, playbackSeconds - 10);
+    updateTimeUI(totalDuration);
+    updateLectureProgressUI();
   });
 
   ctrlForward?.addEventListener("click", () => {
-    if (nativeVideo && nativeVideo.duration && nativeVideo.readyState >= 2) {
-      nativeVideo.currentTime = Math.min(nativeVideo.duration, nativeVideo.currentTime + 10);
-    } else {
-      playbackSeconds = Math.min(2700, playbackSeconds + 10);
-      updateLectureProgressUI();
-      updateTimeUI(2700);
-    }
+    const totalDuration = currentLesson?.durationSeconds || 2700;
+    playbackSeconds = Math.min(totalDuration, playbackSeconds + 10);
+    updateTimeUI(totalDuration);
+    updateLectureProgressUI();
   });
 
   ctrlVolume?.addEventListener("click", () => {
-    if (nativeVideo) {
-      nativeVideo.muted = !nativeVideo.muted;
-      ctrlVolume.textContent = nativeVideo.muted ? "🔇" : "🔊";
+    isAudioNarrating = !isAudioNarrating;
+    ctrlVolume.textContent = isAudioNarrating ? "🔊" : "🔇";
+    if (!isAudioNarrating) {
+      stopSpeechNarration();
+    } else {
+      speakPhaseNarration(false);
     }
   });
 
   scrubBar?.addEventListener("click", (e) => {
     const rect = scrubBar.getBoundingClientRect();
     const pos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-    if (nativeVideo && nativeVideo.duration && nativeVideo.readyState >= 2) {
-      nativeVideo.currentTime = pos * nativeVideo.duration;
-    } else {
-      playbackSeconds = Math.round(pos * 2700);
-      updateLectureProgressUI();
-      updateTimeUI(2700);
-    }
+    const totalDuration = currentLesson?.durationSeconds || 2700;
+    playbackSeconds = Math.round(pos * totalDuration);
+    updateTimeUI(totalDuration);
+    updateLectureProgressUI(true);
   });
 
   speedBtn?.addEventListener("click", () => {
@@ -550,9 +650,6 @@ function setupVideoPlayer() {
       $$(".speed-dropdown button").forEach((b) => b.classList.remove("active"));
       e.target.classList.add("active");
       speedDropdown.hidden = true;
-      if (nativeVideo) {
-        nativeVideo.playbackRate = currentSpeed;
-      }
     }
   });
 
@@ -1336,7 +1433,9 @@ function selectLesson(lesson, autoPlay = false) {
   currentLesson = lesson;
   playbackSeconds = 0;
   if (playbackInterval) clearInterval(playbackInterval);
-  updateTimeUI();
+  const totalDuration = lesson?.durationSeconds || 2700;
+  updateTimeUI(totalDuration);
+  updateLectureProgressUI();
 
   // Sincroniza o dropdown rápido do topo do player
   const quickSelect = $("#select-lesson-dropdown");
@@ -1393,13 +1492,11 @@ function selectLesson(lesson, autoPlay = false) {
       li.innerHTML = `<span>${ch.name}</span> <span class="timestamp">${ch.time}</span>`;
       li.addEventListener("click", () => {
         const [m, s] = ch.time.split(":").map(Number);
+        const totalDuration = currentLesson?.durationSeconds || 2700;
         playbackSeconds = m * 60 + s;
-        if (nativeVideo) {
-          nativeVideo.currentTime = playbackSeconds;
-          nativeVideo.play().catch(() => {});
-        } else {
-          updateTimeUI();
-        }
+        updateTimeUI(totalDuration);
+        updateLectureProgressUI(true);
+        if (!isPlaying) startPlayback();
       });
       chaptersList.appendChild(li);
     });
@@ -1417,57 +1514,11 @@ function selectLesson(lesson, autoPlay = false) {
     switchTab("video");
     const videoBox = $("#video-container") || document.body;
     videoBox.scrollIntoView({ behavior: "smooth", block: "start" });
-
-    // Oculta imediatamente o quadrado azul (#video-slide-box)
-    const slideBox = $("#video-slide-box");
-    const overlay = $("#video-overlay");
-    const screen = $("#video-screen");
-    if (slideBox) slideBox.style.display = "none";
-    if (overlay) overlay.style.display = "none";
-    if (screen) screen.classList.add("is-playing");
-    isPlaying = true;
-    updatePlayButtonsState(true);
-
-    const btnSrcDrive = $("#btn-src-drive");
-    const isDriveActive = btnSrcDrive?.classList.contains("active");
-
-    if (isDriveActive) {
-      const driveFrame = $("#drive-video-frame");
-      if (driveFrame) {
-        driveFrame.style.display = "block";
-        const driveUrl = currentCourse?.driveUrl || "https://drive.google.com/drive/u/0/my-drive";
-        let embedUrl = driveUrl;
-        const folderMatch = driveUrl.match(/folders\/([\w\d_-]+)/i);
-        const fileMatch = driveUrl.match(/file\/d\/([\w\d_-]+)/i);
-        if (fileMatch) {
-          embedUrl = `https://drive.google.com/file/d/${fileMatch[1]}/preview`;
-        } else if (folderMatch) {
-          embedUrl = `https://drive.google.com/embeddedfolderview?id=${folderMatch[1]}#list`;
-        }
-        driveFrame.src = embedUrl;
-      }
-      if (nativeVideo) {
-        nativeVideo.style.display = "none";
-        try { nativeVideo.pause(); } catch (e) {}
-      }
-    } else if (nativeVideo) {
-      nativeVideo.currentTime = 0;
-      const playPromise = nativeVideo.play();
-      if (playPromise !== undefined) {
-        playPromise.catch((err) => {
-          console.warn("Autoplay com áudio bloqueado pelo navegador, iniciando mutado:", err);
-          nativeVideo.muted = true;
-          nativeVideo.play().catch(() => {});
-          const unmuteTip = $("#video-unmute-tip");
-          if (unmuteTip) unmuteTip.style.display = "block";
-        });
-      }
-    }
+    startPlayback();
   } else {
     isPlaying = false;
     updatePlayButtonsState(false);
-    const screen = $("#video-screen");
-    if (screen) screen.classList.remove("is-playing");
+    updateLectureProgressUI();
   }
 }
 

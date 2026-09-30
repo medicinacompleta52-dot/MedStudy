@@ -379,7 +379,7 @@ body {
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-/* Quando o player estiver reproduzindo: oculta 100% o card central (#video-slide-box) e o overlay para dar visibilidade total ao vídeo sem nenhum quadrado azul */
+/* Quando o player estiver reproduzindo: oculta 100% o card estático pré-play (#video-slide-box) e o overlay pré-play */
 .video-screen.is-playing .video-overlay,
 .video-screen.is-playing #video-slide-box,
 .video-screen.is-playing:hover .video-overlay,
@@ -390,32 +390,60 @@ body {
   visibility: hidden !important;
 }
 
-/* Durante a reprodução, os controles inferiores e pills de fonte surgem discretamente apenas ao passar o mouse */
-.video-screen.is-playing .video-bottom-bar {
-  opacity: 0;
-  transition: opacity 0.25s ease;
+/* Transmissão da aula médica ao vivo fica 100% visível durante a reprodução */
+.video-screen.is-playing #live-lecture-screen {
+  display: flex !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
 }
 
+/* A barra inferior de controles do player SEMPRE permanece visível e interativa com contraste de cinema */
+.video-screen .video-bottom-bar,
+.video-screen.is-playing .video-bottom-bar,
 .video-screen.is-playing:hover .video-bottom-bar {
   opacity: 1 !important;
-}
-
-.video-screen.is-playing .stream-source-pills,
-.video-screen.is-playing .drive-account-indicator {
-  opacity: 0;
-  transition: opacity 0.25s ease;
-}
-
-.video-screen.is-playing:hover .stream-source-pills,
-.video-screen.is-playing:hover .drive-account-indicator {
-  opacity: 1 !important;
-}
-
-/* A barra inferior de controles do player SEMPRE permanece visível e interativa */
-.video-screen .video-bottom-bar {
   display: flex !important;
   position: relative;
   z-index: 30;
+  background: rgba(8, 12, 22, 0.95);
+  border-top: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.video-screen .stream-source-pills,
+.video-screen .drive-account-indicator {
+  opacity: 1 !important;
+  transition: opacity 0.25s ease;
+}
+
+@keyframes eqBounce {
+  0%, 100% { height: 6px; }
+  50% { height: 18px; }
+}
+
+.video-screen.is-playing .eq-bar:nth-child(1) { animation: eqBounce 0.75s ease-in-out infinite; }
+.video-screen.is-playing .eq-bar:nth-child(2) { animation: eqBounce 1.15s ease-in-out infinite 0.2s; }
+.video-screen.is-playing .eq-bar:nth-child(3) { animation: eqBounce 0.65s ease-in-out infinite 0.4s; }
+.video-screen.is-playing .eq-bar:nth-child(4) { animation: eqBounce 1.05s ease-in-out infinite 0.1s; }
+.video-screen.is-playing .eq-bar:nth-child(5) { animation: eqBounce 0.85s ease-in-out infinite 0.3s; }
+
+.live-keypoint-card {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 11.5px;
+  color: #e2e8f0;
+  line-height: 1.4;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.live-keypoint-card:hover {
+  border-color: #3b82f6;
+  transform: translateY(-1px);
 }
 
 .slide-tag {

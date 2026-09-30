@@ -476,7 +476,12 @@ app.get("/api/courses", async (req, res) => {
     }
   }
 
-  // Verifica se o e-mail foi liberado manualmente pelo Administrador
+  // Verifica se o e-mail foi liberado manualmente pelo Administrador ou informado pelo cliente
+  const clientEmail = (req.headers["x-user-email"] || req.query.email || "").toString().trim().toLowerCase();
+  if (!user && clientEmail) {
+    user = { id: `user_${clientEmail.replace(/[^a-z0-9]/g, '_')}`, email: clientEmail };
+  }
+
   const manualSubs = await loadManualSubscribers();
   let userPlan = null;
   if (user?.email) {
@@ -548,6 +553,12 @@ app.get("/api/courses/:id", async (req, res) => {
     } catch (e) {
       console.error("Error validating auth in /api/courses/:id:", e.message);
     }
+  }
+
+  // Verifica se o e-mail foi liberado manualmente pelo Administrador ou informado pelo cliente
+  const clientEmail = (req.headers["x-user-email"] || req.query.email || "").toString().trim().toLowerCase();
+  if (!user && clientEmail) {
+    user = { id: `user_${clientEmail.replace(/[^a-z0-9]/g, '_')}`, email: clientEmail };
   }
 
   // Verifica liberação manual
@@ -1177,7 +1188,7 @@ app.post("/api/ai/clinical-query", async (req, res) => {
   const token = req.headers.authorization?.match(/^Bearer (.+)$/i)?.[1];
   const isAdmin = verifyAdminToken(token);
   let isVip = isAdmin;
-  let userEmail = null;
+  let userEmail = (req.headers["x-user-email"] || req.body?.userEmail || req.query.email || "").toString().trim().toLowerCase() || null;
 
   if (!isAdmin && token && supabaseAdmin) {
     try {

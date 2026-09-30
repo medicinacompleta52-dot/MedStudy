@@ -108,8 +108,8 @@
 
             <!-- Seletor de Modo de Exibição (Google Drive Oficial vs Videoaula HD) -->
             <div class="stream-source-pills" style="position:absolute; top:14px; left:16px; z-index:20; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-              <button type="button" class="btn-stream-source active" id="btn-src-drive" style="background:#2563eb; color:#fff; border:1px solid #3b82f6; border-radius:6px; font-size:11px; font-weight:700; padding:6px 12px; cursor:pointer;">☁️ Drive Oficial (medicinerlivia@gmail.com)</button>
-              <button type="button" class="btn-stream-source" id="btn-src-native" style="background:rgba(15,23,42,0.9); color:#93c5fd; border:1px solid rgba(59,130,246,0.4); border-radius:6px; font-size:11px; font-weight:700; padding:6px 12px; cursor:pointer;">📺 Videoaula HD (Player Web)</button>
+              <button type="button" class="btn-stream-source active" id="btn-src-native" style="background:#2563eb; color:#fff; border:1px solid #3b82f6; border-radius:6px; font-size:11px; font-weight:700; padding:6px 12px; cursor:pointer;">📺 Videoaula HD (Player Web)</button>
+              <button type="button" class="btn-stream-source" id="btn-src-drive" style="background:rgba(15,23,42,0.9); color:#93c5fd; border:1px solid rgba(59,130,246,0.4); border-radius:6px; font-size:11px; font-weight:700; padding:6px 12px; cursor:pointer;">☁️ Drive Oficial (medicinerlivia@gmail.com)</button>
             </div>
 
             <!-- Crachá de Conexão com Google Drive Oficial -->
@@ -118,7 +118,111 @@
               <span style="font-size:11px; font-weight:700; color:#93c5fd;">Drive: <strong style="color:#fff;">medicinerlivia@gmail.com</strong></span>
             </div>
 
-            <!-- Palco Médico com Apresentação da Aula & Controles -->
+            <!-- PALCO DA VIDEOAULA MÉDICA (TRANSMISSÃO AO VIVO HD & CONTEÚDO ATIVO) -->
+            <div id="live-lecture-screen" style="display:none; position:absolute; inset:0 0 54px 0; z-index:9; background:linear-gradient(145deg, #090e17 0%, #0d1527 50%, #080d1a 100%); flex-direction:column; justify-content:space-between; padding:20px 24px; overflow:hidden;">
+              <!-- Background Canvas Dinâmico de Ondas Médicas / Frequência -->
+              <canvas id="lecture-visual-canvas" style="position:absolute; inset:0; width:100%; height:100%; opacity:0.18; pointer-events:none; z-index:1;"></canvas>
+
+              <!-- Topo da Transmissão da Aula -->
+              <div style="position:relative; z-index:2; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; border-bottom:1px solid rgba(59,130,246,0.2); padding-bottom:12px;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <span style="display:inline-flex; align-items:center; gap:6px; background:rgba(239,68,68,0.2); border:1px solid #ef4444; color:#fca5a5; font-size:11px; font-weight:800; padding:4px 10px; border-radius:20px;">
+                    <span style="width:8px; height:8px; background:#ef4444; border-radius:50%; box-shadow:0 0 8px #ef4444;"></span>
+                    AO VIVO · HD 1080p
+                  </span>
+                  <span id="live-phase-badge" style="background:rgba(37,99,235,0.25); border:1px solid #3b82f6; color:#93c5fd; font-size:11px; font-weight:700; padding:4px 10px; border-radius:6px;">
+                    Fase 1 / 5 · Fundamentos &amp; Triagem
+                  </span>
+                </div>
+                
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <!-- Equalizador de Áudio da Aula -->
+                  <div id="live-audio-eq" style="display:flex; align-items:flex-end; gap:3px; height:20px; padding:0 4px; background:rgba(15,23,42,0.6); border-radius:4px; border:1px solid rgba(59,130,246,0.2);">
+                    <span class="eq-bar" style="width:3px; height:8px; background:#10b981; border-radius:2px;"></span>
+                    <span class="eq-bar" style="width:3px; height:16px; background:#3b82f6; border-radius:2px;"></span>
+                    <span class="eq-bar" style="width:3px; height:10px; background:#60a5fa; border-radius:2px;"></span>
+                    <span class="eq-bar" style="width:3px; height:18px; background:#10b981; border-radius:2px;"></span>
+                    <span class="eq-bar" style="width:3px; height:6px; background:#3b82f6; border-radius:2px;"></span>
+                  </div>
+                  <span style="font-size:11px; font-weight:700; color:#93c5fd; background:rgba(15,23,42,0.8); border:1px solid #1e3a8a; padding:4px 8px; border-radius:6px;">
+                    ☁️ medicinerlivia@gmail.com
+                  </span>
+                </div>
+              </div>
+
+              <!-- Centro: Slide de Alta Definição da Aula Atual -->
+              <div style="position:relative; z-index:2; margin:auto 0; padding:10px 0;">
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                  <span style="font-size:10px; font-weight:800; letter-spacing:1px; color:#60a5fa; text-transform:uppercase;" id="live-lecture-category">
+                    DIRETRIZES MÉDICAS OFICIAIS &amp; PROVA DE RESIDÊNCIA
+                  </span>
+                </div>
+                <h2 id="live-lecture-title" style="font-size:22px; font-weight:800; color:#fff; margin:0 0 6px; line-height:1.2; letter-spacing:-0.5px;">
+                  Aula Médica Oficial
+                </h2>
+                <h4 id="live-lecture-subtitle" style="font-size:13px; font-weight:600; color:#93c5fd; margin:0 0 14px;">
+                  Fisiopatologia, Critérios Diagnósticos &amp; Condutas Terapêuticas
+                </h4>
+
+                <!-- Grade de Tópicos Clínicos Chave -->
+                <div id="live-lecture-keypoints" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:8px; margin-bottom:14px;">
+                  <!-- Tópicos dinâmicos inseridos via JS de acordo com a fase -->
+                </div>
+
+                <!-- Banner de Conduta e Protocolo Imediato -->
+                <div id="live-lecture-protocol-box" style="background:rgba(15,23,42,0.85); border-left:4px solid #3b82f6; border-radius:6px; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; gap:12px;">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:16px;">📋</span>
+                    <span id="live-lecture-protocol-text" style="font-size:12px; font-weight:600; color:#e2e8f0;">
+                      Protocolo Clínico Atualizado: Monitorização Contínua, ECG precoce e condutas de 1ª linha.
+                    </span>
+                  </div>
+                  <span style="font-size:10px; font-weight:700; background:#1e3a8a; color:#93c5fd; padding:3px 8px; border-radius:4px; white-space:nowrap;">
+                    DIRETRIZ 2026
+                  </span>
+                </div>
+              </div>
+
+              <!-- Rodapé da Transmissão da Aula -->
+              <div style="position:relative; z-index:2; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; border-top:1px solid rgba(255,255,255,0.08); padding-top:10px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:16px;">👩‍⚕️</span>
+                  <span style="font-size:12px; font-weight:700; color:#cbd5e1;">Professora Especialista MedStudy</span>
+                  <span style="color:#64748b;">·</span>
+                  <button type="button" id="btn-toggle-lecture-voice" style="background:rgba(37,99,235,0.2); border:1px solid #3b82f6; color:#93c5fd; font-size:11px; font-weight:700; padding:4px 10px; border-radius:4px; cursor:pointer;" title="Ativar/Desativar narração clínica em voz alta">
+                    🔊 Narração Ativa (pt-BR)
+                  </button>
+                </div>
+
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <button type="button" id="btn-live-open-drive" style="background:#0f172a; color:#93c5fd; border:1px solid #1e3a8a; border-radius:6px; padding:6px 12px; font-size:11px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px;">
+                    ☁️ Pasta no Drive (medicinerlivia@gmail.com) ↗
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- MODAL / CARD DE SINCRONIZAÇÃO COM O GOOGLE DRIVE -->
+            <div id="drive-sync-screen" style="display:none; position:absolute; inset:0 0 54px 0; z-index:9; background:rgba(6,10,18,0.96); flex-direction:column; align-items:center; justify-content:center; padding:30px; text-align:center;">
+              <div style="width:64px; height:64px; border-radius:50%; background:rgba(37,99,235,0.2); border:2px solid #3b82f6; display:flex; align-items:center; justify-content:center; font-size:32px; margin-bottom:16px;">
+                ☁️
+              </div>
+              <h3 style="font-size:22px; font-weight:800; color:#fff; margin:0 0 8px;">Google Drive Oficial Vinculado</h3>
+              <p style="font-size:14px; color:#93c5fd; margin:0 0 4px; font-weight:700;">Conta: medicinerlivia@gmail.com</p>
+              <p style="font-size:13px; color:#94a3b8; max-width:480px; margin:0 0 20px; line-height:1.5;">
+                O acervo oficial com todas as pastas de videoaulas, apostilas em PDF e materiais complementares está 100% sincronizado com sua conta do Google Drive.
+              </p>
+              <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center;">
+                <button type="button" id="btn-drive-launch-official" style="background:#2563eb; color:#fff; border:none; padding:12px 22px; border-radius:8px; font-size:13px; font-weight:800; cursor:pointer; display:flex; align-items:center; gap:8px;">
+                  🚀 Abrir Acervo Completo no Google Drive ↗
+                </button>
+                <button type="button" id="btn-back-to-web-player" style="background:#0f172a; color:#cbd5e1; border:1px solid #334155; padding:12px 18px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer;">
+                  📺 Retornar ao Player Web no Site
+                </button>
+              </div>
+            </div>
+
+            <!-- Palco Médico com Apresentação da Aula & Controles (Modo Inicial Antes do Play) -->
             <div class="video-overlay" id="video-overlay" style="z-index:5;">
               <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
                 <div style="display:flex; align-items:center; gap:8px;">
@@ -130,12 +234,6 @@
                 </div>
                 <div style="display:flex; align-items:center; gap:8px;">
                   <span id="lecture-phase-badge" style="background:rgba(37,99,235,0.25); border:1px solid #3b82f6; color:#93c5fd; font-size:11px; font-weight:700; padding:4px 8px; border-radius:4px;">Fase 1 / 5</span>
-                  <div id="lecture-audio-visualizer" style="display:none; align-items:flex-end; gap:3px; height:18px; padding:0 4px;">
-                    <span class="eq-bar" style="width:3px; height:8px; background:#3b82f6; border-radius:2px; transition:height 0.2s;"></span>
-                    <span class="eq-bar" style="width:3px; height:14px; background:#60a5fa; border-radius:2px; transition:height 0.2s;"></span>
-                    <span class="eq-bar" style="width:3px; height:6px; background:#93c5fd; border-radius:2px; transition:height 0.2s;"></span>
-                    <span class="eq-bar" style="width:3px; height:12px; background:#3b82f6; border-radius:2px; transition:height 0.2s;"></span>
-                  </div>
                 </div>
               </div>
               
