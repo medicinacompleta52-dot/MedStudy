@@ -480,6 +480,7 @@ app.get("/api/courses", async (req, res) => {
 
   const isVip = Boolean(isAdmin || userPlan === "vip");
   const canDownloadVideos = Boolean(isAdmin || isVip);
+  const canDownloadPdfs = Boolean(isAdmin || userPlan === "annual" || userPlan === "lifetime" || userPlan === "vip");
 
   const allCourses = await loadCourses();
 
@@ -499,7 +500,8 @@ app.get("/api/courses", async (req, res) => {
     user,
     isAdmin,
     isVip,
-    canDownloadVideos
+    canDownloadVideos,
+    canDownloadPdfs
   });
 });
 
@@ -550,6 +552,7 @@ app.get("/api/courses/:id", async (req, res) => {
 
   const isVip = Boolean(isAdmin || userPlan === "vip");
   const canDownloadVideos = Boolean(isAdmin || isVip);
+  const canDownloadPdfs = Boolean(isAdmin || userPlan === "annual" || userPlan === "lifetime" || userPlan === "vip");
 
   const allCourses = await loadCourses();
   const found = allCourses.find((c) => c.id === req.params.id);
@@ -558,7 +561,7 @@ app.get("/api/courses/:id", async (req, res) => {
   }
 
   const course = userActive ? { ...found, locked: false } : { ...found, driveUrl: null, locked: true };
-  res.json({ course, userActive, user, isAdmin, isVip, canDownloadVideos });
+  res.json({ course, userActive, user, isAdmin, isVip, canDownloadVideos, canDownloadPdfs });
 });
 
 app.post("/api/courses", requireUser, async (req, res) => {

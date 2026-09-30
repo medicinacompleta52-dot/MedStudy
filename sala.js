@@ -26,6 +26,7 @@ let isUserActive = false;
 let isAdmin = false;
 let isVip = false;
 let canDownloadVideos = false;
+let canDownloadPdfs = false;
 let currentUser = null;
 let currentTab = "video";
 let isPlaying = false;
@@ -357,6 +358,111 @@ function updatePlayButtonsState(playing) {
   if (trigger) trigger.textContent = playing ? "❚❚ Pausar Aula" : "▶ Assistir Aula";
 }
 
+const LECTURE_PHASES = [
+  {
+    phase: 1,
+    tag: "FASE 1 / 5 · CONCEITOS INICIAIS & EPIDEMIOLOGIA",
+    title: "1. Fisiopatologia Celular & Cascata Isquêmica Aguda",
+    badge: "DIRETRIZES SBC / AHA 2026",
+    keypoints: [
+      "Ruptura de placa vulnerável com agregação plaquetária e trombose luminal oclusiva",
+      "Onda de necrose miocárdica transmural a partir de 20 minutos de isquemia total",
+      "Cinética de liberação dos biomarcadores: Troponina ultrassensível e CK-MB",
+      "Identificação precoce de equivalentes isquêmicos em idosos, diabéticos e mulheres"
+    ]
+  },
+  {
+    phase: 2,
+    tag: "FASE 2 / 5 · PROPEDÊUTICA ARMADA & ECG",
+    title: "2. Eletrocardiograma de 12 Derivações & Paredes Miocárdicas",
+    badge: "TEMPO PORTA-ECG < 10 MINUTOS",
+    keypoints: [
+      "Critérios de Supra de ST no ponto J: ≥1mm em periféricas e ≥1.5-2.5mm em V2-V3",
+      "Parede Anterior (DA): V1-V4 | Inferior (CD): DII, DIII, aVF | Lateral (Cx): DI, aVL, V5-V6",
+      "Busca ativa de espelho recíproco e derivações direitas (V3R/V4R) se parede inferior",
+      "Diagnósticos diferenciais de emergência: Pericardite aguda, Takotsubo e Dissecção de Aorta"
+    ]
+  },
+  {
+    phase: 3,
+    tag: "FASE 3 / 5 · ESTRATÉGIAS DE REPERFUSÃO",
+    title: "3. Reperfusão Miocárdica: Angioplastia Primária vs Trombolítico",
+    badge: "JANELA TERAPÊUTICA CRÍTICA",
+    keypoints: [
+      "Angioplastia Primária (ICP): Padrão-ouro se tempo porta-balão < 90 min (ou < 120 min se transferido)",
+      "Fibrinólise Química (Tenecteplase / Alteplase): Indicar em até 30 min se ICP indisponível em 120 min",
+      "Contraindicações absolutas: AVE hemorrágico prévio, AVE isquêmico < 6m, sangramento gastrointestinal ativo",
+      "Critérios de sucesso de reperfusão: Redução do supra de ST > 50% aos 90 minutos"
+    ]
+  },
+  {
+    phase: 4,
+    tag: "FASE 4 / 5 · FARMACOLOGIA DE SALA VERMELHA",
+    title: "4. Prescrição Hospitalar & Terapia Farmacológica Inicial",
+    badge: "PRESCRIÇÃO ARMADA HOSPITALAR",
+    keypoints: [
+      "Dupla Antiagregação Plaquetária (DAPT): AAS 200-300mg + Ticagrelor 180mg (ou Clopidogrel 300/600mg)",
+      "Anticoagulação Plena: Enoxaparina 1mg/kg SC 12/12h ou Heparina Não Fracionada (HNF)",
+      "Estatina de alta potência precoce: Atorvastatina 80mg VO em dose máxima",
+      "Vasodilatadores e analgesia: Nitrato SL se dor refratária sem hipotensão ou infarto de VD"
+    ]
+  },
+  {
+    phase: 5,
+    tag: "FASE 5 / 5 · FIXAÇÃO DE PROVA DE RESIDÊNCIA",
+    title: "5. Resolução Comentada de Questões de Bancas R1",
+    badge: "PADRÃO USP · ENARE · SUS-SP",
+    keypoints: [
+      "Armadilha clássica: Proibido nitrato ou morfina se houver suspeita de acometimento de VD",
+      "Conduta na falha da trombólise: Encaminhamento imediato para Angioplastia de Resgate",
+      "Estratificação pós-evento e prevenção secundária com Betabloqueador e IECA/BRA",
+      "Resumo dos pontos de corte cronológicos mais cobrados nas provas de 2026"
+    ]
+  }
+];
+
+function updateLectureProgressUI() {
+  const totalDuration = 2700;
+  const phaseIndex = Math.min(4, Math.floor((playbackSeconds / totalDuration) * 5));
+  const phase = LECTURE_PHASES[phaseIndex];
+
+  const liveIndicator = $("#lecture-live-indicator");
+  if (liveIndicator) liveIndicator.style.display = isPlaying ? "flex" : "none";
+
+  const phaseBadge = $("#lecture-phase-badge");
+  if (phaseBadge) phaseBadge.textContent = `Fase ${phase.phase} / 5 · ${phase.badge}`;
+
+  const audioViz = $("#lecture-audio-visualizer");
+  if (audioViz) {
+    audioViz.style.display = isPlaying ? "flex" : "none";
+    if (isPlaying) {
+      audioViz.querySelectorAll(".eq-bar").forEach((bar) => {
+        bar.style.height = `${Math.floor(Math.random() * 16) + 6}px`;
+      });
+    }
+  }
+
+  const slideTag = $("#slide-tag");
+  if (slideTag) slideTag.textContent = isPlaying ? phase.tag : "DIRETRIZES CLÍNICAS & RESIDÊNCIA MÉDICA";
+
+  const slideTitle = $("#video-slide-title");
+  if (slideTitle) {
+    const baseTitle = currentLesson?.title || "Aula Médica Oficial";
+    slideTitle.textContent = isPlaying ? `${baseTitle} — ${phase.title}` : baseTitle;
+  }
+
+  const keypointsContainer = $("#slide-keypoints");
+  if (keypointsContainer && isPlaying) {
+    keypointsContainer.replaceChildren();
+    phase.keypoints.forEach((kp) => {
+      const item = document.createElement("div");
+      item.className = "slide-keypoint-item";
+      item.innerHTML = `<span style="color:#10b981; font-weight:800;">●</span> <span>${kp}</span>`;
+      keypointsContainer.appendChild(item);
+    });
+  }
+}
+
 // Controles do Player de Vídeo e Streaming
 function setupVideoPlayer() {
   initMedicalEcg();
@@ -469,12 +575,14 @@ function setupVideoPlayer() {
       else screen.classList.remove("is-playing");
     }
 
+    updateLectureProgressUI();
+
     if (isPlaying) {
       if (playbackInterval) clearInterval(playbackInterval);
       playbackInterval = setInterval(() => {
         playbackSeconds += currentSpeed;
-        if (playbackSeconds >= 1680) {
-          playbackSeconds = 1680;
+        if (playbackSeconds >= 2700) {
+          playbackSeconds = 2700;
           togglePlay();
           if (currentLesson && currentCourse) {
             const completed = getCompletedLessons(currentCourse.id);
@@ -483,7 +591,8 @@ function setupVideoPlayer() {
             }
           }
         }
-        updateTimeUI(1680);
+        updateLectureProgressUI();
+        updateTimeUI(2700);
       }, 1000);
     } else {
       if (playbackInterval) clearInterval(playbackInterval);
@@ -549,7 +658,8 @@ function setupVideoPlayer() {
       nativeVideo.currentTime = Math.max(0, nativeVideo.currentTime - 10);
     } else {
       playbackSeconds = Math.max(0, playbackSeconds - 10);
-      updateTimeUI(1680);
+      updateLectureProgressUI();
+      updateTimeUI(2700);
     }
   });
 
@@ -557,8 +667,9 @@ function setupVideoPlayer() {
     if (nativeVideo && nativeVideo.duration && nativeVideo.readyState >= 2) {
       nativeVideo.currentTime = Math.min(nativeVideo.duration, nativeVideo.currentTime + 10);
     } else {
-      playbackSeconds = Math.min(1680, playbackSeconds + 10);
-      updateTimeUI(1680);
+      playbackSeconds = Math.min(2700, playbackSeconds + 10);
+      updateLectureProgressUI();
+      updateTimeUI(2700);
     }
   });
 
@@ -575,8 +686,9 @@ function setupVideoPlayer() {
     if (nativeVideo && nativeVideo.duration && nativeVideo.readyState >= 2) {
       nativeVideo.currentTime = pos * nativeVideo.duration;
     } else {
-      playbackSeconds = Math.round(pos * 1680);
-      updateTimeUI(1680);
+      playbackSeconds = Math.round(pos * 2700);
+      updateLectureProgressUI();
+      updateTimeUI(2700);
     }
   });
 
@@ -624,10 +736,11 @@ function setupVideoPlayer() {
   });
 }
 
-function updateTimeUI(totalDuration = 1680) {
+function updateTimeUI(totalDuration = 2700) {
   const curM = String(Math.floor(playbackSeconds / 60)).padStart(2, "0");
   const curS = String(Math.floor(playbackSeconds % 60)).padStart(2, "0");
-  $("#time-current").textContent = `${curM}:${curS}`;
+  const timeCurrentEl = $("#time-current");
+  if (timeCurrentEl) timeCurrentEl.textContent = `${curM}:${curS}`;
 
   const totM = String(Math.floor(totalDuration / 60)).padStart(2, "0");
   const totS = String(Math.floor(totalDuration % 60)).padStart(2, "0");
@@ -635,7 +748,8 @@ function updateTimeUI(totalDuration = 1680) {
   if (timeTotalEl) timeTotalEl.textContent = `${totM}:${totS}`;
 
   const pct = Math.min(100, (playbackSeconds / totalDuration) * 100);
-  $("#scrub-progress").style.width = `${pct}%`;
+  const scrubProgress = $("#scrub-progress");
+  if (scrubProgress) scrubProgress.style.width = `${pct}%`;
 }
 
 function goToNextLesson() {
@@ -975,6 +1089,10 @@ function generateApostilaHTML(course, lesson, specificFileName) {
 }
 
 function downloadCourseApostila(course, lesson, specificFileName) {
+  if (!canDownloadPdfs && !isAdmin) {
+    openPdfUpgradeModal();
+    return;
+  }
   const content = generateApostilaHTML(course, lesson, specificFileName);
   let safeName = specificFileName || `${(course?.title || "Curso").replace(/[\/\\?%*:|"<>]/g, "_")}_Apostila_MedStudy.html`;
   if (!safeName.endsWith(".html") && !safeName.endsWith(".pdf")) {
@@ -993,6 +1111,16 @@ function downloadCourseApostila(course, lesson, specificFileName) {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }, 250);
+}
+
+function openPdfUpgradeModal() {
+  const modal = $("#pdf-upgrade-modal");
+  if (modal) modal.hidden = false;
+}
+
+function closePdfUpgradeModal() {
+  const modal = $("#pdf-upgrade-modal");
+  if (modal) modal.hidden = true;
 }
 
 function printPdfDocument(course, lesson) {
@@ -1099,133 +1227,162 @@ function renderPdfPage() {
   }
 }
 
-// Explorador de Pastas do Drive no Site
-function renderDriveFolders() {
-  const container = $("#folders-tree");
-  const stats = $("#explorer-stats");
-  if (!container || !currentCourse) return;
-
+// Explorador de Pastas do Drive no Site (Palco Principal, Aba e Sidebar)
+function renderAllDriveFolders() {
+  if (!currentCourse) return;
   const folders = currentCourse.folders || [];
   const totalFiles = folders.reduce((acc, f) => acc + (f.files ? f.files.length : 0), 0);
 
-  stats.innerHTML = `
-    <span style="font-size:12px; color:var(--muted); background:var(--panel2); padding:6px 12px; border-radius:6px; border:1px solid var(--line);">
-      📁 <strong>${folders.length} pastas</strong> organizadas · <strong>${totalFiles} arquivos</strong> no acervo
-    </span>
-  `;
+  const inlineCount = $("#inline-folders-count");
+  if (inlineCount) {
+    inlineCount.textContent = `${folders.length} pastas organizadas · ${totalFiles} arquivos`;
+  }
 
-  container.replaceChildren();
+  const externalDriveBtn = $("#btn-external-drive-header");
+  if (externalDriveBtn) {
+    externalDriveBtn.href = currentCourse.driveUrl || "https://drive.google.com/drive/my-drive";
+  }
 
-  folders.forEach((folder, idx) => {
-    const card = document.createElement("div");
-    card.className = "folder-card";
+  const stats = $("#explorer-stats");
+  if (stats) {
+    stats.innerHTML = `
+      <span style="font-size:12px; color:var(--muted); background:var(--panel2); padding:6px 12px; border-radius:6px; border:1px solid var(--line);">
+        📁 <strong>${folders.length} pastas</strong> organizadas · <strong>${totalFiles} arquivos</strong> no acervo
+      </span>
+    `;
+  }
 
-    const filesCount = folder.files ? folder.files.length : 0;
-    const isFirst = idx === 0;
+  const targets = [
+    { el: $("#folders-tree"), isSidebar: false },
+    { el: $("#inline-folders-tree"), isSidebar: false },
+    { el: $("#sidebar-folders-tree"), isSidebar: true }
+  ];
 
-    let filesHtml = "";
-    (folder.files || []).forEach((file) => {
-      const ext = file.name.split(".").pop().toLowerCase();
-      const badgeClass = ext === "mp4" ? "ext-mp4" : "ext-pdf";
-      const icon = ext === "mp4" ? "▶" : "📄";
+  targets.forEach(({ el, isSidebar }) => {
+    if (!el) return;
+    el.replaceChildren();
 
-      let buttonsHtml = "";
-      if (ext === "mp4") {
-        buttonsHtml = `
-          <button type="button" class="btn-file-open" data-file-ext="${ext}" data-file-name="${file.name}" style="background:#2563eb; color:#fff; font-weight:700; border:none; padding:6px 12px; border-radius:6px; font-size:12px; cursor:pointer;">
-            ▶ Assistir Streaming
-          </button>
-        `;
-      } else {
-        buttonsHtml = `
-          <button type="button" class="btn-file-open" data-file-ext="${ext}" data-file-name="${file.name}" style="background:var(--panel2); color:#cbd5e1; border:1px solid var(--line); padding:6px 10px; border-radius:6px; font-size:12px; cursor:pointer;">
-            👁️ Ler no Site
-          </button>
-          <button type="button" class="btn-file-download" data-file-ext="${ext}" data-file-name="${file.name}" style="background:#1e3a8a; color:#93c5fd; border:1px solid #2563eb; font-weight:700; padding:6px 12px; border-radius:6px; font-size:12px; cursor:pointer;">
-            📥 Baixar Apostila
-          </button>
-        `;
+    folders.forEach((folder, idx) => {
+      const card = document.createElement("div");
+      card.className = "folder-card";
+      if (isSidebar) {
+        card.style.marginBottom = "8px";
+        card.style.background = "var(--panel2)";
+        card.style.border = "1px solid var(--line)";
+        card.style.borderRadius = "8px";
+        card.style.overflow = "hidden";
       }
 
-      filesHtml += `
-        <div class="file-item">
-          <div class="file-left">
-            <span class="file-ext-badge ${badgeClass}">${ext}</span>
-            <span class="file-name">${icon} ${file.name}</span>
+      const filesCount = folder.files ? folder.files.length : 0;
+      const isFirst = idx === 0;
+
+      let filesHtml = "";
+      (folder.files || []).forEach((file) => {
+        const ext = file.name.split(".").pop().toLowerCase();
+        const badgeClass = ext === "mp4" ? "ext-mp4" : "ext-pdf";
+        const icon = ext === "mp4" ? "▶" : "📄";
+
+        let buttonsHtml = "";
+        if (ext === "mp4") {
+          buttonsHtml = `
+            <button type="button" class="btn-file-open" data-file-ext="${ext}" data-file-name="${file.name}" style="background:#2563eb; color:#fff; font-weight:700; border:none; padding:${isSidebar ? "4px 8px" : "6px 12px"}; border-radius:6px; font-size:${isSidebar ? "11px" : "12px"}; cursor:pointer; display:inline-flex; align-items:center; gap:4px;">
+              ▶ Assistir Aula
+            </button>
+          `;
+        } else {
+          buttonsHtml = `
+            <button type="button" class="btn-file-open" data-file-ext="${ext}" data-file-name="${file.name}" style="background:var(--panel2); color:#cbd5e1; border:1px solid var(--line); padding:${isSidebar ? "4px 6px" : "6px 10px"}; border-radius:6px; font-size:${isSidebar ? "11px" : "12px"}; cursor:pointer;">
+              👁️ Ler Online
+            </button>
+            <button type="button" class="btn-file-download" data-file-ext="${ext}" data-file-name="${file.name}" style="background:#1e3a8a; color:#93c5fd; border:1px solid #2563eb; font-weight:700; padding:${isSidebar ? "4px 8px" : "6px 12px"}; border-radius:6px; font-size:${isSidebar ? "11px" : "12px"}; cursor:pointer;" title="Download de Apostila (A partir do Plano Anual)">
+              📥 Baixar PDF
+            </button>
+          `;
+        }
+
+        filesHtml += `
+          <div class="file-item" style="${isSidebar ? "padding:8px 10px; display:flex; flex-direction:column; gap:6px; border-bottom:1px solid rgba(255,255,255,0.05);" : ""}">
+            <div class="file-left" style="${isSidebar ? "display:flex; align-items:center; gap:6px; font-size:12px;" : ""}">
+              <span class="file-ext-badge ${badgeClass}">${ext}</span>
+              <span class="file-name" style="word-break:break-word;">${icon} ${file.name}</span>
+            </div>
+            <div class="file-right" style="display:flex; align-items:center; justify-content:${isSidebar ? "space-between" : "flex-end"}; gap:8px;">
+              <span class="file-size" style="font-size:11px; color:var(--muted);">${file.size || "15 MB"}</span>
+              <div style="display:flex; gap:6px;">
+                ${buttonsHtml}
+              </div>
+            </div>
           </div>
-          <div class="file-right" style="display:flex; align-items:center; gap:8px;">
-            <span class="file-size">${file.size || "15 MB"}</span>
-            ${buttonsHtml}
+        `;
+      });
+
+      card.innerHTML = `
+        <div class="folder-card-header" style="${isSidebar ? "padding:10px 12px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03);" : "cursor:pointer;"}">
+          <div class="folder-title-left" style="display:flex; align-items:center; gap:8px;">
+            <span class="folder-icon">📁</span>
+            <strong style="font-size:${isSidebar ? "12px" : "14px"};">${folder.name}</strong>
+            <span class="folder-count-badge" style="font-size:10px; background:rgba(37,99,235,0.2); color:#93c5fd; padding:2px 6px; border-radius:4px;">${filesCount}</span>
           </div>
+          <span class="module-toggle-arrow">▾</span>
+        </div>
+        <div class="folder-files-list" ${isFirst ? "" : 'style="display:none;"'}>
+          ${filesHtml}
         </div>
       `;
-    });
 
-    card.innerHTML = `
-      <div class="folder-card-header">
-        <div class="folder-title-left">
-          <span class="folder-icon">📁</span>
-          <strong>${folder.name}</strong>
-          <span class="folder-count-badge">${filesCount} arquivos</span>
-        </div>
-        <span class="module-toggle-arrow">▾</span>
-      </div>
-      <div class="folder-files-list" ${isFirst ? "" : 'style="display:none;"'}>
-        ${filesHtml}
-      </div>
-    `;
+      // Toggle da pasta
+      const header = card.querySelector(".folder-card-header");
+      const list = card.querySelector(".folder-files-list");
+      header.addEventListener("click", () => {
+        const isHidden = list.style.display === "none";
+        list.style.display = isHidden ? "flex" : "none";
+      });
 
-    // Toggle da pasta
-    const header = card.querySelector(".folder-card-header");
-    const list = card.querySelector(".folder-files-list");
-    header.addEventListener("click", () => {
-      const isHidden = list.style.display === "none";
-      list.style.display = isHidden ? "flex" : "none";
-    });
+      // Ações dos botões de abrir arquivo
+      card.querySelectorAll(".btn-file-open").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const ext = btn.dataset.fileExt;
+          const fileName = btn.dataset.fileName;
 
-    // Abrir arquivo diretamente dentro da aba certa
-    card.querySelectorAll(".btn-file-open").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const ext = btn.dataset.fileExt;
-        const fileName = btn.dataset.fileName;
-
-        if (ext === "mp4") {
-          switchTab("video");
-          const nativeVideo = $("#native-video-player");
-          if (nativeVideo) {
+          if (ext === "mp4") {
+            switchTab("video");
             const lessons = getAllLessons(currentCourse);
-            const matchingLesson = lessons.find((l) => fileName.toLowerCase().includes(l.title.toLowerCase())) || lessons[0];
+            const matchingLesson = lessons.find((l) => fileName.toLowerCase().includes(l.title.toLowerCase()) || l.title.toLowerCase().includes(fileName.toLowerCase())) || lessons[0];
             if (matchingLesson) {
-              selectLesson(matchingLesson);
+              selectLesson(matchingLesson, true);
+            } else if (lessons[0]) {
+              selectLesson(lessons[0], true);
             }
-            if (nativeVideo.src) {
-              nativeVideo.play().catch(() => {});
-            }
+            const videoBox = $("#video-container") || document.body;
+            videoBox.scrollIntoView({ behavior: "smooth", block: "start" });
+          } else {
+            switchTab("pdf");
+            const docTitle = $("#pdf-doc-title");
+            if (docTitle) docTitle.textContent = fileName;
+            pdfCurrentPage = 1;
+            renderPdfPage();
+            window.scrollTo({ top: 0, behavior: "smooth" });
           }
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        } else {
-          switchTab("pdf");
-          const docTitle = $("#pdf-doc-title");
-          if (docTitle) docTitle.textContent = fileName;
-          pdfCurrentPage = 1;
-          renderPdfPage();
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        }
+        });
       });
-    });
 
-    // Baixar apostila / material complementar em PDF
-    card.querySelectorAll(".btn-file-download").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const fileName = btn.dataset.fileName;
-        downloadCourseApostila(currentCourse, currentLesson, fileName);
+      // Baixar apostila / material complementar em PDF (bloqueado para mensal, liberado anual+)
+      card.querySelectorAll(".btn-file-download").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const fileName = btn.dataset.fileName;
+          downloadCourseApostila(currentCourse, currentLesson, fileName);
+        });
       });
-    });
 
-    container.appendChild(card);
+      el.appendChild(card);
+    });
   });
+}
+
+function renderDriveFolders() {
+  renderAllDriveFolders();
 }
 
 // Casos Clínicos & Questões
@@ -1418,6 +1575,28 @@ function selectLesson(lesson, autoPlay = false) {
     if (!isPlaying) {
       const btnPlay = $("#btn-play-medical-big") || $("#btn-play-big");
       if (btnPlay) btnPlay.click();
+    } else {
+      playbackSeconds = 0;
+      updateLectureProgressUI();
+      updateTimeUI(2700);
+      if (playbackInterval) clearInterval(playbackInterval);
+      playbackInterval = setInterval(() => {
+        playbackSeconds += currentSpeed;
+        if (playbackSeconds >= 2700) {
+          playbackSeconds = 2700;
+          if (playbackInterval) clearInterval(playbackInterval);
+          isPlaying = false;
+          updatePlayButtonsState(false);
+          if (currentLesson && currentCourse) {
+            const completed = getCompletedLessons(currentCourse.id);
+            if (!completed.includes(currentLesson.id)) {
+              toggleLessonCompleted(currentLesson.id);
+            }
+          }
+        }
+        updateLectureProgressUI();
+        updateTimeUI(2700);
+      }, 1000);
     }
   } else {
     isPlaying = false;
@@ -1998,6 +2177,12 @@ async function initCourse() {
     isAdmin = Boolean(data.isAdmin);
     isVip = Boolean(data.isVip || (data.user && data.user.plan === "vip") || isAdmin);
     canDownloadVideos = Boolean(data.canDownloadVideos || isVip || isAdmin);
+    canDownloadPdfs = Boolean(
+      data.canDownloadPdfs ||
+      isAdmin ||
+      isVip ||
+      (data.user && (data.user.plan === "annual" || data.user.plan === "lifetime" || data.user.plan === "vip"))
+    );
     currentUser = data.user || null;
 
     const defaultCourseId = allCourses[0] ? allCourses[0].id : "medcurso-ciclo-completo-r1";
@@ -2038,7 +2223,7 @@ async function initCourse() {
 
       populateLessonsDropdown();
       renderSidebar();
-      renderDriveFolders();
+      renderAllDriveFolders();
       renderFullLessonsGrid();
       if (currentLesson) selectLesson(currentLesson, false);
     }
@@ -2109,6 +2294,56 @@ document.addEventListener("DOMContentLoaded", async () => {
     handleCloudBackup();
   });
 
+  // Seletor de Modo na Sidebar (Módulos vs Pastas Drive)
+  const sidebarTabModules = $("#sidebar-tab-modules");
+  const sidebarTabFolders = $("#sidebar-tab-folders");
+  const modulesAccordion = $("#modules-accordion");
+  const sidebarFoldersTree = $("#sidebar-folders-tree");
+
+  sidebarTabModules?.addEventListener("click", () => {
+    sidebarTabModules.classList.add("active");
+    sidebarTabModules.style.background = "#2563eb";
+    sidebarTabModules.style.color = "#fff";
+    sidebarTabFolders?.classList.remove("active");
+    if (sidebarTabFolders) {
+      sidebarTabFolders.style.background = "var(--panel2)";
+      sidebarTabFolders.style.color = "#94a3b8";
+    }
+    if (modulesAccordion) modulesAccordion.style.display = "block";
+    if (sidebarFoldersTree) sidebarFoldersTree.style.display = "none";
+  });
+
+  sidebarTabFolders?.addEventListener("click", () => {
+    sidebarTabFolders.classList.add("active");
+    sidebarTabFolders.style.background = "#2563eb";
+    sidebarTabFolders.style.color = "#fff";
+    sidebarTabModules?.classList.remove("active");
+    if (sidebarTabModules) {
+      sidebarTabModules.style.background = "var(--panel2)";
+      sidebarTabModules.style.color = "#94a3b8";
+    }
+    if (modulesAccordion) modulesAccordion.style.display = "none";
+    if (sidebarFoldersTree) sidebarFoldersTree.style.display = "flex";
+  });
+
+  // Modal de Upgrade para Download de PDF (A partir do Plano Anual)
+  $("#btn-close-pdf-modal")?.addEventListener("click", () => {
+    closePdfUpgradeModal();
+  });
+
+  $("#btn-read-pdf-online-free")?.addEventListener("click", () => {
+    closePdfUpgradeModal();
+    switchTab("pdf");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  const pdfModal = $("#pdf-upgrade-modal");
+  pdfModal?.addEventListener("click", (e) => {
+    if (e.target === pdfModal) {
+      closePdfUpgradeModal();
+    }
+  });
+
   // Modal VIP
   $("#btn-close-vip-modal")?.addEventListener("click", () => {
     closeVipModal();
@@ -2124,6 +2359,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       closeVipModal();
+      closePdfUpgradeModal();
     }
   });
 

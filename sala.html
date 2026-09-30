@@ -128,8 +128,23 @@
 
             <!-- Palco Médico com Apresentação da Aula & Controles -->
             <div class="video-overlay" id="video-overlay" style="z-index:5;">
-              <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                <div class="video-badge-live">HD 1080p · AULA MÉDICA OFICIAL</div>
+              <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <div class="video-badge-live">HD 1080p · AULA MÉDICA OFICIAL</div>
+                  <div id="lecture-live-indicator" style="display:none; align-items:center; gap:6px; background:rgba(220,38,38,0.2); border:1px solid #ef4444; color:#fca5a5; font-size:11px; font-weight:800; padding:4px 8px; border-radius:4px;">
+                    <span style="display:inline-block; width:8px; height:8px; background:#ef4444; border-radius:50%;"></span>
+                    TRANSMISSÃO DA AULA ATIVA
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span id="lecture-phase-badge" style="background:rgba(37,99,235,0.25); border:1px solid #3b82f6; color:#93c5fd; font-size:11px; font-weight:700; padding:4px 8px; border-radius:4px;">Fase 1 / 5</span>
+                  <div id="lecture-audio-visualizer" style="display:none; align-items:flex-end; gap:3px; height:18px; padding:0 4px;">
+                    <span class="eq-bar" style="width:3px; height:8px; background:#3b82f6; border-radius:2px; transition:height 0.2s;"></span>
+                    <span class="eq-bar" style="width:3px; height:14px; background:#60a5fa; border-radius:2px; transition:height 0.2s;"></span>
+                    <span class="eq-bar" style="width:3px; height:6px; background:#93c5fd; border-radius:2px; transition:height 0.2s;"></span>
+                    <span class="eq-bar" style="width:3px; height:12px; background:#3b82f6; border-radius:2px; transition:height 0.2s;"></span>
+                  </div>
+                </div>
               </div>
               
               <!-- Card Principal da Aula com Ações Imediatas -->
@@ -244,6 +259,29 @@
               <span class="save-status" id="notes-save-status">Salvo automaticamente</span>
             </div>
             <textarea id="student-notes" placeholder="Digite suas notas sobre esta aula, diagnósticos diferenciais, doses e condutas... As anotações ficam salvas no seu navegador."></textarea>
+          </div>
+        </div>
+
+        <!-- SEÇÃO PRINCIPAL DE PASTAS DO GOOGLE DRIVE NO SITE -->
+        <div class="inline-drive-section" style="margin-top: 24px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 22px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px; border-bottom:1px solid var(--line); padding-bottom:14px;">
+            <div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span class="badge-cycle" style="background:rgba(37,99,235,0.18); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); font-weight:800; font-size:11px; padding:3px 8px; border-radius:4px;">📁 ACERVO NO SITE</span>
+                <span style="font-size:12px; color:var(--muted);" id="inline-folders-count">4 pastas organizadas</span>
+              </div>
+              <h2 style="margin:6px 0 2px; font-size:19px; color:#fff;" id="inline-folders-title">Pastas &amp; Arquivos deste Curso no Site</h2>
+              <p style="margin:0; font-size:12px; color:var(--muted);">Todas as pastas e arquivos deste curso estão disponíveis aqui. Clique para reproduzir o vídeo ou ler/baixar o documento.</p>
+            </div>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <a href="https://drive.google.com/drive/my-drive" target="_blank" rel="noopener noreferrer" id="btn-external-drive-header" class="btn-action-outline" style="font-size:12px; padding:8px 14px; background:#0f172a; color:#93c5fd; border:1px solid #1e3a8a; border-radius:6px; text-decoration:none; font-weight:700; display:inline-flex; align-items:center; gap:6px;">
+                ☁️ Abrir Pasta no Google Drive Oficial ↗
+              </a>
+            </div>
+          </div>
+
+          <div class="folders-tree" id="inline-folders-tree">
+            <!-- Preenchido dinamicamente via sala.js -->
           </div>
         </div>
       </div>
@@ -382,8 +420,19 @@
         </div>
       </div>
 
+      <!-- SELETOR DE MODO NA SIDEBAR: MÓDULOS VS PASTAS DO DRIVE -->
+      <div class="sidebar-view-toggle" style="display:flex; gap:6px; padding:0 16px 12px;">
+        <button type="button" id="sidebar-tab-modules" class="sidebar-toggle-btn active" style="flex:1; background:#2563eb; color:#fff; border:1px solid #3b82f6; border-radius:6px; font-size:11px; font-weight:700; padding:7px 4px; cursor:pointer;">📑 Módulos</button>
+        <button type="button" id="sidebar-tab-folders" class="sidebar-toggle-btn" style="flex:1; background:var(--panel2); color:#94a3b8; border:1px solid var(--line); border-radius:6px; font-size:11px; font-weight:700; padding:7px 4px; cursor:pointer;">📁 Pastas Drive</button>
+      </div>
+
       <!-- LISTA DE MÓDULOS E AULAS (ACCORDION) -->
       <div class="modules-accordion" id="modules-accordion">
+        <!-- Renderizado dinamicamente via sala.js -->
+      </div>
+
+      <!-- PASTAS DO DRIVE NA SIDEBAR -->
+      <div class="folders-tree" id="sidebar-folders-tree" style="display:none; padding:0 16px 16px;">
         <!-- Renderizado dinamicamente via sala.js -->
       </div>
 
@@ -522,8 +571,33 @@
           💬 Assinar via Pix / WhatsApp (Liberação Imediata)
         </a>
       </div>
+  <!-- MODAL EXCLUSIVO PARA DOWNLOAD DE APOSTILAS EM PDF (A PARTIR DO PLANO ANUAL) -->
+  <div class="trial-modal-overlay" id="pdf-upgrade-modal" hidden>
+    <div class="trial-modal-card" style="max-width: 520px; border-color: rgba(59,130,246,0.6); background: linear-gradient(180deg, #0b1120 0%, #06080c 100%); position: relative;">
+      <button type="button" class="btn-close-modal" id="btn-close-pdf-modal" style="position:absolute; top:16px; right:16px; background:transparent; border:none; color:#94a3b8; font-size:20px; cursor:pointer;">✕</button>
+      <div style="display:inline-block; background:#1e3a8a; color:#93c5fd; font-size:11px; font-weight:800; padding:4px 10px; border-radius:4px; margin-bottom:12px;">📄 DOWNLOAD DE APOSTILAS EM PDF</div>
+      <h2 style="margin:0 0 8px; font-size:22px; color:#fff;">Disponível a partir do Plano Anual</h2>
+      <p style="color:var(--muted); font-size:13px; line-height:1.6; margin:0 0 16px;">
+        O download de apostilas completas e livros em PDF para estudo offline e impressão está liberado a partir do <strong>Plano Anual (R$ 500/ano)</strong>, <strong>Vitalício (R$ 750)</strong> ou <strong>VIP (R$ 1.000)</strong>.
+      </p>
+      <div style="background:rgba(37,99,235,0.1); border:1px solid rgba(59,130,246,0.3); border-radius:10px; padding:16px; margin-bottom:20px; text-align: left;">
+        <div style="font-size:13px; color:#93c5fd; font-weight:700; margin-bottom:8px;">💡 NO SEU PLANO ATUAL OU TESTE:</div>
+        <p style="margin:0 0 12px; font-size:13px; color:#cbd5e1; line-height:1.5;">
+          Você pode ler todas as apostilas, resumos e tabelas terapêuticas livremente e de forma ilimitada online na aba <strong>"Apostila &amp; PDF"</strong>.
+        </p>
+        <button type="button" id="btn-read-pdf-online-free" style="background:#0f172a; color:#60a5fa; border:1px solid #1e3a8a; border-radius:6px; padding:8px 14px; font-size:12px; font-weight:700; cursor:pointer;">
+          👁️ Abrir Apostila para Ler Online no Site
+        </button>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <a href="conta.html" class="btn-primary" style="text-decoration:none; text-align:center; padding:12px; font-weight:800; border-radius:8px; background:#2563eb; color:#fff;">
+          ⭐ Fazer Upgrade para o Plano Anual (R$ 500) ➔
+        </a>
+        <a href="https://wa.me/5554996318816?text=Ol%C3%A1!%20Gostaria%20de%20fazer%20o%20upgrade%20para%20o%20Plano%20Anual%20com%20download%20de%20apostilas%20em%20PDF." target="_blank" rel="noopener noreferrer" style="text-decoration:none; text-align:center; padding:12px; font-weight:800; border-radius:8px; background:#25d366; color:#042610;">
+          💬 Upgrade via Pix no WhatsApp (Liberação Rápida)
+        </a>
+      </div>
     </div>
   </div>
-
 </body>
 </html>
