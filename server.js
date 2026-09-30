@@ -426,11 +426,25 @@ app.post("/api/checkout", async (req, res) => {
 // ==========================================
 // STREAMING DE VIDEOAULAS EM ALTA DEFINIÇÃO
 // ==========================================
+const MEDICAL_VIDEO_STREAMS = {
+  default: "https://archive.org/download/ucberkeley_webcast_4FScPwj_Wdc/Integrative%20Biology%20131%20-%20Lecture%2015%20-%20%20Cardiology.mp4",
+  cardio: "https://archive.org/download/ucberkeley_webcast_4FScPwj_Wdc/Integrative%20Biology%20131%20-%20Lecture%2015%20-%20%20Cardiology.mp4",
+  anatomy: "https://archive.org/download/ucberkeley_webcast_16V4F14q43A/Integrative%20Biology%20131%20-%20Lecture%2001%20-%20%20Organization%20of%20the%20Body.mp4",
+  pathology: "https://archive.org/download/neet-pgusmle-nmcledams-2020-lectures-full/%2E%20Pathology-General%20Pathology%20Day%201%20Cellular%20response%20to%20injury%20.mp4",
+  pharma: "https://archive.org/download/neet-pgusmle-nmcledams-2020-lectures-full/%2E%20Pharmacology-ANS%20CNS%20Pharmacology%20LIVE%20DAY%202%20Cholinergic%20Drugs%20%20Directly%20acting%20and%20Indirectly%20acting%20%20Myasthenia%20Gravis%20.mp4"
+};
+
 app.get(["/api/stream/sample.mp4", "/api/stream/video", "/api/stream/video/:courseId/:lessonId"], async (req, res) => {
-  // Retorna stream médico com metadados para player HTML5
-  res.setHeader("Content-Type", "video/mp4");
-  res.setHeader("Cache-Control", "no-cache");
-  res.status(204).end();
+  const courseId = (req.params.courseId || "").toLowerCase();
+  let targetUrl = MEDICAL_VIDEO_STREAMS.default;
+  if (courseId.includes("anat")) {
+    targetUrl = MEDICAL_VIDEO_STREAMS.anatomy;
+  } else if (courseId.includes("farm") || courseId.includes("pharma")) {
+    targetUrl = MEDICAL_VIDEO_STREAMS.pharma;
+  } else if (courseId.includes("patol") || courseId.includes("path")) {
+    targetUrl = MEDICAL_VIDEO_STREAMS.pathology;
+  }
+  return res.redirect(302, targetUrl);
 });
 // ==========================================
 // CATÁLOGO DE CURSOS DO GOOGLE DRIVE

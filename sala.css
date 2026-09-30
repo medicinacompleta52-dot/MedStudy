@@ -379,14 +379,14 @@ body {
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-/* Quando o player estiver reproduzindo em modo vídeo nativo, transição suave para controles */
-.video-screen.native-mode.is-playing .video-overlay {
+/* Quando o player estiver reproduzindo, transição suave: oculta o card central e exibe controles ao passar o mouse */
+.video-screen.is-playing .video-overlay {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
 }
 
-.video-screen.native-mode.is-playing:hover .video-overlay {
+.video-screen.is-playing:hover .video-overlay {
   opacity: 1;
   pointer-events: auto;
 }

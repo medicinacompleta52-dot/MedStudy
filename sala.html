@@ -95,8 +95,8 @@
             <!-- Canvas de Monitorização Médica e ECG em Tempo Real -->
             <canvas id="medical-ecg-canvas" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:1; background:#06080c; display:block;"></canvas>
 
-            <!-- Elemento de Vídeo HTML5 (quando houver arquivo direto de streaming) -->
-            <video id="native-video-player" playsinline preload="auto" controlslist="nodownload" oncontextmenu="return false;" style="width:100%; height:100%; object-fit:contain; background:#000; position:absolute; inset:0; z-index:2; display:none;"></video>
+            <!-- Elemento de Vídeo HTML5 de Alta Definição -->
+            <video id="native-video-player" playsinline preload="auto" controlslist="nodownload" oncontextmenu="return false;" style="width:100%; height:100%; object-fit:contain; background:#000; position:absolute; inset:0; z-index:2; display:block;"></video>
 
             <!-- Iframe para Stream Oficial e Imediato do Google Drive -->
             <iframe id="drive-video-frame" style="width:100%; height:100%; border:none; display:none; position:absolute; inset:0; z-index:8; background:#000;" allow="autoplay; fullscreen"></iframe>
@@ -104,10 +104,11 @@
             <!-- Notificação para ativar o som -->
             <button type="button" id="video-unmute-tip" style="display:none; position:absolute; top:18px; right:18px; z-index:25; background:#2563eb; color:#fff; border:none; font-size:12px; font-weight:800; padding:8px 16px; border-radius:30px; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,0.6);">🔊 Clique para Ativar Áudio</button>
 
-            <!-- Seletor de Modo de Exibição (Palco Médico HD vs Google Drive Integrado) -->
+            <!-- Seletor de Modo de Exibição (Videoaula HD vs Monitor Clínico vs Google Drive) -->
             <div class="stream-source-pills" style="position:absolute; top:14px; left:16px; z-index:20; display:flex; gap:8px;">
-              <button type="button" class="btn-stream-source active" id="btn-src-native" style="background:#2563eb; color:#fff; border:1px solid #3b82f6; border-radius:6px; font-size:11px; font-weight:700; padding:6px 12px; cursor:pointer;">📺 Palco Médico HD</button>
-              <button type="button" class="btn-stream-source" id="btn-src-drive" style="background:rgba(15,23,42,0.9); color:#93c5fd; border:1px solid rgba(59,130,246,0.4); border-radius:6px; font-size:11px; font-weight:700; padding:6px 12px; cursor:pointer;">☁️ Stream Google Drive</button>
+              <button type="button" class="btn-stream-source active" id="btn-src-native" style="background:#2563eb; color:#fff; border:1px solid #3b82f6; border-radius:6px; font-size:11px; font-weight:700; padding:6px 12px; cursor:pointer;">📺 Videoaula HD</button>
+              <button type="button" class="btn-stream-source" id="btn-src-clinical" style="background:rgba(15,23,42,0.9); color:#93c5fd; border:1px solid rgba(59,130,246,0.4); border-radius:6px; font-size:11px; font-weight:700; padding:6px 12px; cursor:pointer;">📊 Monitor Clínico</button>
+              <button type="button" class="btn-stream-source" id="btn-src-drive" style="background:rgba(15,23,42,0.9); color:#93c5fd; border:1px solid rgba(59,130,246,0.4); border-radius:6px; font-size:11px; font-weight:700; padding:6px 12px; cursor:pointer;">☁️ Drive Oficial</button>
             </div>
 
             <!-- Monitor Cardíaco Multiparamétrico (ECG / PA / SatO2) no Canto Superior Direito -->
@@ -282,6 +283,26 @@
 
           <div class="folders-tree" id="inline-folders-tree">
             <!-- Preenchido dinamicamente via sala.js -->
+          </div>
+        </div>
+
+        <!-- TODAS AS VIDEOAULAS DO CURSO DIRETAMENTE NO SITE -->
+        <div class="inline-lessons-section" style="margin-top: 24px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 22px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px; border-bottom:1px solid var(--line); padding-bottom:14px;">
+            <div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span class="badge-cycle" style="background:rgba(16,185,129,0.18); color:#34d399; border:1px solid rgba(16,185,129,0.3); font-weight:800; font-size:11px; padding:3px 8px; border-radius:4px;">▶ TODAS AS AULAS NO SITE</span>
+                <span style="font-size:12px; color:var(--muted);" id="inline-lessons-count">Carregando aulas...</span>
+              </div>
+              <h2 style="margin:6px 0 2px; font-size:19px; color:#fff;" id="inline-lessons-title">Todas as Videoaulas deste Curso</h2>
+              <p style="margin:0; font-size:12px; color:var(--muted);">Selecione qualquer aula abaixo para assistir imediatamente em alta resolução no player acima.</p>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center;">
+              <input type="search" id="inline-lessons-search" placeholder="🔍 Filtrar aula por nome ou tema..." style="height:38px; background:var(--bg); border:1px solid var(--line-strong); color:#fff; border-radius:6px; padding:0 12px; font-size:12px; width:260px; outline:none;">
+            </div>
+          </div>
+          <div id="inline-lessons-grid-content">
+            <!-- Renderizado dinamicamente via sala.js -->
           </div>
         </div>
       </div>

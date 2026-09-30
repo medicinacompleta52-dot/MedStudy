@@ -479,55 +479,68 @@ function setupVideoPlayer() {
   const markDoneBtn = $("#ctrl-mark-done");
   const nativeVideo = $("#native-video-player");
   const driveFrame = $("#drive-video-frame");
+  const ecgCanvas = $("#medical-ecg-canvas");
   const btnSrcNative = $("#btn-src-native");
+  const btnSrcClinical = $("#btn-src-clinical");
   const btnSrcDrive = $("#btn-src-drive");
   const btnOpenDriveDirect = $("#btn-open-drive-direct");
   const btnDownloadPdfStage = $("#btn-download-pdf-stage");
 
-  // Alternância de fonte de streaming (HD Nativo / ECG vs Drive Embed)
-  btnSrcNative?.addEventListener("click", () => {
-    btnSrcNative.classList.add("active");
-    btnSrcNative.style.background = "#2563eb";
-    btnSrcNative.style.color = "#fff";
-    btnSrcDrive?.classList.remove("active");
-    if (btnSrcDrive) {
-      btnSrcDrive.style.background = "rgba(15,23,42,0.85)";
-      btnSrcDrive.style.color = "#94a3b8";
-    }
-
-    if (driveFrame) driveFrame.style.display = "none";
-    const ecgCanvas = $("#medical-ecg-canvas");
-    if (ecgCanvas) ecgCanvas.style.display = "block";
-    const overlay = $("#video-overlay");
-    if (overlay) overlay.style.display = "flex";
-  });
-
-  btnSrcDrive?.addEventListener("click", () => {
-    btnSrcDrive.classList.add("active");
-    btnSrcDrive.style.background = "#2563eb";
-    btnSrcDrive.style.color = "#fff";
-    btnSrcNative?.classList.remove("active");
-    if (btnSrcNative) {
-      btnSrcNative.style.background = "rgba(15,23,42,0.85)";
-      btnSrcNative.style.color = "#94a3b8";
-    }
-
-    const ecgCanvas = $("#medical-ecg-canvas");
-    if (ecgCanvas) ecgCanvas.style.display = "none";
-    if (driveFrame) {
-      driveFrame.style.display = "block";
-      const driveUrl = currentCourse?.driveUrl || "https://drive.google.com/drive/my-drive";
-      let embedUrl = driveUrl;
-      const folderMatch = driveUrl.match(/folders\/([\w\d_-]+)/i);
-      const fileMatch = driveUrl.match(/file\/d\/([\w\d_-]+)/i);
-      if (fileMatch) {
-        embedUrl = `https://drive.google.com/file/d/${fileMatch[1]}/preview`;
-      } else if (folderMatch) {
-        embedUrl = `https://drive.google.com/embeddedfolderview?id=${folderMatch[1]}#list`;
+  // Alternância de fonte de streaming (Videoaula HD / Monitor Clínico / Google Drive)
+  function setStreamMode(mode) {
+    [btnSrcNative, btnSrcClinical, btnSrcDrive].forEach((b) => {
+      if (b) {
+        b.classList.remove("active");
+        b.style.background = "rgba(15,23,42,0.85)";
+        b.style.color = "#94a3b8";
       }
-      driveFrame.src = embedUrl;
+    });
+
+    if (mode === "native") {
+      if (btnSrcNative) {
+        btnSrcNative.classList.add("active");
+        btnSrcNative.style.background = "#2563eb";
+        btnSrcNative.style.color = "#fff";
+      }
+      if (nativeVideo) nativeVideo.style.display = "block";
+      if (driveFrame) driveFrame.style.display = "none";
+      if (ecgCanvas) ecgCanvas.style.display = "none";
+    } else if (mode === "clinical") {
+      if (btnSrcClinical) {
+        btnSrcClinical.classList.add("active");
+        btnSrcClinical.style.background = "#2563eb";
+        btnSrcClinical.style.color = "#fff";
+      }
+      if (nativeVideo) nativeVideo.style.display = "none";
+      if (driveFrame) driveFrame.style.display = "none";
+      if (ecgCanvas) ecgCanvas.style.display = "block";
+    } else if (mode === "drive") {
+      if (btnSrcDrive) {
+        btnSrcDrive.classList.add("active");
+        btnSrcDrive.style.background = "#2563eb";
+        btnSrcDrive.style.color = "#fff";
+      }
+      if (nativeVideo) nativeVideo.style.display = "none";
+      if (ecgCanvas) ecgCanvas.style.display = "none";
+      if (driveFrame) {
+        driveFrame.style.display = "block";
+        const driveUrl = currentCourse?.driveUrl || "https://drive.google.com/drive/my-drive";
+        let embedUrl = driveUrl;
+        const folderMatch = driveUrl.match(/folders\/([\w\d_-]+)/i);
+        const fileMatch = driveUrl.match(/file\/d\/([\w\d_-]+)/i);
+        if (fileMatch) {
+          embedUrl = `https://drive.google.com/file/d/${fileMatch[1]}/preview`;
+        } else if (folderMatch) {
+          embedUrl = `https://drive.google.com/embeddedfolderview?id=${folderMatch[1]}#list`;
+        }
+        driveFrame.src = embedUrl;
+      }
     }
-  });
+  }
+
+  btnSrcNative?.addEventListener("click", () => setStreamMode("native"));
+  btnSrcClinical?.addEventListener("click", () => setStreamMode("clinical"));
+  btnSrcDrive?.addEventListener("click", () => setStreamMode("drive"));
 
   btnOpenDriveDirect?.addEventListener("click", () => {
     const driveUrl = currentCourse?.driveUrl || "https://drive.google.com/drive/my-drive";
@@ -556,16 +569,26 @@ function setupVideoPlayer() {
       }
     }
 
-    if (nativeVideo && nativeVideo.src && !nativeVideo.src.includes("/api/stream/sample.mp4") && nativeVideo.readyState >= 2) {
+    if (nativeVideo) {
       if (nativeVideo.paused) {
-        nativeVideo.play().catch(() => {});
+        setStreamMode("native");
+        const playPromise = nativeVideo.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((err) => {
+            console.warn("Autoplay bloqueado pelo navegador, tentando mutado:", err);
+            nativeVideo.muted = true;
+            nativeVideo.play().catch(() => {});
+            const unmuteTip = $("#video-unmute-tip");
+            if (unmuteTip) unmuteTip.style.display = "block";
+          });
+        }
       } else {
         nativeVideo.pause();
       }
       return;
     }
 
-    // Modo Palco Médico Oficial (ECG em tempo real + Apresentação Clínica Dinâmica)
+    // Modo Alternativo
     isPlaying = !isPlaying;
     updatePlayButtonsState(isPlaying);
 
@@ -576,27 +599,6 @@ function setupVideoPlayer() {
     }
 
     updateLectureProgressUI();
-
-    if (isPlaying) {
-      if (playbackInterval) clearInterval(playbackInterval);
-      playbackInterval = setInterval(() => {
-        playbackSeconds += currentSpeed;
-        if (playbackSeconds >= 2700) {
-          playbackSeconds = 2700;
-          togglePlay();
-          if (currentLesson && currentCourse) {
-            const completed = getCompletedLessons(currentCourse.id);
-            if (!completed.includes(currentLesson.id)) {
-              toggleLessonCompleted(currentLesson.id);
-            }
-          }
-        }
-        updateLectureProgressUI();
-        updateTimeUI(2700);
-      }, 1000);
-    } else {
-      if (playbackInterval) clearInterval(playbackInterval);
-    }
   }
 
   btnPlayMedicalBig?.addEventListener("click", togglePlay);
@@ -1547,13 +1549,11 @@ function selectLesson(lesson, autoPlay = false) {
       li.addEventListener("click", () => {
         const [m, s] = ch.time.split(":").map(Number);
         playbackSeconds = m * 60 + s;
-        updateTimeUI();
-        if (nativeVideo && nativeVideo.src && !nativeVideo.src.includes("/api/stream/sample.mp4") && nativeVideo.readyState >= 2) {
+        if (nativeVideo) {
           nativeVideo.currentTime = playbackSeconds;
           nativeVideo.play().catch(() => {});
-        } else if (!isPlaying) {
-          const btnPlay = $("#btn-play-medical-big") || $("#btn-play-big");
-          if (btnPlay) btnPlay.click();
+        } else {
+          updateTimeUI();
         }
       });
       chaptersList.appendChild(li);
@@ -1572,31 +1572,18 @@ function selectLesson(lesson, autoPlay = false) {
     switchTab("video");
     const videoBox = $("#video-container") || document.body;
     videoBox.scrollIntoView({ behavior: "smooth", block: "start" });
-    if (!isPlaying) {
-      const btnPlay = $("#btn-play-medical-big") || $("#btn-play-big");
-      if (btnPlay) btnPlay.click();
-    } else {
-      playbackSeconds = 0;
-      updateLectureProgressUI();
-      updateTimeUI(2700);
-      if (playbackInterval) clearInterval(playbackInterval);
-      playbackInterval = setInterval(() => {
-        playbackSeconds += currentSpeed;
-        if (playbackSeconds >= 2700) {
-          playbackSeconds = 2700;
-          if (playbackInterval) clearInterval(playbackInterval);
-          isPlaying = false;
-          updatePlayButtonsState(false);
-          if (currentLesson && currentCourse) {
-            const completed = getCompletedLessons(currentCourse.id);
-            if (!completed.includes(currentLesson.id)) {
-              toggleLessonCompleted(currentLesson.id);
-            }
-          }
-        }
-        updateLectureProgressUI();
-        updateTimeUI(2700);
-      }, 1000);
+    if (nativeVideo) {
+      nativeVideo.currentTime = 0;
+      const playPromise = nativeVideo.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((err) => {
+          console.warn("Autoplay com áudio bloqueado pelo navegador, iniciando mutado:", err);
+          nativeVideo.muted = true;
+          nativeVideo.play().catch(() => {});
+          const unmuteTip = $("#video-unmute-tip");
+          if (unmuteTip) unmuteTip.style.display = "block";
+        });
+      }
     }
   } else {
     isPlaying = false;
@@ -1642,21 +1629,24 @@ function populateLessonsDropdown() {
   };
 }
 
-// Grade Completa de Aulas (Painel no Palco com Busca em Tempo Real)
+// Grade Completa de Aulas (Painel no Palco e Seção Principal com Busca em Tempo Real)
 function renderFullLessonsGrid(filterQuery = "") {
-  const container = $("#full-lessons-grid-content");
-  if (!container || !currentCourse) return;
+  if (!currentCourse) return;
 
   const titleEl = $("#grid-course-title");
   const cycleEl = $("#grid-course-cycle");
   const subtitleEl = $("#grid-lessons-subtitle");
-
-  if (titleEl) titleEl.textContent = `${currentCourse.title} — Grade Completa de Aulas`;
-  if (cycleEl) cycleEl.textContent = currentCourse.category || "Medicina";
+  const inlineTitleEl = $("#inline-lessons-title");
+  const inlineCountEl = $("#inline-lessons-count");
 
   const all = getAllLessons(currentCourse);
   const completedList = getCompletedLessons(currentCourse.id);
-  const query = (filterQuery || $("#grid-search-input")?.value || "").trim().toLowerCase();
+  const query = (filterQuery || $("#grid-search-input")?.value || $("#inline-lessons-search")?.value || "").trim().toLowerCase();
+
+  if (titleEl) titleEl.textContent = `${currentCourse.title} — Grade Completa de Aulas`;
+  if (cycleEl) cycleEl.textContent = currentCourse.category || "Medicina";
+  if (inlineTitleEl) inlineTitleEl.textContent = `Todas as Videoaulas de ${currentCourse.title}`;
+  if (inlineCountEl) inlineCountEl.textContent = `${all.length} videoaulas disponíveis`;
 
   const filtered = query
     ? all.filter((l) => l.title.toLowerCase().includes(query) || (l.summary && l.summary.toLowerCase().includes(query)) || (l.moduleTitle && l.moduleTitle.toLowerCase().includes(query)))
@@ -1666,90 +1656,98 @@ function renderFullLessonsGrid(filterQuery = "") {
     subtitleEl.textContent = `${filtered.length} de ${all.length} aulas disponíveis neste curso. Clique para assistir imediatamente em HD.`;
   }
 
-  container.replaceChildren();
+  const targets = [$("#full-lessons-grid-content"), $("#inline-lessons-grid-content")];
 
-  if (filtered.length === 0) {
-    container.innerHTML = `
-      <div style="text-align:center; padding:40px; color:var(--muted);">
-        <p style="font-size:16px;">Nenhuma aula encontrada para o termo "<strong>${query}</strong>".</p>
-        <button type="button" class="btn-action-outline" id="btn-clear-grid-search" style="margin-top:10px; cursor:pointer;">Limpar Filtro</button>
-      </div>
-    `;
-    $("#btn-clear-grid-search")?.addEventListener("click", () => {
-      const inp = $("#grid-search-input");
-      if (inp) inp.value = "";
-      renderFullLessonsGrid("");
-    });
-    return;
-  }
+  targets.forEach((container) => {
+    if (!container) return;
+    container.replaceChildren();
 
-  let currentGroupModule = null;
-  let currentGroupContainer = null;
-
-  filtered.forEach((lesson, idx) => {
-    const modTitle = lesson.moduleTitle || "Módulo de Aulas";
-    if (modTitle !== currentGroupModule) {
-      currentGroupModule = modTitle;
-      const groupHeader = document.createElement("div");
-      groupHeader.style.cssText = "margin: 20px 0 10px; padding: 10px 16px; background: rgba(37,99,235,0.08); border-left: 4px solid #2563eb; border-radius: 4px; display:flex; align-items:center; justify-content:space-between;";
-      groupHeader.innerHTML = `
-        <strong style="color:#60a5fa; font-size:14px;">📂 ${modTitle}</strong>
+    if (filtered.length === 0) {
+      container.innerHTML = `
+        <div style="text-align:center; padding:40px; color:var(--muted);">
+          <p style="font-size:16px;">Nenhuma aula encontrada para o termo "<strong>${query}</strong>".</p>
+          <button type="button" class="btn-action-outline btn-clear-search-grid" style="margin-top:10px; cursor:pointer;">Limpar Filtro</button>
+        </div>
       `;
-      container.appendChild(groupHeader);
-
-      currentGroupContainer = document.createElement("div");
-      currentGroupContainer.style.cssText = "display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:12px; margin-bottom:16px;";
-      container.appendChild(currentGroupContainer);
+      container.querySelector(".btn-clear-search-grid")?.addEventListener("click", () => {
+        const inp1 = $("#grid-search-input");
+        const inp2 = $("#inline-lessons-search");
+        if (inp1) inp1.value = "";
+        if (inp2) inp2.value = "";
+        renderFullLessonsGrid("");
+      });
+      return;
     }
 
-    const isCurrent = currentLesson && currentLesson.id === lesson.id;
-    const isCompleted = completedList.includes(lesson.id);
+    let currentGroupModule = null;
+    let currentGroupContainer = null;
 
-    const card = document.createElement("div");
-    card.style.cssText = `
-      background: ${isCurrent ? "rgba(37,99,235,0.15)" : "var(--panel2)"};
-      border: 1px solid ${isCurrent ? "#2563eb" : "var(--line)"};
-      border-radius: 8px;
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 10px;
-      transition: all 0.2s ease;
-    `;
+    filtered.forEach((lesson, idx) => {
+      const modTitle = lesson.moduleTitle || "Módulo de Aulas";
+      if (modTitle !== currentGroupModule) {
+        currentGroupModule = modTitle;
+        const groupHeader = document.createElement("div");
+        groupHeader.style.cssText = "margin: 20px 0 10px; padding: 10px 16px; background: rgba(37,99,235,0.08); border-left: 4px solid #2563eb; border-radius: 4px; display:flex; align-items:center; justify-content:space-between;";
+        groupHeader.innerHTML = `
+          <strong style="color:#60a5fa; font-size:14px;">📂 ${modTitle}</strong>
+        `;
+        container.appendChild(groupHeader);
 
-    card.innerHTML = `
-      <div>
-        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:6px;">
-          <span style="font-size:11px; font-weight:700; color:${isCompleted ? "#68d391" : "#94a3b8"}; background:rgba(0,0,0,0.3); padding:2px 6px; border-radius:4px;">
-            ${isCompleted ? "✓ Concluída" : `Aula ${idx + 1}`}
-          </span>
-          <span style="font-size:11px; color:#cbd5e1; font-weight:600;">⏱ ${lesson.duration || "30 min"}</span>
+        currentGroupContainer = document.createElement("div");
+        currentGroupContainer.style.cssText = "display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:12px; margin-bottom:16px;";
+        container.appendChild(currentGroupContainer);
+      }
+
+      const isCurrent = currentLesson && currentLesson.id === lesson.id;
+      const isCompleted = completedList.includes(lesson.id);
+
+      const card = document.createElement("div");
+      card.style.cssText = `
+        background: ${isCurrent ? "rgba(37,99,235,0.15)" : "var(--panel2)"};
+        border: 1px solid ${isCurrent ? "#2563eb" : "var(--line)"};
+        border-radius: 8px;
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 10px;
+        transition: all 0.2s ease;
+      `;
+
+      card.innerHTML = `
+        <div>
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:6px;">
+            <span style="font-size:11px; font-weight:700; color:${isCompleted ? "#68d391" : "#94a3b8"}; background:rgba(0,0,0,0.3); padding:2px 6px; border-radius:4px;">
+              ${isCompleted ? "✓ Concluída" : `Aula ${idx + 1}`}
+            </span>
+            <span style="font-size:11px; color:#cbd5e1; font-weight:600;">⏱ ${lesson.duration || "30 min"}</span>
+          </div>
+          <h4 style="margin:0 0 6px; font-size:14px; color:#fff; line-height:1.4;">${lesson.title}</h4>
+          <p style="margin:0; font-size:12px; color:var(--muted); line-height:1.4;">${lesson.summary || "Revisão fisiopatológica e conduta médica."}</p>
         </div>
-        <h4 style="margin:0 0 6px; font-size:14px; color:#fff; line-height:1.4;">${lesson.title}</h4>
-        <p style="margin:0; font-size:12px; color:var(--muted); line-height:1.4;">${lesson.summary || "Revisão fisiopatológica e conduta médica."}</p>
-      </div>
-      <div style="display:flex; gap:8px; align-items:center; margin-top:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.06);">
-        <button type="button" class="btn-play-grid-card" style="flex:1; background:#2563eb; color:#fff; border:none; border-radius:6px; padding:8px 12px; font-size:12px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
-          ▶ Assistir Aula
-        </button>
-        <button type="button" class="btn-download-grid-card" style="background:rgba(37,99,235,0.12); color:#93c5fd; border:1px solid rgba(59,130,246,0.3); border-radius:6px; padding:8px 10px; font-size:12px; cursor:pointer;" title="Download de Vídeo em MP4 (Plano VIP)">
-          📥 MP4
-        </button>
-      </div>
-    `;
+        <div style="display:flex; gap:8px; align-items:center; margin-top:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.06);">
+          <button type="button" class="btn-play-grid-card" style="flex:1; background:#2563eb; color:#fff; border:none; border-radius:6px; padding:8px 12px; font-size:12px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+            ▶ Assistir Aula
+          </button>
+          <button type="button" class="btn-download-grid-card" style="background:rgba(37,99,235,0.12); color:#93c5fd; border:1px solid rgba(59,130,246,0.3); border-radius:6px; padding:8px 10px; font-size:12px; cursor:pointer;" title="Download de Vídeo em MP4 (Plano VIP)">
+            📥 MP4
+          </button>
+        </div>
+      `;
 
-    card.querySelector(".btn-play-grid-card").addEventListener("click", () => {
-      selectLesson(lesson, true);
-      switchTab("video");
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      card.querySelector(".btn-play-grid-card").addEventListener("click", () => {
+        selectLesson(lesson, true);
+        switchTab("video");
+        const videoBox = $("#video-container") || document.body;
+        videoBox.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+
+      card.querySelector(".btn-download-grid-card").addEventListener("click", () => {
+        handleVideoDownload(lesson);
+      });
+
+      currentGroupContainer.appendChild(card);
     });
-
-    card.querySelector(".btn-download-grid-card").addEventListener("click", () => {
-      handleVideoDownload(lesson);
-    });
-
-    currentGroupContainer.appendChild(card);
   });
 }
 
@@ -2266,8 +2264,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderSidebar();
   });
 
-  // Busca na grade completa de aulas
+  // Busca na grade completa de aulas (no palco e na aba)
   $("#grid-search-input")?.addEventListener("input", (e) => {
+    renderFullLessonsGrid(e.target.value);
+  });
+  $("#inline-lessons-search")?.addEventListener("input", (e) => {
     renderFullLessonsGrid(e.target.value);
   });
 
