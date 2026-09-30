@@ -1546,13 +1546,11 @@ function renderSidebar() {
 
     group.querySelectorAll(".lesson-item").forEach((item) => {
       item.addEventListener("click", (e) => {
-        if (e.target.dataset.checkId) return;
+        if (e.target.closest(".lesson-check-btn")) return;
         const lId = item.dataset.lessonId;
         const targetLesson = getAllLessons(currentCourse).find((l) => l.id === lId);
         if (targetLesson) {
           selectLesson(targetLesson, true);
-          switchTab("video");
-          window.scrollTo({ top: 0, behavior: "smooth" });
         }
       });
     });
@@ -1949,34 +1947,25 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Botões da Barra Rápida de Seleção de Aulas
   $("#btn-trigger-play")?.addEventListener("click", () => {
     const nativeVideo = $("#native-video-player");
-    if (!currentLesson && currentCourse) {
-      const lessons = getAllLessons(currentCourse);
-      if (lessons[0]) selectLesson(lessons[0], true);
-      return;
-    }
-    if (nativeVideo && nativeVideo.src) {
-      if (nativeVideo.paused) {
-        nativeVideo.play().then(() => {
-          isPlaying = true;
-          $("#btn-play-big").textContent = "❚❚";
-          $("#ctrl-play-pause").textContent = "❚❚";
-          $("#video-screen")?.classList.add("is-playing");
-        }).catch(() => {
-          nativeVideo.muted = true;
-          nativeVideo.play().catch(() => {});
-        });
-      } else {
-        nativeVideo.pause();
-        isPlaying = false;
-        $("#btn-play-big").textContent = "▶";
-        $("#ctrl-play-pause").textContent = "▶";
-        $("#video-screen")?.classList.remove("is-playing");
-      }
+    const lesson = currentLesson || (currentCourse ? getAllLessons(currentCourse)[0] : null);
+    if (!lesson) return;
+
+    if (nativeVideo && !nativeVideo.paused) {
+      nativeVideo.pause();
+      isPlaying = false;
+      const btnBig = $("#btn-play-big");
+      const ctrlP = $("#ctrl-play-pause");
+      if (btnBig) btnBig.textContent = "▶";
+      if (ctrlP) ctrlP.textContent = "▶";
+      const trigger = $("#btn-trigger-play");
+      if (trigger) trigger.textContent = "▶ Assistir Aula";
+      const screen = $("#video-screen");
+      if (screen) screen.classList.remove("is-playing");
     } else {
-      $("#btn-play-big")?.click();
+      selectLesson(lesson, true);
+      const trigger = $("#btn-trigger-play");
+      if (trigger) trigger.textContent = "❚❚ Pausar Aula";
     }
-    switchTab("video");
-    window.scrollTo({ top: 0, behavior: "smooth" });
   });
 
   $("#btn-open-lessons-tab")?.addEventListener("click", () => {
