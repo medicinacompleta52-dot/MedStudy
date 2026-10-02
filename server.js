@@ -113,8 +113,8 @@ function verifyAdminToken(token) {
   if (parts.length !== 3 || parts[0] !== "admin") return false;
   const ts = Number(parts[1]);
   if (!ts || isNaN(ts)) return false;
-  // Expira em 7 dias
-  if (Date.now() - ts > 7 * 24 * 60 * 60 * 1000) return false;
+  // Expira em 24 horas para maior segurança em computadores compartilhados
+  if (Date.now() - ts > 24 * 60 * 60 * 1000) return false;
   const expectedSig = createHmac("sha256", ADMIN_SECRET).update(`admin:${ts}`).digest("hex");
   try {
     const b1 = Buffer.from(parts[2], "hex");

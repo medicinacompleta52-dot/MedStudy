@@ -30,30 +30,6 @@ async function adminApi(endpoint, options = {}) {
 // AUTENTICAÇÃO DO ADMINISTRADOR
 // ==========================================
 async function checkAuth() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const auto = urlParams.get("auto");
-  const key = urlParams.get("key");
-
-  if (!adminToken && (auto === "1" || key === "medstudy2026")) {
-    try {
-      const email = $("#admin-email")?.value?.trim() || "admin@medstudy.com";
-      const password = $("#admin-password")?.value?.trim() || "medstudy2026";
-      const res = await fetch("/api/admin/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
-      });
-      const data = await res.json();
-      if (res.ok && data.ok) {
-        adminToken = data.token;
-        localStorage.setItem(ADMIN_TOKEN_KEY, adminToken);
-        showDashboardView();
-        loadDashboardData();
-        return;
-      }
-    } catch (_) {}
-  }
-
   if (!adminToken) {
     showLoginView();
     return;
@@ -74,6 +50,10 @@ async function checkAuth() {
 function showLoginView() {
   $("#login-view").hidden = false;
   $("#dashboard-view").hidden = true;
+  const emailInput = $("#admin-email");
+  const passInput = $("#admin-password");
+  if (emailInput) emailInput.value = "";
+  if (passInput) passInput.value = "";
 }
 
 function showDashboardView() {
@@ -92,8 +72,16 @@ function setupLoginForm() {
     btn.disabled = true;
     btn.innerHTML = `<span>Entrando...</span>`;
 
-    const email = $("#admin-email").value.trim();
-    const password = $("#admin-password").value.trim();
+    const email = ($("#admin-email")?.value || "").trim();
+    const password = ($("#admin-password")?.value || "").trim();
+
+    if (!email || !password) {
+      alertEl.textContent = "Informe seu e-mail e sua senha de administrador.";
+      alertEl.hidden = false;
+      btn.disabled = false;
+      btn.innerHTML = `<span>Entrar no Painel</span> <span>→</span>`;
+      return;
+    }
 
     try {
       const res = await fetch("/api/admin/login", {
@@ -122,8 +110,10 @@ function setupLoginForm() {
 
   $("#btn-logout")?.addEventListener("click", () => {
     localStorage.removeItem(ADMIN_TOKEN_KEY);
+    sessionStorage.removeItem(ADMIN_TOKEN_KEY);
     adminToken = null;
     showLoginView();
+    window.location.href = "index.html";
   });
 }
 
