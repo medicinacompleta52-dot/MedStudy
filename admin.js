@@ -445,7 +445,7 @@ async function deleteCourse(id, title) {
 async function loadSiteConfig() {
   try {
     const config = await adminApi("/api/admin/site-config");
-    if ($("#cfg-admin-email")) $("#cfg-admin-email").value = config.adminEmail || "admin@medstudy.com";
+    if ($("#cfg-admin-email")) $("#cfg-admin-email").value = config.adminEmail || "medicinacompleta52@gmail.com";
     if ($("#cfg-whatsapp")) $("#cfg-whatsapp").value = config.whatsappNumber || "5554996318816";
     if ($("#cfg-pix")) $("#cfg-pix").value = config.pixKey || "54996318816";
     if ($("#cfg-mp-token")) $("#cfg-mp-token").value = config.mpAccessToken || "";

@@ -95,8 +95,8 @@ const ADMIN_SECRET = process.env.ADMIN_SECRET || "medstudy-secret-admin-signatur
 
 async function getAdminCredentials() {
   const config = await loadSiteConfig();
-  const email = process.env.ADMIN_EMAIL || config.adminEmail || "admin@medstudy.com";
-  const password = process.env.ADMIN_PASSWORD || config.adminPassword || "medstudy2026";
+  const email = process.env.ADMIN_EMAIL || config.adminEmail || "medicinacompleta52@gmail.com";
+  const password = process.env.ADMIN_PASSWORD || config.adminPassword || "Vaitomarnocu98#";
   return { email, password };
 }
 
